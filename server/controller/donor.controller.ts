@@ -1,32 +1,105 @@
+import { Donation, DonationLocation, Donor } from '../model/model';
+import { IDonor } from '../model/schema/donor.schema';
 import ResponseApi from '../util/ApiResponse.util';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const register = async (req: Request, res: Response) => {
   try {
-  } catch (error) {
-    if (error instanceof Error) {
-      return ResponseApi(res, 500, error.message);
+    const { name, email, password, phoneNo } = req.body;
+
+    if (!name || !email || !password || !phoneNo) {
+      return ResponseApi(res, 400, 'Please provide all required fields');
     }
-    return ResponseApi(
-      res,
-      500,
-      'An unknown error occurred while registering the controller'
-    );
+
+    if (password.length < 6 || password.length > 20) {
+      return ResponseApi(res, 400, 'Password must be at least 6 and at most 20 characters');
+    }
+
+    if (phoneNo.length !== 10) {
+      return ResponseApi(res, 400, 'Phone number must be 10 characters');
+    }
+
+    const existingAdmin = (await Donor.findOne({ email: email.toLowerCase() })) as IDonor | null;
+    if (existingAdmin) {
+      return ResponseApi(res, 400, 'Donor already exists');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newAdmin: IDonor = new Donor({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      phoneNo,
+    });
+    await newAdmin.save();
+
+    return ResponseApi(res, 201, 'Donor registered successfully');
+  } catch (error) {
+    return ResponseApi(res, 500, handleError(error));
   }
 };
 
 const login = async (req: Request, res: Response) => {
   try {
-  } catch (error) {
-    if (error instanceof Error) {
-      return ResponseApi(res, 500, error.message);
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return ResponseApi(res, 400, 'Please provide all required fields');
     }
-    return ResponseApi(
-      res,
-      500,
-      'An unknown error occurred while logging in the controller'
+
+    const existingAdmin = (await Donor.findOne({ email: email.toLowerCase() })) as IDonor | null;
+    if (!existingAdmin) {
+      return ResponseApi(res, 400, 'Donor does not exist');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, existingAdmin.password);
+    if (!isPasswordValid) {
+      return ResponseApi(res, 400, 'Invalid password');
+    }
+
+    if (!process.env.JWT_SECRET_KEY) {
+      return ResponseApi(res, 500, 'JWT secret key is not defined');
+    }
+
+    const token = jwt.sign(
+      { _id: existingAdmin._id, role: 'donor' },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: '1d' }
     );
+
+    return ResponseApi(res, 200, 'Donor logged in successfully', token);
+  } catch (error) {
+    return ResponseApi(res, 500, handleError(error));
   }
 };
 
-export { register, login };
+const getDonationHistory = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.body;
+
+    const donationHistory = await Donation.find({ donorId: userId });
+
+    return ResponseApi(res, 200, 'Donation history fetched successfully', donationHistory);
+  } catch (error) {
+    return ResponseApi(res, 500, handleError(error));
+  }
+};
+
+const getDonationLocation = async (req: Request, res: Response) => {
+  try {
+    const donationLocation = await DonationLocation.find();
+    return ResponseApi(res, 200, 'Donation location fetched successfully', donationLocation);
+  } catch (error) {
+    return ResponseApi(res, 500, handleError(error));
+  }
+};
+
+// Utility function to handle errors
+const handleError = (error: unknown) => {
+  return error instanceof Error ? error.message : 'An unknown error occurred';
+};
+
+export { login, register, getDonationHistory, getDonationLocation };

@@ -1,9 +1,9 @@
+import { IAdmin } from '../model/schema/admin.schema';
 import ResponseApi from '../util/ApiResponse.util';
 import { Request, Response } from 'express';
 import { Admin } from '../model/model';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { IAdmin } from '../model/schema/admin.schema'; // Import the interface
+import bcrypt from 'bcryptjs';
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -103,4 +103,7 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-export { register, login };
+export {
+  register, 
+  login,
+};
