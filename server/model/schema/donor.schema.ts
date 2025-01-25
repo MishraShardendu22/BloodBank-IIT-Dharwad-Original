@@ -15,12 +15,11 @@ const DonorSchema = new mongoose.Schema(
         },
         phoneNo: {
             type: String,
-            required: [true, "Phone no is required"],
             trim: true
         },
         password: {
             type: String,
-            required: true,
+            required: [true, "Password is required"],
         }
     },
     {

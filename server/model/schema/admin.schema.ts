@@ -4,7 +4,8 @@ const AdminSchema = new Schema(
     {
         name: {
             type: String,
-            required: [true, 'Please provide a name']
+            required: [true, 'Please provide a name'],
+            trim: true
         },
         email: {
             type: String,
@@ -17,6 +18,7 @@ const AdminSchema = new Schema(
         },
         phoneNo: {
             type: String,
+            trim: true
         }
     },
     {
