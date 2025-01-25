@@ -14,6 +14,4 @@ const Connect = async () => {
   }
 };
 
-export { 
-  Connect 
-};
+export { Connect };

@@ -10,9 +10,9 @@ import cors from 'cors';
 import { Connect } from './config/database.config';
 
 const CorsOption = {
-    origin: process.env.CLIENT_URI,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  origin: process.env.CLIENT_URI,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
 };
 app.use(cors(CorsOption));
 
@@ -35,10 +35,10 @@ import router from './route/route';
 // import TestRouter from './route/test.route';
 
 if (process.env.NODE_ENV === 'development') {
-    app.get('/', (req: Request, res: Response) => {
-        res.send('Hello, TypeScript Backend!');
-    });
-    // app.use('',TestRouter);
+  app.get('/', (req: Request, res: Response) => {
+    res.send('Hello, TypeScript Backend!');
+  });
+  // app.use('',TestRouter);
 }
 
 // Test Route
@@ -47,14 +47,14 @@ if (process.env.NODE_ENV === 'development') {
 
 // Routes Middleware
 
-app.use("/api/admin", router.AdminRouter);
-app.use("/api/donor", router.DonorRouter);
-app.use("/api/patient", router.PatientRouter);
-app.use("/api/organisation", router.OrganisationRouter);
+app.use('/api/admin', router.AdminRouter);
+app.use('/api/donor', router.DonorRouter);
+app.use('/api/patient', router.PatientRouter);
+app.use('/api/organisation', router.OrganisationRouter);
 
 // Routes Middleware
 
 app.listen(port, () => {
-  Connect()
+  Connect();
   console.log(`Server is running at http://localhost:${port}`);
 });
