@@ -4,20 +4,23 @@ const PatientSchema = new Schema(
     {
         name: {
             type: String,
-            required: [true, 'Please provide a name']
+            required: [true, 'Please provide a name'],
+            trim: true
         },
         phoneNo: {
             type: String,
-            required: [true, 'Please provide a phone number']
+            trim: true
         },
         email: {
             type: String,
             required: [true, 'Please provide an email'],
-            unique: true
+            unique: true,
+            trim: true
         },
         password: {
             type: String,
-            required: [true, 'Please provide a password']
+            required: [true, 'Please provide a password'],
+            trim: true
         }
     },
     {

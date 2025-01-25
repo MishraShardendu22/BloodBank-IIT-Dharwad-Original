@@ -14,10 +14,12 @@ const OrganisationSchema = new Schema(
         email:{
             type: String,
             required: [true, 'Please provide an email'],
-            unique: true
+            unique: true,
+            trim: true
         },
         phoneNo:{
             type: String,
+            trim: true
         },
     },
     {
