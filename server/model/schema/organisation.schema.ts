@@ -1,8 +1,15 @@
-import { Schema } from 'mongoose';
+import { Schema, Document } from 'mongoose';
 
-const OrganisationSchema = new Schema(
+interface IOrganisation extends Document {
+    name: string;
+    password: string;
+    email: string;
+    phoneNo?: string;
+}
+
+const OrganisationSchema = new Schema<IOrganisation>(
     {
-        name:{
+        name: {
             type: String,
             required: [true, 'Please provide a name'],
             trim: true
@@ -11,13 +18,13 @@ const OrganisationSchema = new Schema(
             type: String,
             required: [true, 'Please provide a password']
         },
-        email:{
+        email: {
             type: String,
             required: [true, 'Please provide an email'],
             unique: true,
             trim: true
         },
-        phoneNo:{
+        phoneNo: {
             type: String,
             trim: true
         },
@@ -25,8 +32,6 @@ const OrganisationSchema = new Schema(
     {
         timestamps: true,
     }
-)
+);
 
-export {
-    OrganisationSchema
-}
+export { IOrganisation, OrganisationSchema };

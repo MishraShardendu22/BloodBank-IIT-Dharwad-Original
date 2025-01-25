@@ -1,31 +1,40 @@
-import mongoose from "mongoose";
+import { Schema, Document, Types } from "mongoose";
 
-const DonationLocationSchema = new mongoose.Schema(
+interface IDonationLocation extends Document {
+    organisationId: Types.ObjectId;
+    name: string;
+    contactDetails: string;
+    location: string;
+    timings: string;
+    otherDetails?: string;
+}
+
+const DonationLocationSchema = new Schema<IDonationLocation>(
     {
         organisationId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Oranisation",
-            required: [true, "organisationId is required"],
+            type: Schema.Types.ObjectId,
+            ref: "Organisation",
+            required: [true, "OrganisationId is required"],
             trim: true
         },
         name: {
             type: String,
-            required: [true, "name is required"],
+            required: [true, "Name is required"],
             trim: true
         },
         contactDetails: {
             type: String,
-            required: [true, "contact details is required"],
+            required: [true, "Contact details are required"],
             trim: true
         },
         location: {
             type: String,
-            required: [true, "location is required"],
+            required: [true, "Location is required"],
             trim: true
         },
         timings: {
             type: String,
-            required: [true, "timings is required"],
+            required: [true, "Timings are required"],
             trim: true
         },
         otherDetails: {
@@ -36,9 +45,6 @@ const DonationLocationSchema = new mongoose.Schema(
     {
         timestamps: true
     }
-)
+);
 
-
-export{
-    DonationLocationSchema
-}
+export { IDonationLocation, DonationLocationSchema };

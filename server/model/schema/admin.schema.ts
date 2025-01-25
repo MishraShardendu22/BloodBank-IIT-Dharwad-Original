@@ -1,6 +1,13 @@
-import { Schema } from 'mongoose';
+import { Schema, Document } from 'mongoose';
 
-const AdminSchema = new Schema(
+interface IAdmin extends Document {
+    name: string;
+    email: string;
+    password: string;
+    phoneNo?: string;
+}
+
+const AdminSchema = new Schema<IAdmin>(
     {
         name: {
             type: String,
@@ -24,8 +31,6 @@ const AdminSchema = new Schema(
     {
         timestamps: true,
     }
-)
+);
 
-export {
-    AdminSchema
-}
+export { IAdmin, AdminSchema };

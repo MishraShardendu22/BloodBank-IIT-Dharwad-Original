@@ -1,6 +1,13 @@
-import { Schema } from 'mongoose';
+import { Schema, Document } from "mongoose";
 
-const PatientSchema = new Schema(
+interface IPatient extends Document {
+    name: string;
+    phoneNo?: string;
+    email: string;
+    password: string;
+}
+
+const PatientSchema = new Schema<IPatient>(
     {
         name: {
             type: String,
@@ -26,8 +33,6 @@ const PatientSchema = new Schema(
     {
         timestamps: true,
     }
-)
+);
 
-export {
-    PatientSchema
-}
+export { IPatient, PatientSchema };

@@ -1,6 +1,13 @@
-import mongoose from "mongoose";
+import { Schema, Document } from "mongoose";
 
-const DonorSchema = new mongoose.Schema(
+interface IDonor extends Document {
+    name: string;
+    email: string;
+    phoneNo?: string;
+    password: string;
+}
+
+const DonorSchema = new Schema<IDonor>(
     {
         name: {
             type: String,
@@ -9,7 +16,7 @@ const DonorSchema = new mongoose.Schema(
         },
         email: {
             type: String,
-            required: [true, "Email is Required"],
+            required: [true, "Email is required"],
             trim: true,
             unique: true
         },
@@ -25,9 +32,6 @@ const DonorSchema = new mongoose.Schema(
     {
         timestamps: true
     }
-)
+);
 
-
-export{
-    DonorSchema
-}
+export { IDonor, DonorSchema };

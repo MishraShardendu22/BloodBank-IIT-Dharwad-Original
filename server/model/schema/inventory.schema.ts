@@ -1,9 +1,21 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const InvenotrySchema = new mongoose.Schema(
+interface IInventory extends Document {
+    OrganisationId: mongoose.Types.ObjectId;
+    A_P: number;
+    A_M: number;
+    B_P: number;
+    B_M: number;
+    AB_P: number;
+    AB_M: number;
+    O_P: number;
+    O_M: number;
+}
+
+const InventorySchema = new Schema<IInventory>(
     {
         OrganisationId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Organisation",
             required: [true, "OrganisationId is required"],
             trim: true
@@ -44,9 +56,6 @@ const InvenotrySchema = new mongoose.Schema(
     {
         timestamps: true
     }
-)
+);
 
-
-export{
-    InvenotrySchema
-}
+export { IInventory, InventorySchema };

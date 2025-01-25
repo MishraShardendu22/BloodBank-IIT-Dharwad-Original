@@ -1,25 +1,27 @@
-import mongoose from "mongoose";
+import { Schema, Document, Types } from "mongoose";
 
-const DonationSchema = new mongoose.Schema(
+interface IDonation extends Document {
+    donorId: Types.ObjectId;
+    quantity: string;
+}
+
+const DonationSchema = new Schema<IDonation>(
     {
         donorId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Donor",
-            required: [true, "DonoId is required"],
+            required: [true, "DonorId is required"],
             trim: true
         },
-        quatity: {
+        quantity: {
             type: String,
-            required: [true, "quantity is required"],
+            required: [true, "Quantity is required"],
             trim: true
         }
     },
     {
         timestamps: true
     }
-)
+);
 
-
-export{
-    DonationSchema
-}
+export { IDonation, DonationSchema };

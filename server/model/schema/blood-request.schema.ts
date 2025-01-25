@@ -1,16 +1,23 @@
-import mongoose from "mongoose";
+import { Schema, Document, Types } from "mongoose";
 
-const BloodRequestSchema = new mongoose.Schema(
+interface IBloodRequest extends Document {
+    patientId: Types.ObjectId;
+    quantity: string;
+    type: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+    completed: boolean;
+}
+
+const BloodRequestSchema = new Schema<IBloodRequest>(
     {
         patientId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Patient",
             required: [true, "PatientId is required"],
             trim: true
         },
         quantity: {
             type: String,
-            required: [true, "quantity is required"],
+            required: [true, "Quantity is required"],
             trim: true
         },
         type: {
@@ -24,16 +31,13 @@ const BloodRequestSchema = new mongoose.Schema(
         },
         completed: {
             type: Boolean,
-            required: [true, "completed is required"],
+            required: [true, "Completed is required"],
             default: false
         }
     },
     {
         timestamps: true
     }
-)
+);
 
-
-export{
-    BloodRequestSchema
-}
+export { IBloodRequest, BloodRequestSchema };
