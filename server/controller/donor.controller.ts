@@ -26,7 +26,8 @@ const register = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Donor already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const genSalt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, genSalt);
 
     const newAdmin: IDonor = new Donor({
       name,
