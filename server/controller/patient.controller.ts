@@ -92,7 +92,8 @@ const getBloodRequests = async (req: Request, res: Response) => {
 
 const deleteBloodRequest = async (req: Request, res: Response) => {
   try {
-    const { userId, requestId } = req.body;
+    const { userId } = req.body;
+    const requestId = req.params.requestId;
 
     if (!userId || !requestId) {
       return ResponseApi(res, 400, 'Please provide all required fields');
