@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import ResponseApi from '../util/ApiResponse.util';
 import jwt from 'jsonwebtoken';
 
-export const donorMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
     try{
         /*
             Sample Use in Front-End
@@ -31,7 +31,7 @@ export const donorMiddleware = (req: Request, res: Response, next: NextFunction)
                     return ResponseApi(res, 403, 'Forbidden');
                 }
 
-                if(req.body.role !== 'donor'){
+                if(req.body.role !== 'admin'){
                     return ResponseApi(res, 403, 'Forbidden');
                 }
             }
@@ -39,7 +39,7 @@ export const donorMiddleware = (req: Request, res: Response, next: NextFunction)
 
         next();
     }catch(error){
-        console.log("There was an error in Donor Middleware", error);
+        console.log("There was an error in Admin Middleware", error);
         return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while processing the request');
     }
 }

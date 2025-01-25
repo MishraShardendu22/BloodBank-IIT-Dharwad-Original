@@ -12,8 +12,8 @@ const router = Router();
 
 router.post('/login', login);
 router.post('/register', register);
-router.get('/donation-history',donorMiddleware ,getDonationHistory);
 router.get('/donation-location',donorMiddleware ,getDonationLocation);
+router.get('/donation-history',donorMiddleware ,getDonationHistory);
 
 // Routes Go Here
 
