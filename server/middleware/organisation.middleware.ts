@@ -24,7 +24,7 @@ export const organisationMiddleware = (req: Request, res: Response, next: NextFu
             }
 
             if (decodedToken) {
-                req.body._id = (decodedToken as jwt.JwtPayload)?._id;
+                req.body.organisationId = (decodedToken as jwt.JwtPayload)?._id;
                 req.body.role = (decodedToken as jwt.JwtPayload)?.role
                 
                 if(req.body._id === undefined || req.body.role === undefined){

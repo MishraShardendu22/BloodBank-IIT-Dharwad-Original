@@ -37,10 +37,6 @@ const DonationLocationSchema = new Schema<IDonationLocation>(
       required: [true, 'Timings are required'],
       trim: true,
     },
-    otherDetails: {
-      type: String,
-      trim: true,
-    },
   },
   {
     timestamps: true,

@@ -1,6 +1,7 @@
 import ResponseApi from '../util/ApiResponse.util';
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { BloodRequest, Inventory, Patient } from '../model/model';
 import { IPatient } from '../model/schema/patient.schema';
 
@@ -54,6 +55,17 @@ const login = async (req: Request, res: Response) => {
     if (!existingAdmin) {
       return ResponseApi(res, 400, 'Patient does not exist');
     }
+
+    
+    if (!process.env.JWT_SECRET_KEY) {
+      return ResponseApi(res, 500, 'JWT secret key is not defined');
+    }
+
+    const token = jwt.sign(
+      { _id: existingAdmin._id, role: 'donor' },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: '1d' }
+    );
 
     const isPasswordValid = await bcrypt.compare(password, existingAdmin.password);
     if (!isPasswordValid) {
