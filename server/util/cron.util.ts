@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import nodemailer from 'nodemailer';
 import { Donor } from '../model/model';
 
-cron.schedule("0 0 1 * *", async () => {
+cron.schedule("0 11 1 * *", async () => {
   try {
     const donors = await Donor.find({}, "email name");
 
