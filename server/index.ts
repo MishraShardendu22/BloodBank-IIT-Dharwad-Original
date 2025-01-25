@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import cors from 'cors';
+import { Connect } from './config/database.config';
 
 const CorsOption = {
     origin: process.env.CLIENT_URI,
@@ -51,5 +52,6 @@ if (process.env.NODE_ENV === 'development') {
 // Routes Middleware
 
 app.listen(port, () => {
+  Connect()
   console.log(`Server is running at http://localhost:${port}`);
 });
