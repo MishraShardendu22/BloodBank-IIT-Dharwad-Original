@@ -21,9 +21,9 @@ const register = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Phone number must be 10 characters');
     }
 
-    const existingAdmin = await Patient.findOne({ email: email.toLowerCase() }) as IPatient | null;
-    if (existingAdmin) {
-      return ResponseApi(res, 400, 'Donor already exists');
+    const existingPatient = await Patient.findOne({ email: email.toLowerCase() }) as IPatient | null;
+    if (existingPatient) {
+      return ResponseApi(res, 400, 'Patient already exists');
     }
 
     const genSalt = await bcrypt.genSalt(10);
@@ -37,7 +37,7 @@ const register = async (req: Request, res: Response) => {
     });
     await newPatient.save();
 
-    return ResponseApi(res, 201, 'Donor registered successfully');
+    return ResponseApi(res, 201, 'Patient registered successfully');
   } catch (error) {
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while registering the patient');
   }
@@ -51,8 +51,8 @@ const login = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
-    const existingAdmin = await Patient.findOne({ email: email.toLowerCase() }) as IPatient | null;
-    if (!existingAdmin) {
+    const existingPatient = await Patient.findOne({ email: email.toLowerCase() }) as IPatient | null;
+    if (!existingPatient) {
       return ResponseApi(res, 400, 'Patient does not exist');
     }
 
@@ -62,17 +62,17 @@ const login = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(
-      { _id: existingAdmin._id, role: 'donor' },
+      { _id: existingPatient._id, role: 'patient' },
       process.env.JWT_SECRET_KEY,
       { expiresIn: '1d' }
     );
 
-    const isPasswordValid = await bcrypt.compare(password, existingAdmin.password);
+    const isPasswordValid = await bcrypt.compare(password, existingPatient.password);
     if (!isPasswordValid) {
       return ResponseApi(res, 400, 'Invalid password');
     }
 
-    return ResponseApi(res, 200, 'Patient logged in successfully');
+    return ResponseApi(res, 200, 'Patient logged in successfully', token);
   } catch (error) {
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while logging in the patient');
   }
@@ -89,13 +89,13 @@ const getBloodAvailable = async (req: Request, res: Response) => {
 
 const getBloodRequests = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
+    const { _id } = req.body;
 
-    if (!userId) {
+    if (!_id) {
       return ResponseApi(res, 400, 'User ID is required');
     }
 
-    const bloodRequests = await BloodRequest.find({ patientId: userId });
+    const bloodRequests = await BloodRequest.find({ patientId: _id });
     return ResponseApi(res, 200, 'Blood requests retrieved successfully', bloodRequests);
   } catch (error) {
     return ResponseApi(res, 500, 'An unknown error occurred while getting the blood requests');
@@ -104,15 +104,15 @@ const getBloodRequests = async (req: Request, res: Response) => {
 
 const deleteBloodRequest = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
+    const { _id } = req.body;
     const requestId = req.params.requestId;
 
-    if (!userId || !requestId) {
+    if (!_id || !requestId) {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
     const bloodRequest = await BloodRequest.findOne({
-      patientId: userId,
+      patientId: _id,
       _id: requestId
     });
 

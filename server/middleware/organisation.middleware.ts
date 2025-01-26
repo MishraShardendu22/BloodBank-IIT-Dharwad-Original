@@ -35,10 +35,10 @@ export const organisationMiddleware = (req: Request, res: Response, next: NextFu
                     return ResponseApi(res, 403, 'Forbidden');
                 }
             }
+            next();
         });
-
-        next();
-    }catch(error){
+    }
+    catch(error){
         console.log("There was an error in Organisation Middleware", error);
         return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while processing the request');
     }

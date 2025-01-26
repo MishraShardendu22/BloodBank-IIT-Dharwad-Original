@@ -35,10 +35,10 @@ export const adminMiddleware = (req: Request, res: Response, next: NextFunction)
                     return ResponseApi(res, 403, 'Forbidden');
                 }
             }
+            next();
         });
-
-        next();
-    }catch(error){
+    }
+    catch(error){
         console.log("There was an error in Admin Middleware", error);
         return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while processing the request');
     }

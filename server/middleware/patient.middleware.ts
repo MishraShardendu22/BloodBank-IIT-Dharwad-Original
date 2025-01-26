@@ -35,11 +35,11 @@ export const patientMiddleware = (req: Request, res: Response, next: NextFunctio
                     return ResponseApi(res, 403, 'Forbidden');
                 }
             }
+            next();
         });
-
-        next();
-    }catch(error){
-        console.log("There was an error in Organisation Middleware", error);
+    }
+    catch(error){
+        console.log("There was an error in patient Middleware", error);
         return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while processing the request');
     }
 }

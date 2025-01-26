@@ -5,6 +5,9 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
+//TODO: validation for email
+//TODO: send jwt directly after registering also
+//function level try catches are not a good coding practice
 const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNo } = req.body;
@@ -21,21 +24,21 @@ const register = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Phone number must be 10 characters');
     }
 
-    const existingAdmin = (await Donor.findOne({ email: email.toLowerCase() })) as IDonor | null;
-    if (existingAdmin) {
+    const existingDonor = (await Donor.findOne({ email: email.toLowerCase() })) as IDonor | null;
+    if (existingDonor) {
       return ResponseApi(res, 400, 'Donor already exists');
     }
 
     const genSalt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, genSalt);
 
-    const newAdmin: IDonor = new Donor({
+    const newDonor: IDonor = new Donor({
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
       phoneNo,
     });
-    await newAdmin.save();
+    await newDonor.save();
 
     return ResponseApi(res, 201, 'Donor registered successfully');
   } catch (error) {
@@ -51,12 +54,12 @@ const login = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
-    const existingAdmin = (await Donor.findOne({ email: email.toLowerCase() })) as IDonor | null;
-    if (!existingAdmin) {
+    const existingDonor = (await Donor.findOne({ email: email.toLowerCase() })) as IDonor | null;
+    if (!existingDonor) {
       return ResponseApi(res, 400, 'Donor does not exist');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, existingAdmin.password);
+    const isPasswordValid = await bcrypt.compare(password, existingDonor.password);
     if (!isPasswordValid) {
       return ResponseApi(res, 400, 'Invalid password');
     }
@@ -66,7 +69,7 @@ const login = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(
-      { _id: existingAdmin._id, role: 'donor' },
+      { _id: existingDonor._id, role: 'donor' },
       process.env.JWT_SECRET_KEY,
       { expiresIn: '1d' }
     );

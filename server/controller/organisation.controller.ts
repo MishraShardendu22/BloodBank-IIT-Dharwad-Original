@@ -2,6 +2,7 @@ import { BloodRequest, DonationLocation, Inventory, Organisation } from '../mode
 import bcrypt from 'bcryptjs';
 import { IOrganisation } from '../model/schema/organisation.schema';
 import ResponseApi from '../util/ApiResponse.util';
+import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 
 const register = async (req: Request, res: Response) => {
@@ -61,12 +62,22 @@ const login = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Organisation does not exist');
     }
 
-    if (existingOrganisation.password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, existingOrganisation.password);
+    if (!isPasswordValid) {
       return ResponseApi(res, 400, 'Invalid password');
     }
 
+    if (!process.env.JWT_SECRET_KEY) {
+      return ResponseApi(res, 500, 'JWT secret key is not defined');
+    }
 
-    return ResponseApi(res, 200, 'Organisation logged in successfully ');
+    const token = jwt.sign(
+      { _id: existingOrganisation._id, role: 'organisation' },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: '1d' }
+    );
+
+    return ResponseApi(res, 200, 'Organisation logged in successfully ', token);
   } catch (error) {
     if (error instanceof Error) {
       return ResponseApi(res, 500, error.message);
