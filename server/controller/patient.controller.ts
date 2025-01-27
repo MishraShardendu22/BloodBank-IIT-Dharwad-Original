@@ -105,6 +105,28 @@ const getBloodRequests = async (req: Request, res: Response) => {
   }
 };
 
+const postBloodRequest = async (req: Request, res: Response) => {
+  try{
+    const { _id, bloodGroup, units, location } = req.body;
+
+    if(!_id || !bloodGroup || !units || !location){
+      return ResponseApi(res, 400, 'Please provide all required fields');
+    }
+
+    const newBloodRequest = new BloodRequest({
+      patientId: _id,
+      bloodGroup,
+      units,
+      location
+    });
+
+    await newBloodRequest.save();
+    return ResponseApi(res, 201, 'Blood request posted successfully');
+  }catch(error){
+    return ResponseApi(res, 500, 'An unknown error occurred while posting the blood request');
+  }
+}
+
 const deleteBloodRequest = async (req: Request, res: Response) => {
   try {
     const { _id } = req.body;
@@ -134,6 +156,7 @@ export {
   login,
   register, 
   getBloodRequests,
+  postBloodRequest,
   getBloodAvailable,
   deleteBloodRequest,
 };
