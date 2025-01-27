@@ -1,7 +1,7 @@
 import { IAdmin } from '../model/schema/admin.schema';
 import ResponseApi from '../util/ApiResponse.util';
 import { Request, Response } from 'express';
-import { Admin, BloodRequest, DonationLocation, Donor, Organisation } from '../model/model';
+import { Admin, BloodRequest, DonationLocation, Donor, Organisation, Patient } from '../model/model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { IDonationLocation } from '../model/schema/donation-location.schema';
@@ -192,7 +192,7 @@ const deleteDonor = async (req: Request, res: Response) => {
 
 const getPatients = async (req: Request, res: Response) => {
   try{
-    const patients = await Donor.find({});
+    const patients = await Patient.find({});
     return ResponseApi(res, 200, 'Patients retrieved successfully', patients);
   }catch(error){
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the patients');
@@ -207,7 +207,7 @@ const deletePatient = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Patient ID is required');
     }
 
-    const patient = await Donor.findByIdAndDelete(patientId);
+    const patient = await Patient.findByIdAndDelete(patientId);
     if(!patient){
       return ResponseApi(res, 404, 'Patient not found');
     }
@@ -248,18 +248,18 @@ const deleteOrganisation = async (req: Request, res: Response) => {
 
 const getAnalytics = async (req: Request, res: Response) => {
   try{
-    const donors = await Donor.find({});
-    const patients = await Donor.find({});
-    const organisations = await Organisation.find({});
-    const donationLocations = await DonationLocation.find({});
-    const bloodRequests = await BloodRequest.find({});
+    const donors = await Donor.countDocuments();
+    const patients = await Patient.countDocuments();
+    const organisations = await Organisation.countDocuments();
+    const donationLocations = await DonationLocation.countDocuments();
+    const bloodRequests = await BloodRequest.countDocuments();
 
     return ResponseApi(res, 200, 'Analytics retrieved successfully', {
-      donors: donors.length,
-      patients: patients.length,
-      organisations: organisations.length,
-      donationLocations: donationLocations.length,
-      bloodRequests: bloodRequests.length,
+      donors,
+      patients,
+      organisations,
+      donationLocations,
+      bloodRequests,
     });
   }catch(error){
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the analytics');

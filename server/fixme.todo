@@ -1,0 +1,6 @@
+//TODO: validation for email in all auth routes
+//TODO: send jwt in register routes also
+//IMPROVE: function level try catches are not a good coding practice
+//TODO: forgot to make post blood request route for patient
+//TODO: updateInventory in organisation controller should recieve all the blood groups together in the body to update all of them at once
+//Add /bloodbank in the end of mongo_db url to create a database named bloodbank in the mongodb cluster
