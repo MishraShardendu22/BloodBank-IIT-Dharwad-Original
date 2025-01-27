@@ -248,18 +248,18 @@ const deleteOrganisation = async (req: Request, res: Response) => {
 
 const getAnalytics = async (req: Request, res: Response) => {
   try{
-    const donors = await Donor.find({});
-    const patients = await Patient.find({});
-    const organisations = await Organisation.find({});
-    const donationLocations = await DonationLocation.find({});
-    const bloodRequests = await BloodRequest.find({});
+    const donors = await Donor.countDocuments();
+    const patients = await Patient.countDocuments();
+    const organisations = await Organisation.countDocuments();
+    const donationLocations = await DonationLocation.countDocuments();
+    const bloodRequests = await BloodRequest.countDocuments();
 
     return ResponseApi(res, 200, 'Analytics retrieved successfully', {
-      donors: donors.length,
-      patients: patients.length,
-      organisations: organisations.length,
-      donationLocations: donationLocations.length,
-      bloodRequests: bloodRequests.length,
+      donors,
+      patients,
+      organisations,
+      donationLocations,
+      bloodRequests,
     });
   }catch(error){
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the analytics');

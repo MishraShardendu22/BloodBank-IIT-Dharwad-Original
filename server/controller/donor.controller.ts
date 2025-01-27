@@ -5,9 +5,6 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-//TODO: validation for email
-//TODO: send jwt directly after registering also
-//function level try catches are not a good coding practice
 const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNo } = req.body;
@@ -82,9 +79,12 @@ const login = async (req: Request, res: Response) => {
 
 const getDonationHistory = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
+    const { _id } = req.body;
 
-    const donationHistory = await Donation.find({ donorId: userId });
+    const donationHistory = await Donation.find({ donorId: _id }).populate({
+      path: 'organisationId',
+      select: 'name'
+    });
 
     return ResponseApi(res, 200, 'Donation history fetched successfully', donationHistory);
   } catch (error) {

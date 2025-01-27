@@ -1,4 +1,4 @@
-import { BloodRequest, DonationLocation, Inventory, Organisation } from '../model/model';
+import { BloodRequest, Donation, DonationLocation, Inventory, Organisation } from '../model/model';
 import bcrypt from 'bcryptjs';
 import { IOrganisation } from '../model/schema/organisation.schema';
 import ResponseApi from '../util/ApiResponse.util';
@@ -92,14 +92,14 @@ const login = async (req: Request, res: Response) => {
 
 const addDonationLocation = async (req: Request, res: Response) => {
   try{
-    const { organisationId,name,contactDetails,location,timings } = req.body;
+    const { _Id,name,contactDetails,location,timings } = req.body;
 
-    if(!name || !contactDetails || !location || !timings || !organisationId){
+    if(!name || !contactDetails || !location || !timings || !_Id){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
     const newLocation = {
-      organisationId,
+      organisationId: _Id,
       contactDetails,
       location,
       timings,
@@ -107,13 +107,13 @@ const addDonationLocation = async (req: Request, res: Response) => {
     };
 
 
-    DonationLocation.create(newLocation);
+    await DonationLocation.create(newLocation);
     return ResponseApi(res, 201, 'Location added successfully');
   }catch(error){
     if(error instanceof Error){
       return ResponseApi(res, 500, error.message);
     }
-    return ResponseApi(res, 500, 'An unknown error occurred while adding location to the organisation');
+    return ResponseApi(res, 500, 'An unknown error occurred while adding location');
   }
 }
 
@@ -127,46 +127,50 @@ const deleteDonationLocation = async (req: Request, res: Response) => {
 
     const location = await DonationLocation.findByIdAndDelete(locationId);
 
+    if(!location){
+      return ResponseApi(res, 400, 'Location does not exist')
+    }
+
     return ResponseApi(res, 200, 'Location deleted successfully');
   }catch(error){
     if(error instanceof Error){
       return ResponseApi(res, 500, error.message);
     }
-    return ResponseApi(res, 500, 'An unknown error occurred while deleting location from the organisation');
+    return ResponseApi(res, 500, 'An unknown error occurred while deleting location');
   }
 }
 
 const updateDonationLocation = async (req: Request, res: Response) => {
   try{
-    const { organisationId,name,contactDetails,location,timings } = req.body;
+    const { _Id,name,contactDetails,location,timings,locationId } = req.body;
 
-    if(!name || !contactDetails || !location || !timings || !organisationId){
+    if(!name || !contactDetails || !location || !timings || !_Id || !locationId){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
     const newLocation = {
-      organisationId,
+      organisationId: _Id,
       contactDetails,
       location,
       timings,
       name,
     };
 
-    DonationLocation.findByIdAndUpdate(newLocation);
+    await DonationLocation.findByIdAndUpdate(locationId, newLocation);
     return ResponseApi(res, 200, 'Location updated successfully');
   }catch(error){
     if(error instanceof Error){
       return ResponseApi(res, 500, error.message);
     }
-    return ResponseApi(res, 500, 'An unknown error occurred while updating location of the organisation');
+    return ResponseApi(res, 500, 'An unknown error occurred while updating location');
   }
 }
 
 const updateInventory = async (req: Request, res: Response) => {
   try {
-    const { organisationId, bloodGroup, quantity } = req.body;
+    const { _Id, bloodGroup, quantity } = req.body;
 
-    if (!organisationId || !bloodGroup || !quantity) {
+    if (!_Id || !bloodGroup || !quantity) {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
@@ -182,9 +186,8 @@ const updateInventory = async (req: Request, res: Response) => {
     const updateField = { [`${bloodGroup.replace('+', '_P').replace('-', '_M')}`]: quantity };
 
     const inventory = await Inventory.findOneAndUpdate(
-      { OrganisationId: organisationId },
-      { $inc: updateField },
-      { new: true, upsert: true }
+      { OrganisationId: _Id },
+      { updateField }
     );
 
     return ResponseApi(res, 200, 'Inventory updated successfully', inventory);
@@ -195,7 +198,10 @@ const updateInventory = async (req: Request, res: Response) => {
 
 const getBloodRequests = async (req: Request, res: Response) => {
   try {
-    const bloodRequests = await BloodRequest.find().populate('patientId');
+    const bloodRequests = await BloodRequest.find().populate({
+      path: 'patientId',
+      select: 'name email phoneNo'
+    });
     return ResponseApi(res, 200, 'Blood requests retrieved successfully', bloodRequests);
   } catch (error) {
     return ResponseApi(res, 500, 'An unknown error occurred while getting the blood requests');
@@ -216,7 +222,7 @@ const completeBloodRequest = async (req: Request, res: Response) => {
       return ResponseApi(res, 404, 'Blood request not found');
     }
 
-    await BloodRequest.findByIdAndUpdate(requestId, { status: 'completed' });
+    await BloodRequest.findByIdAndUpdate(requestId, { completed: true });
     return ResponseApi(res, 200, 'Blood request completed successfully');
   }catch(error){
     return ResponseApi(res, 500, 'An unknown error occurred while completing the blood request');
@@ -225,23 +231,22 @@ const completeBloodRequest = async (req: Request, res: Response) => {
 
 const addBloodDonated = async (req: Request, res: Response) => {
   try{
-    const { patiendId, quantity, type, completed } = req.body;
-    if(!patiendId || !quantity || !type || !completed){
+    const { donorId, quantity, _id } = req.body;
+    if(!donorId || !quantity || !_id){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
     const newRequest = {
-      patiendId,
-      quantity,
-      type,
-      completed,
+      donorId,
+      organisationId: _id,
+      quantity
     };
 
-    BloodRequest.create(newRequest);
+    await Donation.create(newRequest);
 
-    return ResponseApi(res, 201, 'Blood request added successfully');
+    return ResponseApi(res, 201, 'Blood donation added successfully');
     }catch(error){
-    return ResponseApi(res, 500, 'An unknown error occurred while adding blood request');
+    return ResponseApi(res, 500, 'An unknown error occurred while adding blood donation');
   }
 }
 

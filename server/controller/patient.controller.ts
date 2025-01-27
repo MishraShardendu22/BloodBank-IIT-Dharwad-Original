@@ -80,7 +80,10 @@ const login = async (req: Request, res: Response) => {
 
 const getBloodAvailable = async (req: Request, res: Response) => {
   try {
-    const bloodAvailable = await Inventory.find().populate('organisationId');
+    const bloodAvailable = await Inventory.find().populate({
+      path: 'organisationId',
+      select: 'name email phoneNo -password'
+    });
     return ResponseApi(res, 200, 'Blood available retrieved successfully', bloodAvailable);
   } catch (error) {
     return ResponseApi(res, 500, 'An unknown error occurred while getting the blood available');
