@@ -77,7 +77,7 @@ const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { _id: existingPatient._id, role: 'patient' },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1d' }
+      { expiresIn: '30d' }
     );
 
     const isPasswordValid = await bcrypt.compare(

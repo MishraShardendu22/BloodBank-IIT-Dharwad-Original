@@ -10,6 +10,7 @@ import { IOrganisation } from '../model/schema/organisation.schema';
 import ResponseApi from '../util/ApiResponse.util';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
+import { IInventory } from '../model/schema/inventory.schema';
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -47,7 +48,13 @@ const register = async (req: Request, res: Response) => {
       phoneNo,
     });
 
-    await newOrganisation.save();
+    const organisation = await newOrganisation.save();
+    
+    const newInventory: IInventory = new Inventory({
+      OrganisationId: organisation._id
+    })
+
+    await newInventory.save();
     return ResponseApi(res, 201, 'Organisation registered successfully');
   } catch (error) {
     if (error instanceof Error) {
@@ -91,7 +98,7 @@ const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { _id: existingOrganisation._id, role: 'organisation' },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1d' }
+      { expiresIn: '30d' }
     );
 
     return ResponseApi(res, 200, 'Organisation logged in successfully ', token);
@@ -116,7 +123,7 @@ const addDonationLocation = async (req: Request, res: Response) => {
     }
 
     const newLocation = {
-      organisationId: _Id,
+      organisationId: _id,
       contactDetails,
       location,
       timings,
@@ -145,7 +152,10 @@ const deleteDonationLocation = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
-    const location = await DonationLocation.findByIdAndDelete(locationId);
+    const location = await DonationLocation.findOneAndDelete({
+      _id: locationId,
+      organisationId: _id
+    });
 
     if (!location) {
       return ResponseApi(res, 400, 'Location does not exist');
@@ -181,14 +191,20 @@ const updateDonationLocation = async (req: Request, res: Response) => {
     }
 
     const newLocation = {
-      organisationId: _Id,
+      organisationId: _id,
       contactDetails,
       location,
       timings,
       name,
     };
 
-    await DonationLocation.findByIdAndUpdate(locationId, newLocation);
+    const update = await DonationLocation.findOneAndUpdate({
+      _id: locationId,
+      organisationId: _id
+    }, newLocation);
+    if(!update){
+      return ResponseApi(res, 400, 'Location could not be updated');
+    }
     return ResponseApi(res, 200, 'Location updated successfully');
   } catch (error) {
     if (error instanceof Error) {
@@ -224,9 +240,18 @@ const updateInventory = async (req: Request, res: Response) => {
     };
 
     const inventory = await Inventory.findOneAndUpdate(
-      { OrganisationId: _Id },
-      { $set: updateField }, // fixed this
-      { new: true }
+      { OrganisationId: _id },
+      {
+        A_P,
+        A_M,
+        B_M,
+        B_P,
+        AB_M,
+        AB_P,
+        O_M,
+        O_P
+      },
+      {returnDocument: 'after'}
     );
 
     if (!inventory) {
@@ -298,8 +323,20 @@ const addBloodDonated = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
+    if(quantity < 0){
+      return ResponseApi(res, 400,  'quantity can\'t be negative');
+    }
+
+    const donor = await Donor.findOne({
+      email: donorEmail
+    });
+
+    if(!donor){
+      return ResponseApi(res, 400, 'Donor not found');
+    }
+
     const newRequest = {
-      donorId,
+      donorId: donor._id,
       organisationId: _id,
       quantity,
     };
@@ -340,6 +377,7 @@ const verifyOrganisation = async (req: Request,res: Response) => {
 export {
   login,
   register,
+  getInventory,
   addBloodDonated,
   updateInventory,
   getBloodRequests,

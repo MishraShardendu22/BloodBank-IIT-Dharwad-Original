@@ -18,8 +18,9 @@ const router = Router();
 
 router.post('/login', login);
 router.post('/register', register);
+router.get('/getInventory', organisationMiddleware, getInventory)
 router.patch('/updateInventory', organisationMiddleware, updateInventory);
-router.patch('/addBloodDonated', organisationMiddleware, addBloodDonated);
+router.post('/addBloodDonated', organisationMiddleware, addBloodDonated);
 router.get('/getBloodRequests', organisationMiddleware, getBloodRequests);
 router.get('/verifyOrganisation', organisationMiddleware, verifyOrganisation);
 router.post(

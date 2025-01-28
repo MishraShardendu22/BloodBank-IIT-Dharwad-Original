@@ -1,11 +1,58 @@
-import { ReactNode } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
+import axiosInstance from '@/util/axiosInstance';
 
-interface UnProtectedRouteProps {
-  children: ReactNode;
-}
+const UnProtected = ({ children }: any) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
+<<<<<<< HEAD
 const UnProtectedRoute = ({ children }: UnProtectedRouteProps) => {
   return <div>{children}</div>;
 };
 
 export default UnProtectedRoute;
+=======
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setIsAuthenticated(true);
+        return;
+      }
+
+      try {
+        const response = await axiosInstance.post('/auth/verify', {
+          token: token,
+        });
+        if (response.status === 200) {
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error(error);
+        setIsAuthenticated(true);
+      }
+    };
+
+    checkAuthentication();
+  }, []);
+
+  if (isAuthenticated === null) {
+    return (
+      <>
+      <p>Loading...</p>
+      </>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/home" />;
+  }
+
+  return <>{children}</>;
+};
+
+export default UnProtected;
+>>>>>>> 7c0dfb70bc445b745494f7d0bed5e5559c7a9f5d

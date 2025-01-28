@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
+
 const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNo } = req.body;
@@ -79,7 +80,7 @@ const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { _id: existingDonor._id, role: 'donor' },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1d' }
+      { expiresIn: '30d' }
     );
 
     return ResponseApi(res, 200, 'Donor logged in successfully', token);

@@ -35,6 +35,7 @@ export const organisationMiddleware = (
           return ResponseApi(res, 403, 'Forbidden');
         }
 
+<<<<<<< HEAD
         if (req.body.role !== 'organisation') {
           return ResponseApi(res, 403, 'Forbidden');
         }
@@ -52,3 +53,30 @@ export const organisationMiddleware = (
     );
   }
 };
+=======
+        jwt.verify(token, process.env.JWT_SECRET_KEY!, (error, decodedToken) => {
+            if (error) {
+                return ResponseApi(res, 403, 'Forbidden');
+            }
+
+            if (decodedToken) {
+                req.body._id = (decodedToken as jwt.JwtPayload)?._id;
+                req.body.role = (decodedToken as jwt.JwtPayload)?.role
+                
+                if(req.body._id === undefined || req.body.role === undefined){
+                    return ResponseApi(res, 403, 'Forbidden');
+                }
+
+                if(req.body.role !== 'organisation'){
+                    return ResponseApi(res, 403, 'Forbidden');
+                }
+            }
+            next();
+        });
+    }
+    catch(error){
+        console.log("There was an error in Organisation Middleware", error);
+        return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while processing the request');
+    }
+}
+>>>>>>> 7c0dfb70bc445b745494f7d0bed5e5559c7a9f5d
