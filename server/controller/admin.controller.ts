@@ -91,7 +91,7 @@ const login = async (req: Request, res: Response) => {
         role: 'admin',
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1d' }
+      { expiresIn: '30d' }
     );
 
     return ResponseApi(res, 200, 'Admin logged in successfully', token);

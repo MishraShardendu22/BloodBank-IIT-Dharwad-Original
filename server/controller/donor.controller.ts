@@ -68,7 +68,7 @@ const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { _id: existingDonor._id, role: 'donor' },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1d' }
+      { expiresIn: '30d' }
     );
 
     return ResponseApi(res, 200, 'Donor logged in successfully', token);

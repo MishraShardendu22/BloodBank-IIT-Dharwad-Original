@@ -8,6 +8,7 @@ import {
     completeBloodRequest,
     updateDonationLocation,
     deleteDonationLocation,
+    getInventory,
 } from '../../controller/organisation.controller';
 import { Router } from 'express';
 import { organisationMiddleware } from '../../middleware/organisation.middleware';
@@ -17,8 +18,9 @@ const router = Router();
 
 router.post('/login', login);
 router.post('/register', register);
+router.get('/getInventory', organisationMiddleware, getInventory)
 router.patch('/updateInventory', organisationMiddleware, updateInventory);
-router.patch('/addBloodDonated', organisationMiddleware, addBloodDonated);
+router.post('/addBloodDonated', organisationMiddleware, addBloodDonated);
 router.get('/getBloodRequests', organisationMiddleware, getBloodRequests);
 router.post('/addDonationLocation', organisationMiddleware, addDonationLocation);
 router.patch('/completeBloodRequest', organisationMiddleware, completeBloodRequest);
