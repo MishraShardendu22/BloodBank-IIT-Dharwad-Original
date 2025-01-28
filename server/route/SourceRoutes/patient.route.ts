@@ -1,6 +1,7 @@
 import {   
   login,
   register, 
+  postBloodRequest,
   getBloodRequests,
   getBloodAvailable,
   deleteBloodRequest 
@@ -14,6 +15,7 @@ const router = Router();
 
 router.post('/login', login);
 router.post('/register', register);
+router.post('/giveblood',patientMiddleware, postBloodRequest);
 router.get('/bloodRequests',patientMiddleware, getBloodRequests);
 router.get('/bloodAvailable',patientMiddleware, getBloodAvailable);
 router.delete('/bloodRequest/:requestId',patientMiddleware, deleteBloodRequest);

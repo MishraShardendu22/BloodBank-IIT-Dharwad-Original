@@ -17,12 +17,12 @@ const router = Router();
 
 router.post('/login', login);
 router.post('/register', register);
-router.put('/updateInventory', organisationMiddleware, updateInventory);
-router.post('/addBloodDonated', organisationMiddleware, addBloodDonated);
+router.patch('/updateInventory', organisationMiddleware, updateInventory);
+router.patch('/addBloodDonated', organisationMiddleware, addBloodDonated);
 router.get('/getBloodRequests', organisationMiddleware, getBloodRequests);
 router.post('/addDonationLocation', organisationMiddleware, addDonationLocation);
-router.put('/completeBloodRequest', organisationMiddleware, completeBloodRequest);
-router.put('/updateDonationLocation', organisationMiddleware, updateDonationLocation);
+router.patch('/completeBloodRequest', organisationMiddleware, completeBloodRequest);
+router.patch('/updateDonationLocation', organisationMiddleware, updateDonationLocation);
 router.delete('/deleteDonationLocation', organisationMiddleware, deleteDonationLocation);
 
 // Routes Go Here

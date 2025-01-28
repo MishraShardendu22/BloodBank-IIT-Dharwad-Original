@@ -187,8 +187,13 @@ const updateInventory = async (req: Request, res: Response) => {
 
     const inventory = await Inventory.findOneAndUpdate(
       { OrganisationId: _Id },
-      { updateField }
+      { $set: updateField }, // fixed this
+      { new: true }
     );
+
+    if (!inventory) {
+      return ResponseApi(res, 404, 'Inventory not found');
+    }
 
     return ResponseApi(res, 200, 'Inventory updated successfully', inventory);
   } catch (error) {
