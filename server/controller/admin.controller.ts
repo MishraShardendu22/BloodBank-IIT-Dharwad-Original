@@ -268,6 +268,7 @@ const getAnalytics = async (req: Request, res: Response) => {
 
 const verifyAdmin = async (req: Request,res: Response) => {
   try{
+    console.log("CP-1")
     const { _id,role } = req.body;
 
     if(_id === undefined || role === undefined){

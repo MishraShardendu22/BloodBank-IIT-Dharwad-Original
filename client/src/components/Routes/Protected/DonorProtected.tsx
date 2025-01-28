@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
+import MedicalLoader from '@/components/Loader';
 import axiosInstance from '@/util/axiosInstance';
 
+interface ProtectedDonorProps {
+  children: ReactNode;
+}
 
-const Protected = ({ children }: any) => {
+const ProtectedDonor: React.FC<ProtectedDonorProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -16,16 +20,13 @@ const Protected = ({ children }: any) => {
       }
 
       try {
-        const response = await axiosInstance.post('/auth/verify', {
-          token: token,
+        const response = await axiosInstance.get('/donor/verifyDonor', {
+          headers: { Authorization: `Bearer ${token}` }
         });
-        if (response.status === 200) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
+
+        setIsAuthenticated(response.status === 200);
       } catch (error) {
-        console.error(error);
+        console.error("Donor authentication check failed:", error);
         setIsAuthenticated(false);
       }
     };
@@ -33,19 +34,15 @@ const Protected = ({ children }: any) => {
     checkAuthentication();
   }, []);
 
-  if(isAuthenticated === null) {
-    return (
-      <>
-      <p>Loading...</p>
-      </>
-    )
+  if (isAuthenticated === null) {
+    return <MedicalLoader />;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/loginDonor" />;
   }
 
   return <>{children}</>;
 };
 
-export default Protected;
+export default ProtectedDonor;
