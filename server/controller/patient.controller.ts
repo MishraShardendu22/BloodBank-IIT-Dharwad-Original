@@ -64,7 +64,7 @@ const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { _id: existingPatient._id, role: 'patient' },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1d' }
+      { expiresIn: '30d' }
     );
 
     const isPasswordValid = await bcrypt.compare(password, existingPatient.password);
@@ -81,8 +81,8 @@ const login = async (req: Request, res: Response) => {
 const getBloodAvailable = async (req: Request, res: Response) => {
   try {
     const bloodAvailable = await Inventory.find().populate({
-      path: 'organisationId',
-      select: 'name email phoneNo -password'
+      path: 'OrganisationId',
+      select: 'name email phoneNo'
     });
     return ResponseApi(res, 200, 'Blood available retrieved successfully', bloodAvailable);
   } catch (error) {
@@ -107,17 +107,17 @@ const getBloodRequests = async (req: Request, res: Response) => {
 
 const postBloodRequest = async (req: Request, res: Response) => {
   try{
-    const { _id, bloodGroup, units, location } = req.body;
+    const { _id, bloodGroup, units } = req.body;
 
-    if(!_id || !bloodGroup || !units || !location){
+    if(!_id || !bloodGroup || !units){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
     const newBloodRequest = new BloodRequest({
       patientId: _id,
-      bloodGroup,
-      units,
-      location
+      type: bloodGroup,
+      quantity: units,
+      completed: false
     });
 
     await newBloodRequest.save();

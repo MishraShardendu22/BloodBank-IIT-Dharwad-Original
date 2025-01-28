@@ -1,9 +1,10 @@
-import { BloodRequest, Donation, DonationLocation, Inventory, Organisation } from '../model/model';
+import { BloodRequest, Donation, DonationLocation, Donor, Inventory, Organisation } from '../model/model';
 import bcrypt from 'bcryptjs';
 import { IOrganisation } from '../model/schema/organisation.schema';
 import ResponseApi from '../util/ApiResponse.util';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
+import { IInventory } from '../model/schema/inventory.schema';
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -35,7 +36,13 @@ const register = async (req: Request, res: Response) => {
       phoneNo,
     });
 
-    await newOrganisation.save();
+    const organisation = await newOrganisation.save();
+    
+    const newInventory: IInventory = new Inventory({
+      OrganisationId: organisation._id
+    })
+
+    await newInventory.save();
     return ResponseApi(res, 201, 'Organisation registered successfully');
   } catch (error) {
     if (error instanceof Error) {
@@ -74,7 +81,7 @@ const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { _id: existingOrganisation._id, role: 'organisation' },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1d' }
+      { expiresIn: '30d' }
     );
 
     return ResponseApi(res, 200, 'Organisation logged in successfully ', token);
@@ -92,14 +99,14 @@ const login = async (req: Request, res: Response) => {
 
 const addDonationLocation = async (req: Request, res: Response) => {
   try{
-    const { _Id,name,contactDetails,location,timings } = req.body;
+    const { _id,name,contactDetails,location,timings } = req.body;
 
-    if(!name || !contactDetails || !location || !timings || !_Id){
+    if(!name || !contactDetails || !location || !timings || !_id){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
     const newLocation = {
-      organisationId: _Id,
+      organisationId: _id,
       contactDetails,
       location,
       timings,
@@ -119,13 +126,16 @@ const addDonationLocation = async (req: Request, res: Response) => {
 
 const deleteDonationLocation = async (req: Request, res: Response) => {
   try{
-    const { locationId } = req.body;
+    const { locationId, _id } = req.body;
 
-    if(!locationId){
+    if(!locationId || !_id){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
-    const location = await DonationLocation.findByIdAndDelete(locationId);
+    const location = await DonationLocation.findOneAndDelete({
+      _id: locationId,
+      organisationId: _id
+    });
 
     if(!location){
       return ResponseApi(res, 400, 'Location does not exist')
@@ -142,21 +152,27 @@ const deleteDonationLocation = async (req: Request, res: Response) => {
 
 const updateDonationLocation = async (req: Request, res: Response) => {
   try{
-    const { _Id,name,contactDetails,location,timings,locationId } = req.body;
+    const { _id,name,contactDetails,location,timings,locationId } = req.body;
 
-    if(!name || !contactDetails || !location || !timings || !_Id || !locationId){
+    if(!name || !contactDetails || !location || !timings || !_id || !locationId){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
     const newLocation = {
-      organisationId: _Id,
+      organisationId: _id,
       contactDetails,
       location,
       timings,
       name,
     };
 
-    await DonationLocation.findByIdAndUpdate(locationId, newLocation);
+    const update = await DonationLocation.findOneAndUpdate({
+      _id: locationId,
+      organisationId: _id
+    }, newLocation);
+    if(!update){
+      return ResponseApi(res, 400, 'Location could not be updated');
+    }
     return ResponseApi(res, 200, 'Location updated successfully');
   }catch(error){
     if(error instanceof Error){
@@ -166,29 +182,49 @@ const updateDonationLocation = async (req: Request, res: Response) => {
   }
 }
 
-const updateInventory = async (req: Request, res: Response) => {
+const getInventory= async (req: Request, res: Response) => {
   try {
-    const { _Id, bloodGroup, quantity } = req.body;
+    const { _id } = req.body;
 
-    if (!_Id || !bloodGroup || !quantity) {
+    if (!_id) {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
-    if (quantity < 0) {
+    const MyInventory = await Inventory.findOne({
+      OrganisationId: _id
+    })
+    
+    return ResponseApi(res, 200, 'Blood requests retrieved successfully', MyInventory);
+  } catch (error) {
+    return ResponseApi(res, 500, 'An unknown error occurred while getting the blood requests');
+  }
+}
+
+const updateInventory = async (req: Request, res: Response) => {
+  try {
+    const { _id, A_P, A_M, B_P, B_M, AB_P, AB_M, O_P, O_M } = req.body;
+
+    // if (!_id || !A_P || !A_M || !B_P || !B_M || !AB_P || !AB_M || !O_P || !O_M) {
+    //   return ResponseApi(res, 400, 'Please provide all required fields');
+    // }
+
+    if (A_P < 0 || A_M < 0 || B_P < 0 || B_M < 0 || AB_P < 0 || AB_M < 0 || O_P < 0 || O_M < 0) {
       return ResponseApi(res, 400, 'Quantity cannot be negative');
     }
 
-    const validBloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-    if (!validBloodGroups.includes(bloodGroup)) {
-      return ResponseApi(res, 400, 'Invalid blood group');
-    }
-
-    const updateField = { [`${bloodGroup.replace('+', '_P').replace('-', '_M')}`]: quantity };
-
     const inventory = await Inventory.findOneAndUpdate(
-      { OrganisationId: _Id },
-      { $set: updateField }, // fixed this
-      { new: true }
+      { OrganisationId: _id },
+      {
+        A_P,
+        A_M,
+        B_M,
+        B_P,
+        AB_M,
+        AB_P,
+        O_M,
+        O_P
+      },
+      {returnDocument: 'after'}
     );
 
     if (!inventory) {
@@ -236,13 +272,25 @@ const completeBloodRequest = async (req: Request, res: Response) => {
 
 const addBloodDonated = async (req: Request, res: Response) => {
   try{
-    const { donorId, quantity, _id } = req.body;
-    if(!donorId || !quantity || !_id){
+    const { donorEmail, quantity, _id } = req.body;
+    if(!donorEmail || !quantity || !_id){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
+    if(quantity < 0){
+      return ResponseApi(res, 400,  'quantity can\'t be negative');
+    }
+
+    const donor = await Donor.findOne({
+      email: donorEmail
+    });
+
+    if(!donor){
+      return ResponseApi(res, 400, 'Donor not found');
+    }
+
     const newRequest = {
-      donorId,
+      donorId: donor._id,
       organisationId: _id,
       quantity
     };
@@ -258,6 +306,7 @@ const addBloodDonated = async (req: Request, res: Response) => {
 export {
   login,
   register,
+  getInventory,
   addBloodDonated,
   updateInventory,
   getBloodRequests,
