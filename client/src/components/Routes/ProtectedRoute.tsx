@@ -4,13 +4,6 @@ import { Navigate } from 'react-router-dom';
 import axiosInstance from '@/util/axiosInstance';
 
 
-<<<<<<< HEAD
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  return <div>{children}</div>;
-};
-
-export default ProtectedRoute;
-=======
 const Protected = ({ children }: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
@@ -56,4 +49,3 @@ const Protected = ({ children }: any) => {
 };
 
 export default Protected;
->>>>>>> 7c0dfb70bc445b745494f7d0bed5e5559c7a9f5d

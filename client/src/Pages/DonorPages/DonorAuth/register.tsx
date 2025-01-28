@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-const register = () => {
-  return <div></div>;
-};
-
-export default register;
-=======
 "use client"
 
 import { useState } from "react"
@@ -275,4 +268,3 @@ const Register = () => {
 
 export default Register
 
->>>>>>> 7c0dfb70bc445b745494f7d0bed5e5559c7a9f5d

@@ -6,13 +6,6 @@ import axiosInstance from '@/util/axiosInstance';
 const UnProtected = ({ children }: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-<<<<<<< HEAD
-const UnProtectedRoute = ({ children }: UnProtectedRouteProps) => {
-  return <div>{children}</div>;
-};
-
-export default UnProtectedRoute;
-=======
   useEffect(() => {
     const checkAuthentication = async () => {
       const token = localStorage.getItem('token');
@@ -55,4 +48,3 @@ export default UnProtectedRoute;
 };
 
 export default UnProtected;
->>>>>>> 7c0dfb70bc445b745494f7d0bed5e5559c7a9f5d

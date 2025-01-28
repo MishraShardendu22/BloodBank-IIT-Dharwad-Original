@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type React from "react"
 import { useState } from "react"
 
@@ -713,7 +714,3 @@ const Landing = () => {
 
 export default Landing
 
-<<<<<<< HEAD
-export default Landing;
-=======
->>>>>>> 7c0dfb70bc445b745494f7d0bed5e5559c7a9f5d

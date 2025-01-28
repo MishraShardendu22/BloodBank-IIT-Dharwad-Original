@@ -1,10 +1,4 @@
-import {
-  BloodRequest,
-  Donation,
-  DonationLocation,
-  Inventory,
-  Organisation,
-} from '../model/model';
+import { BloodRequest, Donation, DonationLocation, Donor, Inventory, Organisation } from '../model/model';
 import bcrypt from 'bcryptjs';
 import { IOrganisation } from '../model/schema/organisation.schema';
 import ResponseApi from '../util/ApiResponse.util';
@@ -21,21 +15,15 @@ const register = async (req: Request, res: Response) => {
     }
 
     if (password.length < 6 || password.length > 20) {
-      return ResponseApi(
-        res,
-        400,
-        'Password must be at least 6 and at most 20 characters'
-      );
+      return ResponseApi(res, 400, 'Password must be at least 6 and at most 20 characters');
     }
 
     if (phoneNo.length !== 10) {
       return ResponseApi(res, 400, 'Phone number must be 10 characters');
     }
 
-    const existingOrganisation = (await Organisation.findOne({
-      email: email.toLowerCase(),
-    })) as IOrganisation | null;
-    if (existingOrganisation) {
+    const existingOrganisation = await Organisation.findOne({ email: email.toLowerCase() }) as IOrganisation | null;  
+    if(existingOrganisation){
       return ResponseApi(res, 400, 'Organisation already exists');
     }
     const genSalt = await bcrypt.genSalt(10);
@@ -76,17 +64,12 @@ const login = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
-    const existingOrganisation = (await Organisation.findOne({
-      email: email.toLowerCase(),
-    })) as IOrganisation | null;
+    const existingOrganisation = await Organisation.findOne({ email: email.toLowerCase() }) as IOrganisation | null;
     if (!existingOrganisation) {
       return ResponseApi(res, 400, 'Organisation does not exist');
     }
 
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      existingOrganisation.password
-    );
+    const isPasswordValid = await bcrypt.compare(password, existingOrganisation.password);
     if (!isPasswordValid) {
       return ResponseApi(res, 400, 'Invalid password');
     }
@@ -115,10 +98,10 @@ const login = async (req: Request, res: Response) => {
 };
 
 const addDonationLocation = async (req: Request, res: Response) => {
-  try {
-    const { _Id, name, contactDetails, location, timings } = req.body;
+  try{
+    const { _id,name,contactDetails,location,timings } = req.body;
 
-    if (!name || !contactDetails || !location || !timings || !_Id) {
+    if(!name || !contactDetails || !location || !timings || !_id){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
@@ -130,25 +113,22 @@ const addDonationLocation = async (req: Request, res: Response) => {
       name,
     };
 
+
     await DonationLocation.create(newLocation);
     return ResponseApi(res, 201, 'Location added successfully');
-  } catch (error) {
-    if (error instanceof Error) {
+  }catch(error){
+    if(error instanceof Error){
       return ResponseApi(res, 500, error.message);
     }
-    return ResponseApi(
-      res,
-      500,
-      'An unknown error occurred while adding location'
-    );
+    return ResponseApi(res, 500, 'An unknown error occurred while adding location');
   }
-};
+}
 
 const deleteDonationLocation = async (req: Request, res: Response) => {
-  try {
-    const { locationId } = req.body;
+  try{
+    const { locationId, _id } = req.body;
 
-    if (!locationId) {
+    if(!locationId || !_id){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
@@ -157,36 +137,24 @@ const deleteDonationLocation = async (req: Request, res: Response) => {
       organisationId: _id
     });
 
-    if (!location) {
-      return ResponseApi(res, 400, 'Location does not exist');
+    if(!location){
+      return ResponseApi(res, 400, 'Location does not exist')
     }
 
     return ResponseApi(res, 200, 'Location deleted successfully');
-  } catch (error) {
-    if (error instanceof Error) {
+  }catch(error){
+    if(error instanceof Error){
       return ResponseApi(res, 500, error.message);
     }
-    return ResponseApi(
-      res,
-      500,
-      'An unknown error occurred while deleting location'
-    );
+    return ResponseApi(res, 500, 'An unknown error occurred while deleting location');
   }
-};
+}
 
 const updateDonationLocation = async (req: Request, res: Response) => {
-  try {
-    const { _Id, name, contactDetails, location, timings, locationId } =
-      req.body;
+  try{
+    const { _id,name,contactDetails,location,timings,locationId } = req.body;
 
-    if (
-      !name ||
-      !contactDetails ||
-      !location ||
-      !timings ||
-      !_Id ||
-      !locationId
-    ) {
+    if(!name || !contactDetails || !location || !timings || !_id || !locationId){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
@@ -206,38 +174,44 @@ const updateDonationLocation = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Location could not be updated');
     }
     return ResponseApi(res, 200, 'Location updated successfully');
-  } catch (error) {
-    if (error instanceof Error) {
+  }catch(error){
+    if(error instanceof Error){
       return ResponseApi(res, 500, error.message);
     }
-    return ResponseApi(
-      res,
-      500,
-      'An unknown error occurred while updating location'
-    );
+    return ResponseApi(res, 500, 'An unknown error occurred while updating location');
   }
-};
+}
 
-const updateInventory = async (req: Request, res: Response) => {
+const getInventory= async (req: Request, res: Response) => {
   try {
-    const { _Id, bloodGroup, quantity } = req.body;
+    const { _id } = req.body;
 
-    if (!_Id || !bloodGroup || !quantity) {
+    if (!_id) {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
-    if (quantity < 0) {
+    const MyInventory = await Inventory.findOne({
+      OrganisationId: _id
+    })
+    
+    return ResponseApi(res, 200, 'Blood requests retrieved successfully', MyInventory);
+  } catch (error) {
+    return ResponseApi(res, 500, 'An unknown error occurred while getting the blood requests');
+  }
+}
+
+const updateInventory = async (req: Request, res: Response) => {
+  try {
+    const { _id, A_P, A_M, B_P, B_M, AB_P, AB_M, O_P, O_M } = req.body;
+
+    //Should allow for values to be zero
+    // if (!_id || !A_P || !A_M || !B_P || !B_M || !AB_P || !AB_M || !O_P || !O_M) {
+    //   return ResponseApi(res, 400, 'Please provide all required fields');
+    // }
+
+    if (A_P < 0 || A_M < 0 || B_P < 0 || B_M < 0 || AB_P < 0 || AB_M < 0 || O_P < 0 || O_M < 0 || _id) {
       return ResponseApi(res, 400, 'Quantity cannot be negative');
     }
-
-    const validBloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-    if (!validBloodGroups.includes(bloodGroup)) {
-      return ResponseApi(res, 400, 'Invalid blood group');
-    }
-
-    const updateField = {
-      [`${bloodGroup.replace('+', '_P').replace('-', '_M')}`]: quantity,
-    };
 
     const inventory = await Inventory.findOneAndUpdate(
       { OrganisationId: _id },
@@ -260,13 +234,7 @@ const updateInventory = async (req: Request, res: Response) => {
 
     return ResponseApi(res, 200, 'Inventory updated successfully', inventory);
   } catch (error) {
-    return ResponseApi(
-      res,
-      500,
-      error instanceof Error
-        ? error.message
-        : 'An unknown error occurred while updating inventory'
-    );
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while updating inventory');
   }
 };
 
@@ -274,52 +242,39 @@ const getBloodRequests = async (req: Request, res: Response) => {
   try {
     const bloodRequests = await BloodRequest.find().populate({
       path: 'patientId',
-      select: 'name email phoneNo',
+      select: 'name email phoneNo'
     });
-    return ResponseApi(
-      res,
-      200,
-      'Blood requests retrieved successfully',
-      bloodRequests
-    );
+    return ResponseApi(res, 200, 'Blood requests retrieved successfully', bloodRequests);
   } catch (error) {
-    return ResponseApi(
-      res,
-      500,
-      'An unknown error occurred while getting the blood requests'
-    );
+    return ResponseApi(res, 500, 'An unknown error occurred while getting the blood requests');
   }
-};
+}
 
 const completeBloodRequest = async (req: Request, res: Response) => {
-  try {
+  try{
     const { requestId } = req.body;
 
-    if (!requestId) {
+    if(!requestId){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
     const bloodRequest = await BloodRequest.findById(requestId);
 
-    if (!bloodRequest) {
+    if(!bloodRequest){
       return ResponseApi(res, 404, 'Blood request not found');
     }
 
     await BloodRequest.findByIdAndUpdate(requestId, { completed: true });
     return ResponseApi(res, 200, 'Blood request completed successfully');
-  } catch (error) {
-    return ResponseApi(
-      res,
-      500,
-      'An unknown error occurred while completing the blood request'
-    );
+  }catch(error){
+    return ResponseApi(res, 500, 'An unknown error occurred while completing the blood request');
   }
-};
+}
 
 const addBloodDonated = async (req: Request, res: Response) => {
-  try {
-    const { donorId, quantity, _id } = req.body;
-    if (!donorId || !quantity || !_id) {
+  try{
+    const { donorEmail, quantity, _id } = req.body;
+    if(!donorEmail || !quantity || !_id){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
@@ -338,20 +293,16 @@ const addBloodDonated = async (req: Request, res: Response) => {
     const newRequest = {
       donorId: donor._id,
       organisationId: _id,
-      quantity,
+      quantity
     };
 
     await Donation.create(newRequest);
 
     return ResponseApi(res, 201, 'Blood donation added successfully');
-  } catch (error) {
-    return ResponseApi(
-      res,
-      500,
-      'An unknown error occurred while adding blood donation'
-    );
+    }catch(error){
+    return ResponseApi(res, 500, 'An unknown error occurred while adding blood donation');
   }
-};
+}
 
 const verifyOrganisation = async (req: Request,res: Response) => {
   try{
@@ -369,10 +320,10 @@ const verifyOrganisation = async (req: Request,res: Response) => {
       500,
       error instanceof Error
         ? error.message
-        : 'An unknown error occurred while verifying the organisation'
+        : 'An unknown error occurred while verifying the org'
     )
   }
-} 
+}
 
 export {
   login,

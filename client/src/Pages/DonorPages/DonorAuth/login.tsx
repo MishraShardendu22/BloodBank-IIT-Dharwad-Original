@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-const login = () => {
-  return <div></div>;
-};
-
-export default login;
-=======
 "use client"
 
 import { useState } from "react"
@@ -186,4 +179,3 @@ const Login = () => {
 
 export default Login
 
->>>>>>> 7c0dfb70bc445b745494f7d0bed5e5559c7a9f5d
