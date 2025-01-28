@@ -1,29 +1,18 @@
 import { Route, Routes } from "react-router-dom";
-import NotFound from "./Pages/NotFound";
-import UnProtected from "./components/Routes/UnProtectedRoute.tsx";
-import DonorRegister from "./Pages/DonorPages/DonorAuth/register.tsx";
-import DonorLogin from "./Pages/DonorPages/DonorAuth/login.tsx";
-import Landing from "./Pages/Landing";
 import "./index.css"
-
+import {NotFound, DonorRegister, DonorLogin, Landing, Donor, Organisation, Patient} from "./Pages/page"
+import Protected from "./components/Routes/ProtectedRoute";
+import UnProtected from "./components/Routes/UnProtectedRoute";
 
 const App = () => {
   return (
     <Routes>
-      {/* <Route
-        path="/donor"
-        element={
-          <Protected>
-            <Donor />
-          </Protected>
-        }
-      />
-      <Route path="/organisation" element={
+      {/* <Route path="/organisation" element={
         <Protected>
           <Inventory />
         </Protected>
       
-      }/> */}
+      }/>  */}
       {/* <Route path="/hospital" element={
         <Protected>
           <Hospital />
@@ -44,6 +33,30 @@ const App = () => {
             <Landing />
           </UnProtected>
         }
+      />
+      <Route 
+      path="/donor"
+      element={
+        <Protected>
+          <Donor />
+        </Protected>
+      }
+      />
+      <Route 
+      path="/organisation"
+      element={
+        <Protected>
+          <Organisation />
+        </Protected>
+      }
+      />
+      <Route 
+      path="/patient"
+      element={
+        <Protected>
+          <Patient />
+        </Protected>
+      }
       />
       <Route
         path="/login"

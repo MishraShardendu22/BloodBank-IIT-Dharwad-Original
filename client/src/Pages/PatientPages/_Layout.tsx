@@ -5,7 +5,11 @@ interface LayoutProps {
 }
 
 const _Layout = ({ children }: LayoutProps) => {
-  return <div>{children}</div>;
-};
+  return (
+    <div>
+      {children}
+    </div>
+  )
+}
 
-export default _Layout;
+export default _Layout

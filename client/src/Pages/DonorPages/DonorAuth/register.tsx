@@ -1,12 +1,16 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
+import { Droplets, ArrowRight, User, Mail, Phone, LockKeyhole, Check, Heart } from "lucide-react"
+import { motion } from "framer-motion"
 import Layout from "../_Layout"
 import axiosInstance from "../../../util/axiosInstance"
 import axios from "axios"
-import { motion } from "framer-motion"
-import { Droplets, ArrowRight } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
 
 const Register = () => {
   const navigate = useNavigate()
@@ -60,205 +64,227 @@ const Register = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-b from-base-100 to-primary/20" data-theme="bloodsphere">
-        <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-          <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
-            <img
-              alt="Pattern"
-              src="/blood-donor-register.jpg"
-              className="absolute inset-0 object-cover w-full h-full"
-            />
-          </aside>
+    <div className="min-h-screen bg-gradient-to-b from-base-100 to-primary/20" data-theme="bloodsphere">
+      <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
+        <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
+          <img
+            alt="Blood Donation"
+            src="/blood-donor-register.jpg"
+            className="absolute inset-0 object-cover w-full h-full opacity-90"
+          />
+          
+          <div className="relative hidden h-full lg:block lg:p-12">
+            <motion.div
+              className="flex items-center gap-2"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Droplets className="h-8 text-white sm:h-10" />
+              <Badge variant="secondary" className="text-sm">
+                Blood Donor Registration
+              </Badge>
+            </motion.div>
 
-          <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
-            <div className="max-w-xl lg:max-w-3xl">
-              <div className="relative">
-                <motion.a
-                  className="block text-blue-600"
-                  href="/"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <span className="sr-only">Home</span>
-                  <Droplets className="h-8 sm:h-10" />
-                </motion.a>
+            <motion.h2
+              className="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              Become a Hero Today! 🩸
+            </motion.h2>
 
-                <motion.h1
-                  className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  Welcome to BloodSphere 🩸
-                </motion.h1>
+            <motion.p
+              className="mt-4 leading-relaxed text-white/90"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              Join our community of life-savers. By registering as a blood donor, 
+              you're taking the first step towards making a real difference in someone's life.
+            </motion.p>
+          </div>
+        </aside>
 
-                <motion.p
-                  className="mt-4 leading-relaxed text-gray-500"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  Join our community of life-savers. Your registration brings hope to those in need.
-                </motion.p>
+        <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+          <Card className="w-full max-w-2xl">
+            <CardHeader className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Droplets className="w-6 h-6 text-primary" />
+                  <Heart className="w-5 h-5 text-red-500" />
+                </div>
+                <div className="space-y-1">
+                  <Badge variant="outline" className="mb-2">
+                    Donor Registration
+                  </Badge>
+                  <CardTitle className="text-2xl">Register as Blood Donor</CardTitle>
+                </div>
               </div>
+              <CardDescription>
+                Create your donor account to start your journey of saving lives through blood donation
+              </CardDescription>
+            </CardHeader>
+              <CardContent>
+                <motion.form
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="FirstName">First Name</Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          id="FirstName"
+                          name="firstName"
+                          placeholder="John"
+                          value={formData.firstName}
+                          onChange={handleChange}
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                    </div>
 
-              <motion.form
-                onSubmit={handleSubmit}
-                className="grid grid-cols-6 gap-6 mt-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">
-                    First Name
-                  </label>
+                    <div className="space-y-2">
+                      <Label htmlFor="LastName">Last Name</Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          id="LastName"
+                          name="lastName"
+                          placeholder="Doe"
+                          value={formData.lastName}
+                          onChange={handleChange}
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-                  <input
-                    type="text"
-                    id="FirstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="w-full mt-1 text-sm text-gray-700 bg-white border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="Email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        id="Email"
+                        name="email"
+                        type="email"
+                        placeholder="john.doe@example.com"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
 
-                <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="LastName" className="block text-sm font-medium text-gray-700">
-                    Last Name
-                  </label>
+                  <div className="space-y-2">
+                    <Label htmlFor="PhoneNo">Phone Number</Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        id="PhoneNo"
+                        name="phoneNo"
+                        type="tel"
+                        placeholder="+91 000-0000-000"
+                        value={formData.phoneNo}
+                        onChange={handleChange}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
 
-                  <input
-                    type="text"
-                    id="LastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="w-full mt-1 text-sm text-gray-700 bg-white border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="Password">Password</Label>
+                      <div className="relative">
+                        <LockKeyhole className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          id="Password"
+                          name="password"
+                          type="password"
+                          placeholder="••••••••"
+                          value={formData.password}
+                          onChange={handleChange}
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                    </div>
 
-                <div className="col-span-6">
-                  <label htmlFor="Email" className="block text-sm font-medium text-gray-700">
-                    Email
-                  </label>
+                    <div className="space-y-2">
+                      <Label htmlFor="PasswordConfirmation">Confirm Password</Label>
+                      <div className="relative">
+                        <Check className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          id="PasswordConfirmation"
+                          name="passwordConfirmation"
+                          type="password"
+                          placeholder="••••••••"
+                          value={formData.passwordConfirmation}
+                          onChange={handleChange}
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-                  <input
-                    type="email"
-                    id="Email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full mt-1 text-sm text-gray-700 bg-white border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-6">
-                  <label htmlFor="PhoneNo" className="block text-sm font-medium text-gray-700">
-                    Phone Number
-                  </label>
-
-                  <input
-                    type="tel"
-                    id="PhoneNo"
-                    name="phoneNo"
-                    value={formData.phoneNo}
-                    onChange={handleChange}
-                    className="w-full mt-1 text-sm text-gray-700 bg-white border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="Password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-
-                  <input
-                    type="password"
-                    id="Password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full mt-1 text-sm text-gray-700 bg-white border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="PasswordConfirmation" className="block text-sm font-medium text-gray-700">
-                    Password Confirmation
-                  </label>
-
-                  <input
-                    type="password"
-                    id="PasswordConfirmation"
-                    name="passwordConfirmation"
-                    value={formData.passwordConfirmation}
-                    onChange={handleChange}
-                    className="w-full mt-1 text-sm text-gray-700 bg-white border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-6">
-                  <label htmlFor="MarketingAccept" className="flex gap-4">
-                    <input
-                      type="checkbox"
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
                       id="MarketingAccept"
                       name="marketingAccept"
                       checked={formData.marketingAccept}
-                      onChange={handleChange}
-                      className="w-5 h-5 bg-white border-gray-200 rounded-md shadow-sm"
+                      onCheckedChange={(checked) => 
+                        setFormData(prev => ({ ...prev, marketingAccept: checked as boolean }))
+                      }
                     />
+                    <Label htmlFor="MarketingAccept" className="text-sm text-gray-600">
+                      I want to receive emails about blood donation announcements
+                    </Label>
+                  </div>
 
-                    <span className="text-sm text-gray-700">
-                      I want to receive emails about blood donation announcements.
-                    </span>
-                  </label>
-                </div>
-
-                <div className="col-span-6">
-                  <p className="text-sm text-gray-500">
-                    By creating an account, you agree to our
-                    <a href="#" className="text-blue-700 underline">
-                      {" "}
-                      terms and conditions{" "}
-                    </a>
-                    and
-                    <a href="#" className="text-blue-700 underline">
-                      {" "}
+                  <div className="text-sm text-gray-600">
+                    By creating an account, you agree to our{" "}
+                    <a href="#" className="text-primary hover:underline">
+                      terms and conditions
+                    </a>{" "}
+                    and{" "}
+                    <a href="#" className="text-primary hover:underline">
                       privacy policy
                     </a>
                     .
-                  </p>
-                </div>
-
-                {error && (
-                  <div className="col-span-6">
-                    <p className="text-sm text-red-500">{error}</p>
                   </div>
-                )}
 
-                <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                  <motion.button
-                    type="submit"
-                    className="inline-flex items-center justify-center w-full px-12 py-3 text-sm font-medium text-white transition bg-blue-600 border border-blue-600 rounded-md shrink-0 hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 sm:w-auto"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Create an account
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </motion.button>
+                  {error && (
+                    <div className="p-3 text-sm text-red-500 rounded-md bg-red-50">
+                      {error}
+                    </div>
+                  )}
 
-                  <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                    Already have an account?
-                    <Link to="/login" className="text-blue-700 underline">
-                      Log in
-                    </Link>
-                    .
-                  </p>
-                </div>
-              </motion.form>
-            </div>
+                  <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+                    <Button type="submit" size="lg" className="w-full sm:w-auto">
+                      Create account
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+
+                    <p className="text-sm text-gray-600">
+                      Already have an account?{" "}
+                      <Link to="/login" className="text-primary hover:underline">
+                        Sign in
+                      </Link>
+                    </p>
+                  </div>
+                </motion.form>
+              </CardContent>
+            </Card>
           </main>
         </div>
       </div>
@@ -267,4 +293,3 @@ const Register = () => {
 }
 
 export default Register
-

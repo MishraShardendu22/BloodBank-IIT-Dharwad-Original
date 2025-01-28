@@ -1,12 +1,15 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
+import { Droplets, ArrowRight, LockKeyhole, Mail, Heart } from "lucide-react"
+import { motion } from "framer-motion"
 import Layout from "../_Layout"
 import axiosInstance from "../../../util/axiosInstance"
 import axios from "axios"
-import { motion } from "framer-motion"
-import { Droplets, ArrowRight } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
 const Login = () => {
   const navigate = useNavigate()
@@ -30,10 +33,9 @@ const Login = () => {
 
     try {
       const response = await axiosInstance.post("/donor/login", formData)
-
       if (response.status === 200) {
         localStorage.setItem("token", response.data.data)
-        navigate("/dashboard")
+        navigate("/donor")
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -50,21 +52,22 @@ const Login = () => {
         <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
           <section className="relative flex items-end h-32 bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
             <img
-              alt="Night"
+              alt="Blood Donation"
               src="/blood-donor-login.jpg"
               className="absolute inset-0 object-cover w-full h-full opacity-80"
             />
 
             <div className="hidden lg:relative lg:block lg:p-12">
-              <motion.a
-                className="block text-white"
-                href="/"
+              <motion.div
+                className="flex items-center gap-2"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <span className="sr-only">Home</span>
-                <Droplets className="h-8 sm:h-10" />
-              </motion.a>
+                <Droplets className="h-8 text-white sm:h-10" />
+                <Badge variant="secondary" className="text-sm">
+                  Blood Donor Portal
+                </Badge>
+              </motion.div>
 
               <motion.h2
                 className="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl"
@@ -72,7 +75,7 @@ const Login = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                Welcome Back to BloodSphere 🩸
+                Welcome Back, Life Saver! 🩸
               </motion.h2>
 
               <motion.p
@@ -81,95 +84,99 @@ const Login = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                Your contribution matters. Log in to continue your journey of saving lives through blood donation.
+                Thank you for being a blood donor. Your contributions help save countless lives.
+                Sign in to manage your donations and schedule your next life-saving appointment.
               </motion.p>
             </div>
           </section>
 
           <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
-            <div className="max-w-xl lg:max-w-3xl">
-              <div className="relative block -mt-16 lg:hidden">
-                <a
-                  className="inline-flex items-center justify-center w-16 h-16 text-blue-600 bg-white rounded-full sm:h-20 sm:w-20"
-                  href="/"
-                >
-                  <span className="sr-only">Home</span>
-                  <Droplets className="w-8 h-8 sm:h-10 sm:w-10" />
-                </a>
-
-                <h1 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
-                  Welcome Back to BloodSphere 🩸
-                </h1>
-
-                <p className="mt-4 leading-relaxed text-gray-500">
-                  Your contribution matters. Log in to continue your journey of saving lives through blood donation.
-                </p>
-              </div>
-
-              <motion.form
-                onSubmit={handleSubmit}
-                className="grid grid-cols-6 gap-6 mt-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className="col-span-6">
-                  <label htmlFor="Email" className="block text-sm font-medium text-gray-700">
-                    Email
-                  </label>
-
-                  <input
-                    type="email"
-                    id="Email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full mt-1 text-sm text-gray-700 bg-white border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-6">
-                  <label htmlFor="Password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-
-                  <input
-                    type="password"
-                    id="Password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full mt-1 text-sm text-gray-700 bg-white border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                {error && (
-                  <div className="col-span-6">
-                    <p className="text-sm text-red-500">{error}</p>
+            <Card className="w-full max-w-xl">
+              <CardHeader className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <Droplets className="w-6 h-6 text-primary" />
+                    <Heart className="w-5 h-5 text-red-500" />
                   </div>
-                )}
-
-                <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                  <motion.button
-                    type="submit"
-                    className="inline-flex items-center justify-center w-full px-12 py-3 text-sm font-medium text-white transition bg-blue-600 border border-blue-600 rounded-md shrink-0 hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 sm:w-auto"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Log in
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </motion.button>
-
-                  <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                    Don't have an account?
-                    <Link to="/register" className="text-gray-700 underline">
-                      Sign up
-                    </Link>
-                    .
-                  </p>
+                  <div className="space-y-1">
+                    <Badge variant="outline" className="mb-2">
+                      Donor Access
+                    </Badge>
+                    <CardTitle className="text-2xl">Sign in to Donor Portal</CardTitle>
+                  </div>
                 </div>
-              </motion.form>
-            </div>
+                <CardDescription>
+                  Access your donor dashboard to manage appointments and track donations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <motion.form
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative">
+                      <LockKeyhole className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="p-3 text-sm text-red-500 rounded-md bg-red-50">
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      size="lg"
+                    >
+                      Sign in as Donor
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+
+                    <p className="text-sm text-center text-gray-600">
+                      Not registered as a donor?{" "}
+                      <Link to="/register" className="font-medium text-primary hover:underline">
+                        Register here
+                      </Link>
+                    </p>
+                  </div>
+                </motion.form>
+              </CardContent>
+            </Card>
           </main>
         </div>
       </div>
@@ -178,4 +185,3 @@ const Login = () => {
 }
 
 export default Login
-

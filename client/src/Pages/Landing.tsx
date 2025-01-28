@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type React from "react"
 import { useState } from "react"
 
@@ -22,6 +21,37 @@ import {
   Mail,
 } from "lucide-react"
 import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useNavigate } from "react-router-dom"
+
+
+
+
 
 const teamMembers = [
   {
@@ -131,6 +161,12 @@ const AchievementBadge: React.FC<AchievementBadgeProps> = ({ count, milestone })
 
 const Landing = () => {
   const [showEmergencyAlert, setShowEmergencyAlert] = useState(true)
+  const navigate = useNavigate()
+
+
+  const handleNavigation = (path: string) => {
+    navigate(path)
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -278,24 +314,99 @@ const Landing = () => {
               families in need.
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="gap-2 btn btn-primary btn-lg"
+            
+      <div className="flex flex-wrap gap-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="relative gap-2 px-6 py-3 overflow-hidden text-lg font-semibold text-white transition-all duration-300 ease-out rounded-lg btn-lg group bg-primary hover:bg-primary/90 hover:scale-105">
+              <span className="relative z-10 flex items-center gap-2">
+                Get Started
+                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </span>
+              <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-r from-primary to-primary/80 group-hover:opacity-100" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md mx-auto border shadow-xl bg-slate-900 border-slate-800 rounded-xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-white">
+                <Heart className="w-6 h-6 text-primary" />
+                Choose Your Role
+              </DialogTitle>
+              <DialogDescription className="mt-2 text-slate-400">
+                Select how you would like to contribute to saving lives
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-6">
+              <button
+                onClick={() => handleNavigation('/donor')}
+                className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
               >
-                Get Started 
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="gap-2 btn btn-outline btn-lg"
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-primary/10 text-primary">
+                    <Heart className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-white group-hover:text-primary">Donor</div>
+                    <div className="text-sm text-slate-400">Donate blood and save lives</div>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
+              </button>
+
+              <button
+                onClick={() => handleNavigation('/patient')}
+                className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
               >
-                Learn More
-                <ChevronDown className="w-5 h-5" />
-              </motion.button>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-primary/10 text-primary">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-white group-hover:text-primary">Patient</div>
+                    <div className="text-sm text-slate-400">Find blood donors near you</div>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
+              </button>
+
+              <button
+                onClick={() => handleNavigation('/organisation')}
+                className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-primary/10 text-primary">
+                    <Globe className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-white group-hover:text-primary">Organisation</div>
+                    <div className="text-sm text-slate-400">Manage blood bank inventory</div>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
+              </button>
             </div>
+                    <DialogFooter className="pt-4 border-t border-slate-800">
+          <DialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="text-slate-400 hover:text-white hover:bg-slate-800"
+            >
+              Close
+            </Button>
+          </DialogTrigger>
+        </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="gap-2 text-white btn btn-outline btn-lg border-white/20 hover:bg-white/10"
+        >
+          Learn More  
+          <ChevronDown className="w-5 h-5" />
+        </motion.button>
+      </div>
           </motion.div>
         </div>
 
