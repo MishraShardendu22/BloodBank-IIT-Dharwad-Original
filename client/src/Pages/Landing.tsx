@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type React from "react"
 import { useState } from "react"
 
@@ -67,12 +68,12 @@ const teamMembers = [
   {
     name: "Sourav",
     role: "AI/ML Developer",
-    github: "https://github.com/sourav",
+    github: "https://github.com/karkisav",
   },
   {
     name: "Mayank",
     role: "Backend Developer",
-    github: "https://github.com/mayank",
+    github: "https://github.com/Mayank-8127",
   },
 ]
 
