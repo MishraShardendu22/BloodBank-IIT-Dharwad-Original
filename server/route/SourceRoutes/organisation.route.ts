@@ -1,13 +1,14 @@
-import { 
-    login,
-    register,
-    addBloodDonated,
-    updateInventory,
-    getBloodRequests,
-    addDonationLocation,
-    completeBloodRequest,
-    updateDonationLocation,
-    deleteDonationLocation,
+import {
+  login,
+  register,
+  addBloodDonated,
+  updateInventory,
+  getBloodRequests,
+  addDonationLocation,
+  completeBloodRequest,
+  updateDonationLocation,
+  deleteDonationLocation,
+  verifyOrganisation,
 } from '../../controller/organisation.controller';
 import { Router } from 'express';
 import { organisationMiddleware } from '../../middleware/organisation.middleware';
@@ -20,10 +21,27 @@ router.post('/register', register);
 router.patch('/updateInventory', organisationMiddleware, updateInventory);
 router.patch('/addBloodDonated', organisationMiddleware, addBloodDonated);
 router.get('/getBloodRequests', organisationMiddleware, getBloodRequests);
-router.post('/addDonationLocation', organisationMiddleware, addDonationLocation);
-router.patch('/completeBloodRequest', organisationMiddleware, completeBloodRequest);
-router.patch('/updateDonationLocation', organisationMiddleware, updateDonationLocation);
-router.delete('/deleteDonationLocation', organisationMiddleware, deleteDonationLocation);
+router.get('/verifyOrganisation', organisationMiddleware, verifyOrganisation);
+router.post(
+  '/addDonationLocation',
+  organisationMiddleware,
+  addDonationLocation
+);
+router.patch(
+  '/completeBloodRequest',
+  organisationMiddleware,
+  completeBloodRequest
+);
+router.patch(
+  '/updateDonationLocation',
+  organisationMiddleware,
+  updateDonationLocation
+);
+router.delete(
+  '/deleteDonationLocation',
+  organisationMiddleware,
+  deleteDonationLocation
+);
 
 // Routes Go Here
 

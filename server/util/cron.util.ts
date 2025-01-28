@@ -2,12 +2,12 @@ import cron from 'node-cron';
 import nodemailer from 'nodemailer';
 import { Donor } from '../model/model';
 
-cron.schedule("0 11 1 * *", async () => {
+cron.schedule('0 11 1 * *', async () => {
   try {
-    const donors = await Donor.find({}, "email name");
+    const donors = await Donor.find({}, 'email name');
 
     if (donors.length === 0) {
-      console.log("No donors found.");
+      console.log('No donors found.');
       return;
     }
 
@@ -15,8 +15,8 @@ cron.schedule("0 11 1 * *", async () => {
       service: 'gmail',
       auth: {
         user: process.env.MAIL_ID,
-        pass: process.env.MAIL_PASS
-      }
+        pass: process.env.MAIL_PASS,
+      },
     });
 
     for (const donor of donors) {
@@ -144,13 +144,13 @@ cron.schedule("0 11 1 * *", async () => {
             </div>
           </body>
           </html>
-        `
+        `,
       };
 
       await transporter.sendMail(mailOptions);
       console.log(`Email sent to: ${donor.email}`);
     }
   } catch (error) {
-    console.error("Error sending emails:", error);
+    console.error('Error sending emails:', error);
   }
 });

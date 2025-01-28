@@ -5,11 +5,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  return (
-    <div>
-      {children}
-    </div>
-  )
-}
+  return <div>{children}</div>;
+};
 
-export default ProtectedRoute
+export default ProtectedRoute;

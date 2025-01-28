@@ -1,7 +1,7 @@
-import { Route, Routes } from "react-router-dom";
-import NotFound from "./Pages/NotFound";
-import Landing from "./Pages/Landing";
-import "./index.css"
+import { Route, Routes } from 'react-router-dom';
+import NotFound from './Pages/NotFound';
+import Landing from './Pages/Landing';
+import './index.css';
 
 const App = () => {
   return (

@@ -14,14 +14,20 @@ const register = async (req: Request, res: Response) => {
     }
 
     if (password.length < 6 || password.length > 20) {
-      return ResponseApi(res, 400, 'Password must be at least 6 and at most 20 characters');
+      return ResponseApi(
+        res,
+        400,
+        'Password must be at least 6 and at most 20 characters'
+      );
     }
 
     if (phoneNo.length !== 10) {
       return ResponseApi(res, 400, 'Phone number must be 10 characters');
     }
 
-    const existingDonor = (await Donor.findOne({ email: email.toLowerCase() })) as IDonor | null;
+    const existingDonor = (await Donor.findOne({
+      email: email.toLowerCase(),
+    })) as IDonor | null;
     if (existingDonor) {
       return ResponseApi(res, 400, 'Donor already exists');
     }
@@ -51,12 +57,17 @@ const login = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
-    const existingDonor = (await Donor.findOne({ email: email.toLowerCase() })) as IDonor | null;
+    const existingDonor = (await Donor.findOne({
+      email: email.toLowerCase(),
+    })) as IDonor | null;
     if (!existingDonor) {
       return ResponseApi(res, 400, 'Donor does not exist');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, existingDonor.password);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingDonor.password
+    );
     if (!isPasswordValid) {
       return ResponseApi(res, 400, 'Invalid password');
     }
@@ -83,10 +94,15 @@ const getDonationHistory = async (req: Request, res: Response) => {
 
     const donationHistory = await Donation.find({ donorId: _id }).populate({
       path: 'organisationId',
-      select: 'name'
+      select: 'name',
     });
 
-    return ResponseApi(res, 200, 'Donation history fetched successfully', donationHistory);
+    return ResponseApi(
+      res,
+      200,
+      'Donation history fetched successfully',
+      donationHistory
+    );
   } catch (error) {
     return ResponseApi(res, 500, handleError(error));
   }
@@ -95,15 +111,42 @@ const getDonationHistory = async (req: Request, res: Response) => {
 const getDonationLocation = async (req: Request, res: Response) => {
   try {
     const donationLocation = await DonationLocation.find();
-    return ResponseApi(res, 200, 'Donation location fetched successfully', donationLocation);
+    return ResponseApi(
+      res,
+      200,
+      'Donation location fetched successfully',
+      donationLocation
+    );
   } catch (error) {
     return ResponseApi(res, 500, handleError(error));
   }
 };
 
-// Utility function to handle errors
+const verifyDonor = async (req: Request,res: Response) => {
+  try{
+    const { _id,role } = req.body;
+
+    if(_id === undefined || role === undefined){
+      return ResponseApi(res,403,'Forbidden');
+    }
+
+    const donor = await Donor.findById(_id);
+    return ResponseApi(res,200,'Admin verified successfully',donor);
+  }catch(error){
+    return ResponseApi(
+      res,
+      500,
+      error instanceof Error
+        ? error.message
+        : 'An unknown error occurred while verifying the donor'
+    )
+  }
+} 
+
 const handleError = (error: unknown) => {
   return error instanceof Error ? error.message : 'An unknown error occurred';
 };
 
-export { login, register, getDonationHistory, getDonationLocation };
+
+
+export { login, register, getDonationHistory, getDonationLocation, verifyDonor };

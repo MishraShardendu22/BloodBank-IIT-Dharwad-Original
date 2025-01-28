@@ -1,4 +1,4 @@
-import { 
+import {
   deleteDonationLocation,
   getDonationLocations,
   deleteOrganisation,
@@ -10,8 +10,9 @@ import {
   deleteDonor,
   getPatients,
   getDonors,
-  register, 
+  register,
   login,
+  verifyAdmin,
 } from '../../controller/admin.controller';
 
 import { Router } from 'express';
@@ -22,17 +23,24 @@ const router = Router();
 
 router.post('/login', login);
 router.post('/register', register);
-router.get('/getDonors',adminMiddleware ,getDonors);
-router.get('/getPatients',adminMiddleware ,getPatients);
-router.get('/getAnalytics',adminMiddleware ,getAnalytics);
-router.delete('/deleteDonor',adminMiddleware ,deleteDonor);
-router.get('/getOrganistion',adminMiddleware ,getOrganistion);
-router.delete('/deletePatient',adminMiddleware ,deletePatient);
-router.get('/getBloodRequests',adminMiddleware ,getBloodRequests);
-router.delete('/deleteOrganisation',adminMiddleware ,deleteOrganisation);
-router.get('/getDonationLocations',adminMiddleware ,getDonationLocations);
-router.delete('/deleteDonationLocation',adminMiddleware ,deleteDonationLocation);
-router.delete('/deleteBloodRequest',adminMiddleware ,deleteBloodRequest);
+
+router.get('/getDonors', adminMiddleware, getDonors);
+router.get('/verifyAdmin', adminMiddleware, verifyAdmin);
+router.get('/getPatients', adminMiddleware, getPatients);
+router.get('/getAnalytics', adminMiddleware, getAnalytics);
+router.get('/getOrganistion', adminMiddleware, getOrganistion);
+router.get('/getBloodRequests', adminMiddleware, getBloodRequests);
+router.get('/getDonationLocations', adminMiddleware, getDonationLocations);
+
+router.delete('/deleteDonor', adminMiddleware, deleteDonor);
+router.delete('/deletePatient', adminMiddleware, deletePatient);
+router.delete('/deleteOrganisation', adminMiddleware, deleteOrganisation);
+router.delete(
+  '/deleteDonationLocation',
+  adminMiddleware,
+  deleteDonationLocation
+);
+router.delete('/deleteBloodRequest', adminMiddleware, deleteBloodRequest);
 
 // Routes Go Here
 
