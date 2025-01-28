@@ -204,11 +204,12 @@ const updateInventory = async (req: Request, res: Response) => {
   try {
     const { _id, A_P, A_M, B_P, B_M, AB_P, AB_M, O_P, O_M } = req.body;
 
+    //Should allow for values to be zero
     // if (!_id || !A_P || !A_M || !B_P || !B_M || !AB_P || !AB_M || !O_P || !O_M) {
     //   return ResponseApi(res, 400, 'Please provide all required fields');
     // }
 
-    if (A_P < 0 || A_M < 0 || B_P < 0 || B_M < 0 || AB_P < 0 || AB_M < 0 || O_P < 0 || O_M < 0) {
+    if (A_P < 0 || A_M < 0 || B_P < 0 || B_M < 0 || AB_P < 0 || AB_M < 0 || O_P < 0 || O_M < 0 || _id) {
       return ResponseApi(res, 400, 'Quantity cannot be negative');
     }
 
