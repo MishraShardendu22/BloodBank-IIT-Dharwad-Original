@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Droplets, ArrowRight, LockKeyhole, Mail, Heart } from "lucide-react"
 import axiosInstance from "../../../util/axiosInstance"
@@ -35,6 +36,7 @@ const LoginAdmin = () => {
       const response = await axiosInstance.post("/admin/login", formData)
       if (response.status === 200) {
         localStorage.setItem("token", response.data.data)
+        
         navigate("/adminDashboard")
       }
     } catch (error) {
