@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 
-const Register = () => {
+const RegisterDonor = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     firstName: "",
@@ -292,4 +292,4 @@ const Register = () => {
   )
 }
 
-export default Register
+export default RegisterDonor;
