@@ -12,6 +12,8 @@ interface IInventory extends Document {
   O_M: number;
 }
 
+
+
 const InventorySchema = new Schema<IInventory>(
   {
     OrganisationId: {

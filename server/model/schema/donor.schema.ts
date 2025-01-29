@@ -7,6 +7,7 @@ interface IDonor extends Document {
   password: string;
 }
 
+
 const DonorSchema = new Schema<IDonor>(
   {
     name: {

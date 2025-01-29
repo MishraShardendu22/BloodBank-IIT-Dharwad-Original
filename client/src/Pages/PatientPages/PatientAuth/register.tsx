@@ -51,7 +51,7 @@ const RegisterPatient = () => {
       })
 
       if (response.status === 201) {
-        navigate("/login")
+        navigate("/patient/login")
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -277,7 +277,7 @@ const RegisterPatient = () => {
 
                     <p className="text-sm text-gray-600">
                       Already have an account?{" "}
-                      <Link to="/loginPatient" className="text-primary hover:underline">
+                      <Link to="/patient/login" className="text-primary hover:underline">
                         Sign in
                       </Link>
                     </p>

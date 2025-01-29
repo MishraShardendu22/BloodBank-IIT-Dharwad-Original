@@ -51,7 +51,7 @@ const RegisterDonor = () => {
       })
 
       if (response.status === 201) {
-        navigate("/login")
+        navigate("/donor/login")
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -277,7 +277,7 @@ const RegisterDonor = () => {
 
                     <p className="text-sm text-gray-600">
                       Already have an account?{" "}
-                      <Link to="/login" className="text-primary hover:underline">
+                      <Link to="/donor/login" className="text-primary hover:underline">
                         Sign in
                       </Link>
                     </p>

@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { BloodRequest, Inventory, Patient } from '../model/model';
 import { IPatient } from '../model/schema/patient.schema';
 
+
 const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNo } = req.body;

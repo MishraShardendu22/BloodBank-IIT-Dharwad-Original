@@ -35,7 +35,7 @@ const LoginPatient = () => {
       const response = await axiosInstance.post("/patient/login", formData)
       if (response.status === 200) {
         localStorage.setItem("token", response.data.data)
-        navigate("/patient")
+        navigate("/patient/dashboard")
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -169,7 +169,7 @@ const LoginPatient = () => {
 
                     <p className="text-sm text-center text-gray-600">
                       Not registered as a donor?{" "}
-                      <Link to="/registerPatient" className="font-medium text-primary hover:underline">
+                      <Link to="/patient/register" className="font-medium text-primary hover:underline">
                         Register here
                       </Link>
                     </p>

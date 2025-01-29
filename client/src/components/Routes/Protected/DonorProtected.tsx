@@ -42,7 +42,7 @@ const ProtectedDonor: React.FC<ProtectedDonorProps> = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/loginDonor" />;
+    return <Navigate to="/donor/login" />;
   }
 
   return <>{children}</>;

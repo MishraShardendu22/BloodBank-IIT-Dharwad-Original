@@ -7,6 +7,7 @@ interface IPatient extends Document {
   password: string;
 }
 
+
 const PatientSchema = new Schema<IPatient>(
   {
     name: {

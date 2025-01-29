@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { IInventory } from '../model/schema/inventory.schema';
 
+
 const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNo } = req.body;

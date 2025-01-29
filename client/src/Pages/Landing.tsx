@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type React from "react"
-import { useState } from "react"
-
 import {
   Heart,
   Droplets,
@@ -15,7 +13,6 @@ import {
   Calendar,
   MapPin,
   Award,
-  Bell,
   Sparkles,
   Shield,
   Github,
@@ -23,20 +20,6 @@ import {
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Dialog,
   DialogContent,
@@ -46,13 +29,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useNavigate } from "react-router-dom"
-
-
-
-
+import { useState } from "react"
 
 const teamMembers = [
   {
@@ -62,7 +40,7 @@ const teamMembers = [
   },
   {
     name: "Shardendu",
-    role: "Backend Developer",
+    role: "FullStack Developer",
     github: "https://github.com/MishraShardendu22",
   },
   {
@@ -76,31 +54,6 @@ const teamMembers = [
     github: "https://github.com/Mayank-8127",
   },
 ]
-
-interface TeamMemberButtonProps {
-  name: string
-  role: string
-  github: string
-}
-
-const TeamMemberButton: React.FC<TeamMemberButtonProps> = ({ name, role, github }) => (
-  <motion.a
-    href={github}
-    target="_blank"
-    rel="noopener noreferrer"
-    whileHover={{ scale: 1.02 }}
-    className="flex items-center gap-3 p-3 transition-all border rounded-lg bg-slate-900/50 hover:bg-slate-800/50 border-slate-800/50 hover:-translate-y-1 backdrop-blur-sm group"
-  >
-    <div className="flex items-center justify-center w-8 h-8 border rounded-full bg-gradient-to-br from-primary/20 to-primary/10 border-slate-800/50">
-      {name.charAt(0)}
-    </div>
-    <div className="flex-1">
-      <div className="font-medium transition-colors text-slate-200 group-hover:text-primary">{name}</div>
-      <div className="text-sm text-slate-400">{role}</div>
-    </div>
-    <Github className="w-4 h-4 transition-colors text-slate-400 group-hover:text-primary" />
-  </motion.a>
-)
 
 interface BloodTypeCardProps {
   type: string
@@ -123,47 +76,9 @@ const BloodTypeCard: React.FC<BloodTypeCardProps> = ({ type, availability }) => 
   )
 }
 
-// Emergency Alert Banner
-const EmergencyAlert = () => {
-  return (
-    <motion.div
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: "auto", opacity: 1 }}
-      className="relative px-4 py-3 border-l-4 bg-error/10 border-error"
-    >
-      <div className="flex items-center justify-between mx-auto max-w-7xl">
-        <div className="flex items-center gap-3">
-          <Bell className="w-5 h-5 text-error animate-pulse" />
-          <span className="font-medium text-error">Urgent: O-negative blood needed at City Hospital</span>
-        </div>
-        <button className="btn btn-error btn-sm">Respond Now</button>
-      </div>
-    </motion.div>
-  )
-}
-
-// Achievement Badge Component
-interface AchievementBadgeProps {
-  count: number
-  milestone: string
-}
-
-const AchievementBadge: React.FC<AchievementBadgeProps> = ({ count, milestone }) => (
-  <motion.div
-    whileHover={{ scale: 1.1 }}
-    className="absolute transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-3 py-1.5 rounded-full bg-base-100/50 backdrop-blur-sm border border-primary/20"
-  >
-    <Award className="w-4 h-4 text-primary" />
-    <span className="text-sm font-medium">
-      {count} {milestone}
-    </span>
-  </motion.div>
-)
-
 const Landing = () => {
-  const [showEmergencyAlert, setShowEmergencyAlert] = useState(true)
   const navigate = useNavigate()
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const handleNavigation = (path: string) => {
     navigate(path)
@@ -213,7 +128,7 @@ const Landing = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-base-100 to-primary/20" data-theme="bloodsphere">
+    <div className={`relative min-h-screen bg-gradient-to-b from-base-100 to-primary/20`} data-theme="bloodsphere">
       {/* Floating Navigation */}
       <div className="fixed top-0 z-50 navbar bg-base-100/50 backdrop-blur-lg">
         <div className="navbar-start">
@@ -233,8 +148,7 @@ const Landing = () => {
             </span>
           </motion.a>
         </div>
-        <div className="hidden navbar-center lg:flex">
-        </div>
+        <div className="hidden navbar-center lg:flex"></div>
         {/* <div className="gap-4 navbar-end">
           <a className="btn btn-primary btn-sm">Donate Now</a>
         </div> */}
@@ -315,99 +229,95 @@ const Landing = () => {
               families in need.
             </p>
 
-            
-      <div className="flex flex-wrap gap-4">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="relative gap-2 px-6 py-3 overflow-hidden text-lg font-semibold text-white transition-all duration-300 ease-out rounded-lg btn-lg group bg-primary hover:bg-primary/90 hover:scale-105">
-              <span className="relative z-10 flex items-center gap-2">
-                Get Started
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </span>
-              <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-r from-primary to-primary/80 group-hover:opacity-100" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md mx-auto border shadow-xl bg-slate-900 border-slate-800 rounded-xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-white">
-                <Heart className="w-6 h-6 text-primary" />
-                Choose Your Role
-              </DialogTitle>
-              <DialogDescription className="mt-2 text-slate-400">
-                Select how you would like to contribute to saving lives
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-6">
-              <button
-                onClick={() => handleNavigation('/donor')}
-                className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-primary/10 text-primary">
-                    <Heart className="w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-white group-hover:text-primary">Donor</div>
-                    <div className="text-sm text-slate-400">Donate blood and save lives</div>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
-              </button>
+            <div className="flex flex-wrap gap-4">
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="relative gap-2 px-6 py-3 overflow-hidden text-lg font-semibold text-white transition-all duration-300 ease-out rounded-lg btn-lg group bg-primary hover:bg-primary/90 hover:scale-105">
+                    <span className="relative z-10 flex items-center gap-2">
+                      Get Started
+                      <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                    </span>
+                    <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-r from-primary to-primary/80 group-hover:opacity-100" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="z-50 max-w-md mx-auto border shadow-xl bg-slate-900 border-slate-800 rounded-xl">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-white">
+                      <Heart className="w-6 h-6 text-primary" />
+                      Choose Your Role
+                    </DialogTitle>
+                    <DialogDescription className="mt-2 text-slate-400">
+                      Select how you would like to contribute to saving lives
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-6">
+                    <button
+                      onClick={() => handleNavigation("/donor/dashboard")}
+                      className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-full bg-primary/10 text-primary">
+                          <Heart className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <div className="font-semibold text-white group-hover:text-primary">Donor</div>
+                          <div className="text-sm text-slate-400">Donate blood and save lives</div>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
+                    </button>
 
-              <button
-                onClick={() => handleNavigation('/patient')}
-                className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-primary/10 text-primary">
-                    <Users className="w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-white group-hover:text-primary">Patient</div>
-                    <div className="text-sm text-slate-400">Find blood donors near you</div>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
-              </button>
+                    <button
+                      onClick={() => handleNavigation("/patient/dashboard")}
+                      className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-full bg-primary/10 text-primary">
+                          <Users className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <div className="font-semibold text-white group-hover:text-primary">Patient</div>
+                          <div className="text-sm text-slate-400">Find blood donors near you</div>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
+                    </button>
 
-              <button
-                onClick={() => handleNavigation('/organisation')}
-                className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
+                    <button
+                      onClick={() => handleNavigation("/organisation/dashboard")}
+                      className="flex items-center justify-between px-4 py-3 transition-all duration-300 border rounded-lg bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-primary/50 group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-full bg-primary/10 text-primary">
+                          <Globe className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <div className="font-semibold text-white group-hover:text-primary">Organisation</div>
+                          <div className="text-sm text-slate-400">Manage blood bank inventory</div>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
+                    </button>
+                  </div>
+                  <DialogFooter className="pt-4 border-t border-slate-800">
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-slate-800">
+                        Close
+                      </Button>
+                    </DialogTrigger>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="gap-2 text-white btn btn-outline btn-lg border-white/20 hover:bg-white/10"
               >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-primary/10 text-primary">
-                    <Globe className="w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-white group-hover:text-primary">Organisation</div>
-                    <div className="text-sm text-slate-400">Manage blood bank inventory</div>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 transition-transform text-slate-400 group-hover:text-primary group-hover:translate-x-1" />
-              </button>
+                Learn More
+                <ChevronDown className="w-5 h-5" />
+              </motion.button>
             </div>
-                    <DialogFooter className="pt-4 border-t border-slate-800">
-          <DialogTrigger asChild>
-            <Button
-              variant="ghost"
-              className="text-slate-400 hover:text-white hover:bg-slate-800"
-            >
-              Close
-            </Button>
-          </DialogTrigger>
-        </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="gap-2 text-white btn btn-outline btn-lg border-white/20 hover:bg-white/10"
-        >
-          Learn More  
-          <ChevronDown className="w-5 h-5" />
-        </motion.button>
-      </div>
           </motion.div>
         </div>
 
@@ -714,8 +624,6 @@ const Landing = () => {
       </section> */}
 
       <footer className="relative bg-base-200 text-slate-200">
-        <div className="absolute inset-0 " />
-
         <div className="container relative px-6 py-12 mx-auto">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
             {/* Platform Info */}
@@ -779,7 +687,7 @@ const Landing = () => {
           </div>
 
           {/* Team Section */}
-          <div className="pt-8 mt-12 border-t border-slate-900">
+          <div className="pt-8 mt-12 border-t border-slate-800">
             <div className="text-center">
               <h3 className="mb-6 text-lg font-semibold">Developed by Parshu</h3>
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -820,6 +728,7 @@ const Landing = () => {
           </div>
         </div>
       </footer>
+      {isDialogOpen && <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" aria-hidden="true" />}
     </div>
   )
 }
