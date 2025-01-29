@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { Types } from "mongoose"
+import axiosInstance from "@/util/axiosInstance"
 
 interface IDonationLocation {
     _id: string
@@ -15,6 +16,7 @@ interface IDonationLocation {
     otherDetails?: string
     }
 
+
     const DonationLocations = () => {
     const [locations, setLocations] = useState<IDonationLocation[]>([])
     const [newLocation, setNewLocation] = useState({ name: "", contactDetails: "", location: "", timings: "" })
@@ -24,16 +26,14 @@ interface IDonationLocation {
         fetchDonationLocations()
     }, [])
 
+    
     const fetchDonationLocations = async () => {
         try {
-        const response = await fetch("/organisation/getDonationLocations")
-        if (response.ok) {
-            const data = await response.json()
-            setLocations(data.data)
-        }
-        } catch (error) {
+        const { data } = await axiosInstance.get("/organisation/getDonationLocations")
+    setLocations(data.data)
+    } catch (error) {
         console.error("Error fetching donation locations:", error)
-        }
+    }
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,37 +43,23 @@ interface IDonationLocation {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-        const response = await fetch("/organisation/addDonationLocation", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newLocation),
-        })
-        if (response.ok) {
+            await axiosInstance.post("/organisation/addDonationLocation", newLocation)
             setNewLocation({ name: "", contactDetails: "", location: "", timings: "" })
             await fetchDonationLocations()
+            } catch (error) {
+                console.error("Error adding donation location:", error)
+            }
         }
-        } catch (error) {
-        console.error("Error adding donation location:", error)
-        }
-    }
 
     const handleDelete = async (locationId: string) => {
         try {
-        const response = await fetch("/organisation/deleteDonationLocation", {
-            method: "DELETE",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ locationId }),
-        })
-        if (response.ok) {
-            await fetchDonationLocations()
-        }
-        } catch (error) {
-        console.error("Error deleting donation location:", error)
-        }
+            await axiosInstance.delete("/organisation/deleteDonationLocation", {
+                data: { locationId },
+                })
+                await fetchDonationLocations()
+                } catch (error) {
+                console.error("Error deleting donation location:", error)
+                }
     }
 
     const handleEdit = (location: IDonationLocation) => {
@@ -85,20 +71,12 @@ interface IDonationLocation {
         if (!editingLocation) return
 
         try {
-        const response = await fetch("/organisation/updateDonationLocation", {
-            method: "PATCH",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(editingLocation),
-        })
-        if (response.ok) {
+            await axiosInstance.patch("/organisation/updateDonationLocation", editingLocation)
             setEditingLocation(null)
             await fetchDonationLocations()
-        }
-        } catch (error) {
-        console.error("Error updating donation location:", error)
-        }
+            } catch (error) {
+                console.error("Error updating donation location:", error)
+            }
     }
 
     return (

@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import type { Types } from "mongoose"
+import axiosInstance from "@/util/axiosInstance"
+
 
 interface IBloodRequest {
     _id: string
@@ -27,31 +29,20 @@ interface IBloodRequest {
 
     const fetchBloodRequests = async () => {
         try {
-        const response = await fetch("/organisation/getBloodRequests")
-        if (response.ok) {
-            const data = await response.json()
+            const { data } = await axiosInstance.get("/organisation/getBloodRequests")
             setRequests(data.data)
-        }
-        } catch (error) {
-        console.error("Error fetching blood requests:", error)
-        }
+            } catch (error) {
+                console.error("Error fetching blood requests:", error)
+            }
     }
 
     const handleComplete = async (requestId: string) => {
         try {
-        const response = await fetch("/organisation/completeBloodRequest", {
-            method: "PATCH",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ requestId }),
-        })
-        if (response.ok) {
+            await axiosInstance.patch("/organisation/completeBloodRequest", { requestId })
             await fetchBloodRequests()
-        }
-        } catch (error) {
-        console.error("Error completing blood request:", error)
-        }
+            } catch (error) {
+                console.error("Error completing blood request:", error)
+            }
     }
 
     return (

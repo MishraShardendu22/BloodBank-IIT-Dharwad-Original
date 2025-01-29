@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import BloodAvailability from "./_components/BloodAvailability"
 import PatientBloodRequests from "./_components/BloodRequests"
 import type { Types } from "mongoose"
+import axiosInstance from "@/util/axiosInstance"
 
 interface IPatient {
     _id: Types.ObjectId
@@ -22,14 +23,11 @@ interface IPatient {
 
     const fetchPatientInfo = async () => {
         try {
-        const response = await fetch("/patient/verifyPatient")
-        if (response.ok) {
-            const data = await response.json()
+            const { data } = await axiosInstance.get("/patient/verifyPatient")
             setPatientInfo(data.data)
-        }
-        } catch (error) {
-        console.error("Error fetching patient info:", error)
-        }
+            } catch (error) {
+                console.error("Error fetching patient info:", error)
+            }
     }
 
     return (

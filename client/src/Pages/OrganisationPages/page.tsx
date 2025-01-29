@@ -7,6 +7,8 @@ import DonationLocations from "./_components/DonationLocations"
 import OrganizationBloodRequests from "./_components/BloodRequests"
 import BloodDonation from "./_components/BloodDonation"
 import type { Types } from "mongoose"
+import axiosInstance from "@/util/axiosInstance"
+
 
 interface IOrganisation {
     _id: Types.ObjectId
@@ -24,14 +26,11 @@ interface IOrganisation {
 
     const fetchOrgData = async () => {
         try {
-        const response = await fetch("/organisation/verifyOrganisation")
-        if (response.ok) {
-            const data = await response.json()
+            const { data } = await axiosInstance.get("/organisation/verifyOrganisation")
             setOrgData(data.data)
-        }
-        } catch (error) {
-        console.error("Error fetching organisation data:", error)
-        }
+            } catch (error) {
+                console.error("Error fetching organisation data:", error)
+            }
     }
 
     return (

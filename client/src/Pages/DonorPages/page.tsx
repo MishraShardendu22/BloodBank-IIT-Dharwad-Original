@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { Types } from "mongoose"
+import axiosInstance from "@/util/axiosInstance"
 
 export interface IDonation {
     _id: string
@@ -43,38 +44,29 @@ const Donor = () => {
 
     const fetchDonorInfo = async () => {
         try {
-        const response = await fetch("/donor/verifyDonor")
-        if (response.ok) {
-            const data = await response.json()
+            const { data } = await axiosInstance.get("/donor/verifyDonor")
             setDonorInfo(data.data)
-        }
-        } catch (error) {
-        console.error("Error fetching donor info:", error)
-        }
+            } catch (error) {
+                console.error("Error fetching donor info:", error)
+            }
     }
 
     const fetchDonationHistory = async () => {
         try {
-        const response = await fetch("/donor/donation-history")
-        if (response.ok) {
-            const data = await response.json()
-            setDonationHistory(data.data)
+            const { data } = await axiosInstance.get("/donor/donation-history")
+                setDonationHistory(data.data)
+            } catch (error) {
+                console.error("Error fetching donation history:", error)
+            }
         }
-        } catch (error) {
-        console.error("Error fetching donation history:", error)
-        }
-    }
 
     const fetchDonationLocations = async () => {
         try {
-        const response = await fetch("/donor/donation-location")
-        if (response.ok) {
-            const data = await response.json()
-            setDonationLocations(data.data)
-        }
-        } catch (error) {
-        console.error("Error fetching donation locations:", error)
-        }
+            const { data } = await axiosInstance.get("/donor/donation-location")
+                setDonationLocations(data.data)
+            } catch (error) {
+                console.error("Error fetching donation locations:", error)
+            }
     }
 
     return (

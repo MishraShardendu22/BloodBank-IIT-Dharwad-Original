@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import axiosInstance from "@/util/axiosInstance"
 
 interface IInventory {
     A_P: number
@@ -33,14 +34,11 @@ interface IInventory {
 
     const fetchInventory = async () => {
         try {
-        const response = await fetch("/organisation/getInventory")
-        if (response.ok) {
-            const data = await response.json()
+            const { data } = await axiosInstance.get("/organisation/getInventory")
             setInventory(data.data)
-        }
-        } catch (error) {
-        console.error("Error fetching inventory:", error)
-        }
+            } catch (error) {
+                console.error("Error fetching inventory:", error)
+            }
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,19 +48,11 @@ interface IInventory {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-        const response = await fetch("/organisation/updateInventory", {
-            method: "PATCH",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(inventory),
-        })
-        if (response.ok) {
+            await axiosInstance.patch("/organisation/updateInventory", inventory)
             await fetchInventory()
-        }
-        } catch (error) {
-        console.error("Error updating inventory:", error)
-        }
+            } catch (error) {
+                console.error("Error updating inventory:", error)
+            }
     }
 
     return (
@@ -88,6 +78,7 @@ interface IInventory {
         </Card>
     )
 }
+
 
 export default InventoryManager
 

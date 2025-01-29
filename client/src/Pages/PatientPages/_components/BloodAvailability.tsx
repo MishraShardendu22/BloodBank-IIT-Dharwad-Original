@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { Types } from "mongoose"
+import axiosInstance from "@/util/axiosInstance"
 
 interface IInventory {
     _id: string
@@ -30,13 +31,10 @@ interface IInventory {
 
     const fetchBloodAvailable = async () => {
         try {
-        const response = await fetch("/patient/bloodAvailable")
-        if (response.ok) {
-            const data = await response.json()
+            const { data } = await axiosInstance.get("/patient/bloodAvailable")
             setBloodAvailable(data.data)
-        }
         } catch (error) {
-        console.error("Error fetching blood availability:", error)
+            console.error("Error fetching blood availability:", error)
         }
     }
 

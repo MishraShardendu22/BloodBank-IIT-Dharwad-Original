@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import axiosInstance from "@/util/axiosInstance"
 
 const BloodDonation = () => {
     const [donationData, setDonationData] = useState({ donorEmail: "", quantity: "" })
@@ -11,23 +12,16 @@ const BloodDonation = () => {
         setDonationData({ ...donationData, [e.target.name]: e.target.value })
     }
 
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-        const response = await fetch("/organisation/addBloodDonated", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(donationData),
-        })
-        if (response.ok) {
+            await axiosInstance.post("/organisation/addBloodDonated", donationData)
             setDonationData({ donorEmail: "", quantity: "" })
             alert("Blood donation added successfully")
-        }
-        } catch (error) {
-        console.error("Error adding blood donation:", error)
-        }
+            } catch (error) {
+                console.error("Error adding blood donation:", error)
+            }
     }
 
     return (
