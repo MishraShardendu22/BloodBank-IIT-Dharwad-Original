@@ -51,7 +51,7 @@ const RegisterOrganisation = () => {
       })
 
       if (response.status === 201) {
-        navigate("/login/organisation")
+        navigate("/organisation/login")
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -277,7 +277,7 @@ const RegisterOrganisation = () => {
 
                     <p className="text-sm text-gray-600">
                       Already have an account?{" "}
-                      <Link to="/login/organisation" className="text-primary hover:underline">
+                      <Link to="/organisation/login" className="text-primary hover:underline">
                         Sign in
                       </Link>
                     </p>

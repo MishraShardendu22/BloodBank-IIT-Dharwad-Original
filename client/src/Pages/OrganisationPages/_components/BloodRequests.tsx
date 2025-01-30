@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import type { Types } from "mongoose"
 import axiosInstance from "@/util/axiosInstance"
-
+import { motion } from "framer-motion"
 
 interface IBloodRequest {
     _id: string
@@ -29,62 +29,71 @@ interface IBloodRequest {
 
     const fetchBloodRequests = async () => {
         try {
-            const { data } = await axiosInstance.get("/organisation/getBloodRequests")
-            setRequests(data.data)
-            } catch (error) {
-                console.error("Error fetching blood requests:", error)
-            }
+        const { data } = await axiosInstance.get("/organisation/getBloodRequests")
+        setRequests(data.data)
+        } catch (error) {
+        console.error("Error fetching blood requests:", error)
+        }
     }
 
     const handleComplete = async (requestId: string) => {
         try {
-            await axiosInstance.patch("/organisation/completeBloodRequest", { requestId })
-            await fetchBloodRequests()
-            } catch (error) {
-                console.error("Error completing blood request:", error)
-            }
+        await axiosInstance.patch("/organisation/completeBloodRequest", { requestId })
+        await fetchBloodRequests()
+        } catch (error) {
+        console.error("Error completing blood request:", error)
+        }
     }
 
     return (
-        <Card>
-        <CardHeader>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+            <CardHeader>
             <CardTitle>Blood Requests</CardTitle>
-        </CardHeader>
-        <CardContent>
+            </CardHeader>
+            <CardContent>
             <Table>
-            <TableHeader>
+                <TableHeader>
                 <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Patient Name</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Blood Type</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Action</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Patient Name</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Blood Type</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Action</TableHead>
                 </TableRow>
-            </TableHeader>
-            <TableBody>
+                </TableHeader>
+                <TableBody>
                 {requests.map((request) => (
-                <TableRow key={request._id}>
+                    <TableRow key={request._id}>
                     <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>{request.patientId.name}</TableCell>
                     <TableCell>
-                    {request.patientId.email}
-                    {request.patientId.phoneNo && <br />}
-                    {request.patientId.phoneNo}
+                        {request.patientId.email}
+                        {request.patientId.phoneNo && <br />}
+                        {request.patientId.phoneNo}
                     </TableCell>
                     <TableCell>{request.type}</TableCell>
                     <TableCell>{request.quantity}</TableCell>
                     <TableCell>{request.completed ? "Completed" : "Pending"}</TableCell>
                     <TableCell>
-                    {!request.completed && <Button onClick={() => handleComplete(request._id)}>Mark Completed</Button>}
+                        {!request.completed && (
+                        <Button
+                            onClick={() => handleComplete(request._id)}
+                            className="bg-primary text-primary-foreground hover:bg-primary/90"
+                        >
+                            Mark Completed
+                        </Button>
+                        )}
                     </TableCell>
-                </TableRow>
+                    </TableRow>
                 ))}
-            </TableBody>
+                </TableBody>
             </Table>
-        </CardContent>
+            </CardContent>
         </Card>
+        </motion.div>
     )
 }
 
