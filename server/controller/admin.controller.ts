@@ -1,11 +1,13 @@
 import { IAdmin } from '../model/schema/admin.schema';
 import ResponseApi from '../util/ApiResponse.util';
 import { Request, Response } from 'express';
-import { Admin, BloodRequest, DonationLocation, Donor, Organisation, Patient } from '../model/model';
+import { Admin, BloodRequest, Donation, DonationLocation, Donor, Inventory, Organisation, Patient } from '../model/model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { IDonationLocation } from '../model/schema/donation-location.schema';
 import { IBloodRequest } from '../model/schema/blood-request.schema';
+import { IDonor } from '../model/schema/donor.schema';
+import { IPatient } from '../model/schema/patient.schema';
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -108,7 +110,7 @@ const login = async (req: Request, res: Response) => {
 
 const getDonationLocations = async (req: Request, res: Response) => {
   try{
-    const donationLocations = await DonationLocation.find({}) as IDonationLocation[];
+    const donationLocations = await DonationLocation.find({}).populate("organisationId", "name email phoneNo") as IDonationLocation[];
     return ResponseApi(res, 200, 'Donation locations retrieved successfully', donationLocations);
   }catch(error){
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the donation locations');
@@ -136,7 +138,7 @@ const deleteDonationLocation = async (req: Request, res: Response) => {
 
 const getBloodRequests = async (req: Request, res: Response) => {
   try{
-    const bloodRequests = await BloodRequest.find({}) as IBloodRequest[];
+    const bloodRequests = await BloodRequest.find({}).populate("patientId", "name email phoneNo") as IBloodRequest[];
     return ResponseApi(res, 200, 'Blood requests retrieved successfully', bloodRequests);
   }catch(error){
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the blood requests');
@@ -164,8 +166,11 @@ const deleteBloodRequest = async (req: Request, res: Response) => {
 
 const getDonors = async (req: Request, res: Response) => {
   try{
-    const donors = await Donor.find({});
-    return ResponseApi(res, 200, 'Donors retrieved successfully', donors);
+    const donor = await Donor.find({}) as IDonor[];
+    return ResponseApi(res, 200, 'Donors retrieved successfully', donor.map((donor) => {
+      donor.password = "******"
+      return donor
+    }));
   }catch(error){
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the donors');
   }
@@ -192,8 +197,11 @@ const deleteDonor = async (req: Request, res: Response) => {
 
 const getPatients = async (req: Request, res: Response) => {
   try{
-    const patients = await Patient.find({});
-    return ResponseApi(res, 200, 'Patients retrieved successfully', patients);
+    const patients = await Patient.find({}) as IPatient[];
+    return ResponseApi(res, 200, 'Patients retrieved successfully', patients.map((patient) => {
+      patient.password = "******"
+      return patient
+    }));
   }catch(error){
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the patients');
   }
@@ -207,6 +215,10 @@ const deletePatient = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Patient ID is required');
     }
 
+    await BloodRequest.deleteMany({
+      patientId
+    })
+
     const patient = await Patient.findByIdAndDelete(patientId);
     if(!patient){
       return ResponseApi(res, 404, 'Patient not found');
@@ -218,10 +230,13 @@ const deletePatient = async (req: Request, res: Response) => {
   }
 }
 
-const getOrganistion = async (req: Request, res: Response) => {
+const getOrganisation = async (req: Request, res: Response) => {
   try{
     const organisations = await Organisation.find({});
-    return ResponseApi(res, 200, 'Organisations retrieved successfully', organisations);
+    return ResponseApi(res, 200, 'Organisations retrieved successfully', organisations.map((organisation) => {
+      organisation.password = "******"
+      return organisation
+    }));
   }catch(error){
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the organisations');
   }
@@ -234,6 +249,14 @@ const deleteOrganisation = async (req: Request, res: Response) => {
     if(!organisationId){
       return ResponseApi(res, 400, 'Organisation ID is required');
     }
+
+    await DonationLocation.deleteMany({
+      organisationId
+    })
+
+    await Inventory.deleteOne({
+      OrganisationId: organisationId
+    })
 
     const organisation = await Organisation.findByIdAndDelete(organisationId);
     if(!organisation){
@@ -268,7 +291,6 @@ const getAnalytics = async (req: Request, res: Response) => {
 
 const verifyAdmin = async (req: Request,res: Response) => {
   try{
-    console.log("CP-1")
     const { _id,role } = req.body;
 
     if(_id === undefined || role === undefined){
@@ -294,7 +316,7 @@ export {
   deleteOrganisation,
   deleteBloodRequest,
   getBloodRequests,
-  getOrganistion,
+  getOrganisation,
   verifyAdmin,
   deletePatient,
   getAnalytics,
