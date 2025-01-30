@@ -1,36 +1,40 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import InventoryManager from "./_components/InventoryManager"
-import DonationLocations from "./_components/DonationLocations"
-import OrganizationBloodRequests from "./_components/BloodRequests"
-import BloodDonation from "./_components/BloodDonation"
-import OrganisationAnalytics from "./_components/OrganisationAnalytics"
-import type { Types } from "mongoose"
-import axiosInstance from "@/util/axiosInstance"
 import Navbar from "@/components/Navbar"
 import { motion } from "framer-motion"
+import axiosInstance from "@/util/axiosInstance"
+import Analytics from "./_components/Analytics"
+import DonorManagement from "./_components/DonorManagement"
+import PatientManagement from "./_components/PatientManagement"
+import OrganizationManagement from "./_components/OrganizationManagement"
+import DonationLocationManagement from "./_components/DonationLocationManagement"
+import BloodRequestManagement from "./_components/BloodRequestManagement"
 
-interface IOrganisation {
-    _id: Types.ObjectId
+
+
+interface IAdmin {
+    _id: string
     name: string
     email: string
     phoneNo: string
     }
 
-    const Organisation = () => {
-    const [orgData, setOrgData] = useState<IOrganisation | null>(null)
+    const Admin = () => {
+    const [adminInfo, setAdminInfo] = useState<IAdmin | null>(null)
 
     useEffect(() => {
-        fetchOrgData()
+        fetchAdminInfo()
     }, [])
 
-    const fetchOrgData = async () => {
+    const fetchAdminInfo = async () => {
         try {
-        const { data } = await axiosInstance.get("/organisation/verifyOrganisation")
-        setOrgData(data.data)
+        const { data } = await axiosInstance.get("/admin/verifyAdmin")
+        setAdminInfo(data.data)
         } catch (error) {
-        console.error("Error fetching organisation data:", error)
+        console.error("Error fetching admin info:", error)
         }
     }
 
@@ -39,20 +43,23 @@ interface IOrganisation {
         <Navbar />
         <div className="container p-4 pt-16 mx-auto">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-            <h1 className="text-3xl font-bold">Organisation Dashboard</h1>
+            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             </motion.div>
-            {orgData && (
+            {adminInfo && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card className="mb-6 bg-base-200/50 backdrop-blur-sm border-primary/10">
                 <CardHeader>
-                    <CardTitle>{orgData.name}</CardTitle>
+                    <CardTitle>Admin Information</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p>
-                    <strong>Email:</strong> {orgData.email}
+                    <strong>Name:</strong> {adminInfo.name}
                     </p>
                     <p>
-                    <strong>Phone:</strong> {orgData.phoneNo}
+                    <strong>Email:</strong> {adminInfo.email}
+                    </p>
+                    <p>
+                    <strong>Phone:</strong> {adminInfo.phoneNo}
                     </p>
                 </CardContent>
                 </Card>
@@ -62,32 +69,36 @@ interface IOrganisation {
             <Tabs defaultValue="analytics" className="w-full">
                 <TabsList className="bg-base-200/50 backdrop-blur-sm">
                 <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                <TabsTrigger value="inventory">Inventory</TabsTrigger>
+                <TabsTrigger value="donors">Donors</TabsTrigger>
+                <TabsTrigger value="patients">Patients</TabsTrigger>
+                <TabsTrigger value="organizations">Organizations</TabsTrigger>
                 <TabsTrigger value="locations">Donation Locations</TabsTrigger>
                 <TabsTrigger value="requests">Blood Requests</TabsTrigger>
-                <TabsTrigger value="donation">Blood Donation</TabsTrigger>
                 </TabsList>
                 <TabsContent value="analytics">
-                <OrganisationAnalytics />
+                <Analytics />
                 </TabsContent>
-                <TabsContent value="inventory">
-                <InventoryManager />
+                <TabsContent value="donors">
+                <DonorManagement />
+                </TabsContent>
+                <TabsContent value="patients">
+                <PatientManagement />
+                </TabsContent>
+                <TabsContent value="organizations">
+                <OrganizationManagement />
                 </TabsContent>
                 <TabsContent value="locations">
-                <DonationLocations />
+                <DonationLocationManagement />
                 </TabsContent>
                 <TabsContent value="requests">
-                <OrganizationBloodRequests />
-                </TabsContent>
-                <TabsContent value="donation">
-                <BloodDonation />
+                <BloodRequestManagement />
                 </TabsContent>
             </Tabs>
             </motion.div>
         </div>
         </div>
     )
-}
+    }
 
-export default Organisation
+export default Admin
 

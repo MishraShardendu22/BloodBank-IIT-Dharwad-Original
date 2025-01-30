@@ -17,6 +17,10 @@ import "./index.css"
 import ProtectedDonor from "./components/Routes/Protected/DonorProtected";
 import ProtectedPatient from "./components/Routes/Protected/PatientProtected";
 import ProtectedOrganisation from "./components/Routes/Protected/OrganisationProtected";
+import LoginAdmin from "./Pages/AdminPages/AdminAuth/login";
+import RegisterAdmin from "./Pages/AdminPages/AdminAuth/register";
+import Admin from "./Pages/AdminPages/page";
+import ProtectedAdmin from "./components/Routes/Protected/AdminPotected";
 
 
 const App = () => {
@@ -102,6 +106,31 @@ const App = () => {
         </ProtectedOrganisation>
       }
       />
+      <Route 
+      path="/admin/login"
+      element={
+        <Unprotected>
+          <LoginAdmin />
+        </Unprotected>
+      }
+      />
+      <Route 
+      path="/admin/register"
+      element={
+        <Unprotected>
+          <RegisterAdmin />
+        </Unprotected>
+      }
+      />
+      <Route 
+      path="/admin/dashboard"
+      element={
+        <ProtectedAdmin>
+          <Admin />
+        </ProtectedAdmin>
+      }
+      />
+  
       <Route
         path="*"
         element={

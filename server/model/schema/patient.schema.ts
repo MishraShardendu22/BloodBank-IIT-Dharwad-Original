@@ -8,6 +8,7 @@ interface IPatient extends Document {
 }
 
 
+
 const PatientSchema = new Schema<IPatient>(
   {
     name: {

@@ -51,7 +51,7 @@ const RegisterAdmin = () => {
       })
 
       if (response.status === 201) {
-        navigate("/loginAdmin")
+        navigate("/admin/login")
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -277,7 +277,7 @@ const RegisterAdmin = () => {
 
                     <p className="text-sm text-gray-600">
                       Already have an account?{" "}
-                      <Link to="/loginAdmin" className="text-primary hover:underline">
+                      <Link to="/admin/login" className="text-primary hover:underline">
                         Sign in
                       </Link>
                     </p>

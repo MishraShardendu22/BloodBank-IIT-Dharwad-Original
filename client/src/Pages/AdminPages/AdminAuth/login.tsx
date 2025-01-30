@@ -37,7 +37,7 @@ const LoginAdmin = () => {
       if (response.status === 200) {
         localStorage.setItem("token", response.data.data)
         
-        navigate("/adminDashboard")
+        navigate("/admin/dashboard")
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -170,7 +170,7 @@ const LoginAdmin = () => {
 
                     <p className="text-sm text-center text-gray-600">
                       Not registered as a donor?{" "}
-                      <Link to="/registerAdmin" className="font-medium text-primary hover:underline">
+                      <Link to="/admin/register" className="font-medium text-primary hover:underline">
                         Register here
                       </Link>
                     </p>
