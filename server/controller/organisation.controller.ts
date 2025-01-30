@@ -304,6 +304,27 @@ const addBloodDonated = async (req: Request, res: Response) => {
   }
 }
 
+const verifyOrganisation = async (req: Request,res: Response) => {
+  try{
+    const { _id,role } = req.body;
+
+    if(_id === undefined || role === undefined){
+      return ResponseApi(res,403,'Forbidden');
+    }
+
+    const org = await Organisation.findById(_id);
+    return ResponseApi(res,200,'Admin verified successfully',org);
+  }catch(error){
+    return ResponseApi(
+      res,
+      500,
+      error instanceof Error
+        ? error.message
+        : 'An unknown error occurred while verifying the org'
+    )
+  }
+}
+
 export {
   login,
   register,
@@ -311,6 +332,7 @@ export {
   addBloodDonated,
   updateInventory,
   getBloodRequests,
+  verifyOrganisation,
   addDonationLocation,
   completeBloodRequest,
   updateDonationLocation,

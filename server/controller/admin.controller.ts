@@ -266,6 +266,28 @@ const getAnalytics = async (req: Request, res: Response) => {
   }
 }
 
+const verifyAdmin = async (req: Request,res: Response) => {
+  try{
+    console.log("CP-1")
+    const { _id,role } = req.body;
+
+    if(_id === undefined || role === undefined){
+      return ResponseApi(res,403,'Forbidden');
+    }
+
+    const admin = await Admin.findById(_id);
+    return ResponseApi(res,200,'Admin verified successfully',admin);
+  }catch(error){
+    return ResponseApi(
+      res,
+      500,
+      error instanceof Error
+        ? error.message
+        : 'An unknown error occurred while verifying the admin'
+    )
+  }
+}
+
 export {
   deleteDonationLocation,
   getDonationLocations,
@@ -273,6 +295,7 @@ export {
   deleteBloodRequest,
   getBloodRequests,
   getOrganistion,
+  verifyAdmin,
   deletePatient,
   getAnalytics,
   deleteDonor,

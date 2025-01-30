@@ -8,9 +8,10 @@ import {
   deletePatient,
   getAnalytics,
   deleteDonor,
+  verifyAdmin,
   getPatients,
   getDonors,
-  register, 
+  register,
   login,
 } from '../../controller/admin.controller';
 
@@ -24,6 +25,7 @@ router.post('/login', login);
 router.post('/register', register);
 router.get('/getDonors',adminMiddleware ,getDonors);
 router.get('/getPatients',adminMiddleware ,getPatients);
+router.get('/verifyAdmin',adminMiddleware ,verifyAdmin);
 router.get('/getAnalytics',adminMiddleware ,getAnalytics);
 router.delete('/deleteDonor',adminMiddleware ,deleteDonor);
 router.get('/getOrganistion',adminMiddleware ,getOrganistion);

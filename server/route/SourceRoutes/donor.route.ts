@@ -1,6 +1,7 @@
 import { 
   login,
-  register, 
+  register,
+  verifyDonor,
   getDonationHistory,
   getDonationLocation
 } from '../../controller/donor.controller';
@@ -14,6 +15,7 @@ router.post('/login', login);
 router.post('/register', register);
 router.get('/donation-location',donorMiddleware ,getDonationLocation);
 router.get('/donation-history',donorMiddleware ,getDonationHistory);
+router.get('/verifyDonor',donorMiddleware ,verifyDonor);
 
 // Routes Go Here
 

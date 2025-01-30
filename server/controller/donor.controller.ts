@@ -106,4 +106,25 @@ const handleError = (error: unknown) => {
   return error instanceof Error ? error.message : 'An unknown error occurred';
 };
 
-export { login, register, getDonationHistory, getDonationLocation };
+const verifyDonor = async (req: Request,res: Response) => {
+  try{
+    const { _id,role } = req.body;
+
+    if(_id === undefined || role === undefined){
+      return ResponseApi(res,403,'Forbidden');
+    }
+
+    const donor = await Donor.findById(_id);
+    return ResponseApi(res,200,'Admin verified successfully',donor);
+  }catch(error){
+    return ResponseApi(
+      res,
+      500,
+      error instanceof Error
+        ? error.message
+        : 'An unknown error occurred while verifying the donor'
+    )
+  }
+}
+
+export { login, register, getDonationHistory, getDonationLocation, verifyDonor };

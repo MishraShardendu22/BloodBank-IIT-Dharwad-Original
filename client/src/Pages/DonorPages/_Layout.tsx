@@ -1,15 +1,16 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from "react"
 
 interface LayoutProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
-const _Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
-    <div>
-      {children}
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow">{children}</main>
     </div>
   )
 }
 
-export default _Layout
+export default Layout
+

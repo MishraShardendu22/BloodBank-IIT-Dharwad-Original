@@ -1,17 +1,44 @@
+import {NotFound, DonorRegister, DonorLogin, Landing, } from "./Pages/page"
+import Unprotected from "./components/Routes/UnProtectedRoute";
 import { Route, Routes } from "react-router-dom";
-import NotFound from "./Pages/NotFound";
-import Landing from "./Pages/Landing";
 import "./index.css"
 
 const App = () => {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Unprotected>
+            <Landing />
+          </Unprotected>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <Unprotected>
+            <DonorLogin />
+          </Unprotected>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <Unprotected>
+            <DonorRegister />
+          </Unprotected>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <Unprotected>
+            <NotFound />
+          </Unprotected>
+        }
+      />
+    </Routes>
   );
 };
-
 export default App;
