@@ -7,6 +7,8 @@ interface IOrganisation extends Document {
   phoneNo?: string;
 }
 
+
+
 const OrganisationSchema = new Schema<IOrganisation>(
   {
     name: {

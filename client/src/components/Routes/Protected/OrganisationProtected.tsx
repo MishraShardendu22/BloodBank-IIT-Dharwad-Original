@@ -42,7 +42,7 @@ const ProtectedOrganisation: React.FC<ProtectedOrganisationProps> = ({ children 
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/loginOrganisation" />;
+    return <Navigate to="/organisation/login" />;
   }
 
   return <>{children}</>;

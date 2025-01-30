@@ -9,6 +9,7 @@ interface IDonationLocation extends Document {
   otherDetails?: string;
 }
 
+
 const DonationLocationSchema = new Schema<IDonationLocation>(
   {
     organisationId: {

@@ -7,16 +7,16 @@ const LogOut = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/landing');
+    navigate('/');
   };
 
   return (
     <Button
       onClick={handleLogout}
-      className="h-8 py-3 px-3 gap-2 hover:bg-red-600 transition-colors"
+      className="h-8 gap-2 px-3 py-3 transition-colors hover:bg-red-600"
       variant="destructive"
     >
-      <LogOutIcon className="h-5 w-5" />
+      <LogOutIcon className="w-5 h-5" />
       Log-Out
     </Button>
   );

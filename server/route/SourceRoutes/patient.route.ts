@@ -14,6 +14,7 @@ const router = Router();
 
 // Routes Go Here
 
+
 router.post('/login', login);
 router.post('/register', register);
 router.get('/verifyPatient',patientMiddleware, verifyPatient);

@@ -42,7 +42,7 @@ const ProtectedPatient: React.FC<ProtectedPatientProps> = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/loginPatient" />;
+    return <Navigate to="/patient/login" />;
   }
 
   return <>{children}</>;

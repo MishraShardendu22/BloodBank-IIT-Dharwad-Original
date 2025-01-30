@@ -42,6 +42,7 @@ const BloodRequest: Model<IBloodRequest> = mongoose.model<IBloodRequest>(
 const DonationLocation: Model<IDonationLocation> =
   mongoose.model<IDonationLocation>('DonationLocation', DonationLocationSchema);
 
+  
 export {
   Organisation,
   Patient,

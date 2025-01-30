@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { IInventory } from '../model/schema/inventory.schema';
 
+
 const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNo } = req.body;
@@ -325,6 +326,24 @@ const verifyOrganisation = async (req: Request,res: Response) => {
   }
 }
 
+const getDonationLocations = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.body;
+
+    if (!_id) {
+      return ResponseApi(res, 400, 'Please provide all required fields');
+    }
+
+    const locations = await DonationLocation.find({ organisationId: _id });
+    return ResponseApi(res, 200, 'Donation locations retrieved successfully', locations);
+  } catch (error) {
+    if (error instanceof Error) {
+      return ResponseApi(res, 500, error.message);
+    }
+    return ResponseApi(res, 500, 'An unknown error occurred while getting donation locations');
+  }
+};
+
 export {
   login,
   register,
@@ -337,4 +356,5 @@ export {
   completeBloodRequest,
   updateDonationLocation,
   deleteDonationLocation,
+  getDonationLocations
 };

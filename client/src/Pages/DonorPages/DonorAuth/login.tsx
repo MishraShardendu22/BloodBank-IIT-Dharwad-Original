@@ -35,7 +35,7 @@ const LoginDonor = () => {
       const response = await axiosInstance.post("/donor/login", formData)
       if (response.status === 200) {
         localStorage.setItem("token", response.data.data)
-        navigate("/donor")
+        navigate("/donor/dashboard")
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -169,7 +169,7 @@ const LoginDonor = () => {
 
                     <p className="text-sm text-center text-gray-600">
                       Not registered as a donor?{" "}
-                      <Link to="/register" className="font-medium text-primary hover:underline">
+                      <Link to="/donor/register" className="font-medium text-primary hover:underline">
                         Register here
                       </Link>
                     </p>
