@@ -11,6 +11,7 @@ import {
     getInventory,
     verifyOrganisation,
     getDonationLocations,
+    getAnalytics,
 } from '../../controller/organisation.controller';
 import { Router } from 'express';
 import { organisationMiddleware } from '../../middleware/organisation.middleware';
@@ -31,6 +32,7 @@ router.patch('/completeBloodRequest', organisationMiddleware, completeBloodReque
 router.patch('/updateDonationLocation', organisationMiddleware, updateDonationLocation);
 router.delete('/deleteDonationLocation', organisationMiddleware, deleteDonationLocation);
 router.get('/getDonationLocations', organisationMiddleware, getDonationLocations)
+router.get('/getAnalytics', organisationMiddleware, getAnalytics)
 
 // Routes Go Here
 

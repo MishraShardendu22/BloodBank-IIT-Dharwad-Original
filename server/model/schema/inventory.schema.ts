@@ -14,6 +14,7 @@ interface IInventory extends Document {
 
 
 
+
 const InventorySchema = new Schema<IInventory>(
   {
     OrganisationId: {

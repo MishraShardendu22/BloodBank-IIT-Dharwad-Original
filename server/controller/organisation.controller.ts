@@ -1,4 +1,4 @@
-import { BloodRequest, Donation, DonationLocation, Donor, Inventory, Organisation } from '../model/model';
+import { BloodRequest, Donation, DonationLocation, Donor, Inventory, Organisation, Patient } from '../model/model';
 import bcrypt from 'bcryptjs';
 import { IOrganisation } from '../model/schema/organisation.schema';
 import ResponseApi from '../util/ApiResponse.util';
@@ -344,6 +344,22 @@ const getDonationLocations = async (req: Request, res: Response) => {
   }
 };
 
+const getAnalytics = async (req: Request, res: Response) => {
+  try{
+    const organisations = await Organisation.countDocuments();
+    const donationLocations = await DonationLocation.countDocuments();
+    const bloodRequests = await BloodRequest.countDocuments();
+
+    return ResponseApi(res, 200, 'Analytics retrieved successfully', {
+      organisations,
+      donationLocations,
+      bloodRequests,
+    });
+  }catch(error){
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the analytics');
+  }
+}
+
 export {
   login,
   register,
@@ -356,5 +372,6 @@ export {
   completeBloodRequest,
   updateDonationLocation,
   deleteDonationLocation,
-  getDonationLocations
+  getDonationLocations,
+  getAnalytics
 };

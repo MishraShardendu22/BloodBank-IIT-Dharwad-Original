@@ -43,7 +43,7 @@ const ProtectedAdmin: React.FC<ProtectedAdminProps> = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/loginAdmin" />;
+    return <Navigate to="/admin/login" />;
   }
 
   return <>{children}</>;

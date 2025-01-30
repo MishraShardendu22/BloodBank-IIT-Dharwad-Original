@@ -9,6 +9,7 @@ import { IBloodRequest } from '../model/schema/blood-request.schema';
 import { IDonor } from '../model/schema/donor.schema';
 import { IPatient } from '../model/schema/patient.schema';
 
+
 const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNo } = req.body;
@@ -288,6 +289,8 @@ const getAnalytics = async (req: Request, res: Response) => {
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while getting the analytics');
   }
 }
+
+
 
 const verifyAdmin = async (req: Request,res: Response) => {
   try{
