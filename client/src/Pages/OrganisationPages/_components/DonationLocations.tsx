@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { Types } from "mongoose"
 import axiosInstance from "@/util/axiosInstance"
+import { motion } from "framer-motion"
 
 interface IDonationLocation {
     _id: string
@@ -16,7 +17,6 @@ interface IDonationLocation {
     otherDetails?: string
     }
 
-
     const DonationLocations = () => {
     const [locations, setLocations] = useState<IDonationLocation[]>([])
     const [newLocation, setNewLocation] = useState({ name: "", contactDetails: "", location: "", timings: "" })
@@ -26,14 +26,13 @@ interface IDonationLocation {
         fetchDonationLocations()
     }, [])
 
-    
     const fetchDonationLocations = async () => {
         try {
         const { data } = await axiosInstance.get("/organisation/getDonationLocations")
-    setLocations(data.data)
-    } catch (error) {
+        setLocations(data.data)
+        } catch (error) {
         console.error("Error fetching donation locations:", error)
-    }
+        }
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,23 +42,23 @@ interface IDonationLocation {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-            await axiosInstance.post("/organisation/addDonationLocation", newLocation)
-            setNewLocation({ name: "", contactDetails: "", location: "", timings: "" })
-            await fetchDonationLocations()
-            } catch (error) {
-                console.error("Error adding donation location:", error)
-            }
+        await axiosInstance.post("/organisation/addDonationLocation", newLocation)
+        setNewLocation({ name: "", contactDetails: "", location: "", timings: "" })
+        await fetchDonationLocations()
+        } catch (error) {
+        console.error("Error adding donation location:", error)
         }
+    }
 
     const handleDelete = async (locationId: string) => {
         try {
-            await axiosInstance.delete("/organisation/deleteDonationLocation", {
-                data: { locationId },
-                })
-                await fetchDonationLocations()
-                } catch (error) {
-                console.error("Error deleting donation location:", error)
-                }
+        await axiosInstance.delete("/organisation/deleteDonationLocation", {
+            data: { locationId },
+        })
+        await fetchDonationLocations()
+        } catch (error) {
+        console.error("Error deleting donation location:", error)
+        }
     }
 
     const handleEdit = (location: IDonationLocation) => {
@@ -71,81 +70,121 @@ interface IDonationLocation {
         if (!editingLocation) return
 
         try {
-            await axiosInstance.patch("/organisation/updateDonationLocation", editingLocation)
-            setEditingLocation(null)
-            await fetchDonationLocations()
-            } catch (error) {
-                console.error("Error updating donation location:", error)
-            }
+        await axiosInstance.patch("/organisation/updateDonationLocation", editingLocation)
+        setEditingLocation(null)
+        await fetchDonationLocations()
+        } catch (error) {
+        console.error("Error updating donation location:", error)
+        }
     }
 
     return (
-        <Card>
-        <CardHeader>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+            <CardHeader>
             <CardTitle>Donation Locations</CardTitle>
-        </CardHeader>
-        <CardContent>
+            </CardHeader>
+            <CardContent>
             <form onSubmit={handleSubmit} className="mb-4 space-y-4">
-            <Input name="name" placeholder="Name" value={newLocation.name} onChange={handleChange} />
-            <Input
+                <Input
+                name="name"
+                placeholder="Name"
+                value={newLocation.name}
+                onChange={handleChange}
+                className="bg-base-100"
+                />
+                <Input
                 name="contactDetails"
                 placeholder="Contact Details"
                 value={newLocation.contactDetails}
                 onChange={handleChange}
-            />
-            <Input name="location" placeholder="Location" value={newLocation.location} onChange={handleChange} />
-            <Input name="timings" placeholder="Timings" value={newLocation.timings} onChange={handleChange} />
-            <Button type="submit">Add Location</Button>
+                className="bg-base-100"
+                />
+                <Input
+                name="location"
+                placeholder="Location"
+                value={newLocation.location}
+                onChange={handleChange}
+                className="bg-base-100"
+                />
+                <Input
+                name="timings"
+                placeholder="Timings"
+                value={newLocation.timings}
+                onChange={handleChange}
+                className="bg-base-100"
+                />
+                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                Add Location
+                </Button>
             </form>
             <div className="space-y-4">
-            {locations.map((loc) => (
-                <Card key={loc._id}>
-                <CardContent>
+                {locations.map((loc) => (
+                <Card key={loc._id} className="bg-base-100">
+                    <CardContent className="pt-6">
                     {editingLocation && editingLocation._id === loc._id ? (
-                    <form onSubmit={handleUpdate} className="space-y-2">
+                        <form onSubmit={handleUpdate} className="space-y-2">
                         <Input
-                        name="name"
-                        value={editingLocation.name}
-                        onChange={(e) => setEditingLocation({ ...editingLocation, name: e.target.value })}
+                            name="name"
+                            value={editingLocation.name}
+                            onChange={(e) => setEditingLocation({ ...editingLocation, name: e.target.value })}
+                            className="bg-base-200"
                         />
                         <Input
-                        name="contactDetails"
-                        value={editingLocation.contactDetails}
-                        onChange={(e) => setEditingLocation({ ...editingLocation, contactDetails: e.target.value })}
+                            name="contactDetails"
+                            value={editingLocation.contactDetails}
+                            onChange={(e) => setEditingLocation({ ...editingLocation, contactDetails: e.target.value })}
+                            className="bg-base-200"
                         />
                         <Input
-                        name="location"
-                        value={editingLocation.location}
-                        onChange={(e) => setEditingLocation({ ...editingLocation, location: e.target.value })}
+                            name="location"
+                            value={editingLocation.location}
+                            onChange={(e) => setEditingLocation({ ...editingLocation, location: e.target.value })}
+                            className="bg-base-200"
                         />
                         <Input
-                        name="timings"
-                        value={editingLocation.timings}
-                        onChange={(e) => setEditingLocation({ ...editingLocation, timings: e.target.value })}
+                            name="timings"
+                            value={editingLocation.timings}
+                            onChange={(e) => setEditingLocation({ ...editingLocation, timings: e.target.value })}
+                            className="bg-base-200"
                         />
-                        <Button type="submit">Update</Button>
-                        <Button type="button" onClick={() => setEditingLocation(null)}>
-                        Cancel
+                        <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                            Update
                         </Button>
-                    </form>
+                        <Button
+                            type="button"
+                            onClick={() => setEditingLocation(null)}
+                            className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                        >
+                            Cancel
+                        </Button>
+                        </form>
                     ) : (
-                    <>
+                        <>
                         <h3 className="font-bold">{loc.name}</h3>
                         <p>{loc.contactDetails}</p>
                         <p>{loc.location}</p>
                         <p>{loc.timings}</p>
-                        <Button onClick={() => handleEdit(loc)}>Edit</Button>
-                        <Button variant="destructive" onClick={() => handleDelete(loc._id)}>
-                        Delete
-                        </Button>
-                    </>
+                        <div className="mt-4 space-x-2">
+                            <Button
+                            onClick={() => handleEdit(loc)}
+                            className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                            >
+                            Edit
+                            </Button>
+                            <Button variant="destructive" onClick={() => handleDelete(loc._id)}>
+                            Delete
+                            </Button>
+                        </div>
+                        </>
                     )}
-                </CardContent>
+                    </CardContent>
                 </Card>
-            ))}
+                ))}
             </div>
-        </CardContent>
+            </CardContent>
         </Card>
+        </motion.div>
     )
 }
 

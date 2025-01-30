@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { Types } from "mongoose"
 import axiosInstance from "@/util/axiosInstance"
+import { motion } from "framer-motion"
 
 interface IInventory {
     _id: string
@@ -31,36 +32,37 @@ interface IInventory {
 
     const fetchBloodAvailable = async () => {
         try {
-            const { data } = await axiosInstance.get("/patient/bloodAvailable")
-            setBloodAvailable(data.data)
+        const { data } = await axiosInstance.get("/patient/bloodAvailable")
+        setBloodAvailable(data.data)
         } catch (error) {
-            console.error("Error fetching blood availability:", error)
+        console.error("Error fetching blood availability:", error)
         }
     }
 
     return (
-        <Card>
-        <CardHeader>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+            <CardHeader>
             <CardTitle>Blood Availability</CardTitle>
-        </CardHeader>
-        <CardContent>
+            </CardHeader>
+            <CardContent>
             <Table>
-            <TableHeader>
+                <TableHeader>
                 <TableRow>
-                <TableHead>Organisation</TableHead>
-                <TableHead>A+</TableHead>
-                <TableHead>A-</TableHead>
-                <TableHead>B+</TableHead>
-                <TableHead>B-</TableHead>
-                <TableHead>AB+</TableHead>
-                <TableHead>AB-</TableHead>
-                <TableHead>O+</TableHead>
-                <TableHead>O-</TableHead>
+                    <TableHead>Organisation</TableHead>
+                    <TableHead>A+</TableHead>
+                    <TableHead>A-</TableHead>
+                    <TableHead>B+</TableHead>
+                    <TableHead>B-</TableHead>
+                    <TableHead>AB+</TableHead>
+                    <TableHead>AB-</TableHead>
+                    <TableHead>O+</TableHead>
+                    <TableHead>O-</TableHead>
                 </TableRow>
-            </TableHeader>
-            <TableBody>
+                </TableHeader>
+                <TableBody>
                 {bloodAvailable.map((inventory) => (
-                <TableRow key={inventory._id}>
+                    <TableRow key={inventory._id}>
                     <TableCell>{inventory.OrganisationId.name}</TableCell>
                     <TableCell>{inventory.A_P}</TableCell>
                     <TableCell>{inventory.A_M}</TableCell>
@@ -70,14 +72,15 @@ interface IInventory {
                     <TableCell>{inventory.AB_M}</TableCell>
                     <TableCell>{inventory.O_P}</TableCell>
                     <TableCell>{inventory.O_M}</TableCell>
-                </TableRow>
+                    </TableRow>
                 ))}
-            </TableBody>
+                </TableBody>
             </Table>
-        </CardContent>
+            </CardContent>
         </Card>
+        </motion.div>
     )
-}
+    }
 
 export default BloodAvailability
 
