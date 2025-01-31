@@ -382,37 +382,9 @@ const deleteOrganisation = async (req: Request,res: Response) => {
   }
 }
 
-const resetPassword = async (req: Request, res: Response) => {
-  try{
-    const { email, password } = req.body;
-
-    if(!email || !password){
-      return ResponseApi(res, 400, 'Please provide all required fields');
-    }
-
-    if(password.length < 6 || password.length > 20){
-      return ResponseApi(res, 400, 'Password must be at least 6 and at most 20 characters');
-    }
-
-    const existingOrganisation = await Organisation.findOne({ email });
-    if(!existingOrganisation){
-      return ResponseApi(res, 404, 'Admin not found');
-    }
-
-    const genSalt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, genSalt);
-
-    await Organisation.findByIdAndUpdate(existingOrganisation._id, { password: hashedPassword });
-
-    return ResponseApi(res, 200, 'Password reset successfully');
-  }catch(error){
-    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while resetting the password');
-  }
-}
-
 let otpMap = new Map<string, { otp: string; timestamp: number }>();
 
-const sendOTP = async (req: Request, res: Response) => {
+const sendOtpOrganisation = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
 
@@ -445,18 +417,13 @@ const sendOTP = async (req: Request, res: Response) => {
     // Send the email with the OTP
     await transporter.sendMail(mailOptions);
 
-    return res.status(200).json({
-      message: 'OTP sent successfully',
-      otp,
-    });
+    return ResponseApi(res, 200, 'OTP sent successfully');
   } catch (error) {
-    return res.status(500).json({
-      message: error instanceof Error ? error.message : 'An unknown error occurred while sending the OTP',
-    });
+    return ResponseApi(res, 400, 'OTP not sent');
   }
 };
 
-const verifyOTP = async (req: Request, res: Response) => {
+const verifyOtpOrganisation = async (req: Request, res: Response) => {
   try {
     const { email, otp } = req.body;
     if (!otpMap.has(email)) {
@@ -483,22 +450,51 @@ const verifyOTP = async (req: Request, res: Response) => {
   }
 };
 
+const resetPassword = async (req: Request, res: Response) => {
+  try{
+    const { email, password } = req.body;
+
+    if(!email || !password){
+      return ResponseApi(res, 400, 'Please provide all required fields');
+    }
+
+    if(password.length < 6 || password.length > 20){
+      return ResponseApi(res, 400, 'Password must be at least 6 and at most 20 characters');
+    }
+
+    const existingOrganisation = await Organisation.findOne({ email });
+    if(!existingOrganisation){
+      return ResponseApi(res, 404, 'Admin not found');
+    }
+
+    const genSalt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, genSalt);
+
+    await Organisation.findByIdAndUpdate(existingOrganisation._id, { password: hashedPassword });
+
+    return ResponseApi(res, 200, 'Password reset successfully');
+  }catch(error){
+    console.log(error);
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while resetting the password');
+  }
+}
+
 export {
   login,
   register,
+  getAnalytics,
   getInventory,
+  resetPassword,
   updateInventory,
   addBloodDonated,
   getBloodRequests,
+  deleteOrganisation,
   verifyOrganisation,
+  sendOtpOrganisation,
   addDonationLocation,
   completeBloodRequest,
-  deleteOrganisation,
+  getDonationLocations,
+  verifyOtpOrganisation,
   updateDonationLocation,
   deleteDonationLocation,
-  getDonationLocations,
-  resetPassword,
-  getAnalytics,
-  verifyOTP,
-  sendOTP,
 };

@@ -1,18 +1,21 @@
 import { 
-    login,
-    register,
-    addBloodDonated,
-    updateInventory,
-    getBloodRequests,
-    addDonationLocation,
-    completeBloodRequest,
-    updateDonationLocation,
-    deleteDonationLocation,
-    getInventory,
-    verifyOrganisation,
-    getDonationLocations,
-    deleteOrganisation,
-    getAnalytics,
+  login,
+  register,
+  getAnalytics,
+  getInventory,
+  resetPassword,
+  updateInventory,
+  addBloodDonated,
+  getBloodRequests,
+  deleteOrganisation,
+  verifyOrganisation,
+  sendOtpOrganisation,
+  addDonationLocation,
+  completeBloodRequest,
+  getDonationLocations,
+  verifyOtpOrganisation,
+  updateDonationLocation,
+  deleteDonationLocation,
 } from '../../controller/organisation.controller';
 import { Router } from 'express';
 import { organisationMiddleware } from '../../middleware/organisation.middleware';
@@ -29,6 +32,8 @@ router.get('/getAnalytics', organisationMiddleware, getAnalytics)
 
 router.post('/login', login);
 router.post('/register', register);
+router.post('/resetPassOrganisation', resetPassword);
+router.post('/sendOtpOrganisation', sendOtpOrganisation);
 router.post('/addBloodDonated', organisationMiddleware, addBloodDonated);
 router.post('/addDonationLocation', organisationMiddleware, addDonationLocation);
 
