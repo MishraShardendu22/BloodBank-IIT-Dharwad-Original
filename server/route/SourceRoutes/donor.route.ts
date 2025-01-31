@@ -1,13 +1,13 @@
 import { 
-  login,
-  register,
-  verifyDonor,
-  getDonationHistory,
-  getDonationLocation,
+  login, 
+  register, 
   deleteDonor, 
-  resetPassword, 
+  verifyDonor, 
   sendOtpDonor, 
-  verifyOtpDonor
+  resetPassword, 
+  verifyOtpDonor,
+  getDonationHistory, 
+  getDonationLocation, 
 } from '../../controller/donor.controller';
 import { Router } from 'express';
 import { donorMiddleware } from '../../middleware/donor.middleware';

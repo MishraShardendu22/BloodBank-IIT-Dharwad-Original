@@ -239,4 +239,14 @@ const resetPassword = async (req: Request, res: Response) => {
   }
 }
 
-export { login, deleteDonor, register, getDonationHistory, getDonationLocation, verifyDonor, resetPassword, sendOtpDonor, verifyOtpDonor };
+export { 
+  login, 
+  register, 
+  deleteDonor, 
+  verifyDonor, 
+  sendOtpDonor, 
+  resetPassword, 
+  verifyOtpDonor,
+  getDonationHistory, 
+  getDonationLocation, 
+};
