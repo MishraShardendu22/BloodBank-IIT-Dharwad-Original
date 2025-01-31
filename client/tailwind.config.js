@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ["class"],
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -15,6 +16,9 @@ export default {
           '50%': { transform: 'translateY(-20px)' },
         },
       },
+      colors: {
+        cream: "#FFFDD0",
+      }
     },
   },
   plugins: [require("daisyui")],

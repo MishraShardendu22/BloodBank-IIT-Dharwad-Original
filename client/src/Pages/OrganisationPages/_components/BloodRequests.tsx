@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import type { Types } from "mongoose"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
+import { useThemeStore } from "@/store/themeStore"
 
 interface IBloodRequest {
     _id: string
@@ -22,6 +23,7 @@ interface IBloodRequest {
 
     const OrganizationBloodRequests = () => {
     const [requests, setRequests] = useState<IBloodRequest[]>([])
+    const { theme } = useThemeStore()
 
     useEffect(() => {
         fetchBloodRequests()
@@ -47,26 +49,28 @@ interface IBloodRequest {
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Blood Requests</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Blood Requests</CardTitle>
             </CardHeader>
             <CardContent>
             <Table>
                 <TableHeader>
-                <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Patient Name</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Blood Type</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Action</TableHead>
+                <TableRow className={theme === "light" ? "bg-gray-50" : "bg-base-300/30"}>
+                    <TableHead className="font-semibold">Date</TableHead>
+                    <TableHead className="font-semibold">Patient Name</TableHead>
+                    <TableHead className="font-semibold">Contact</TableHead>
+                    <TableHead className="font-semibold">Blood Type</TableHead>
+                    <TableHead className="font-semibold">Quantity</TableHead>
+                    <TableHead className="font-semibold">Status</TableHead>
+                    <TableHead className="font-semibold">Action</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {requests.map((request) => (
-                    <TableRow key={request._id}>
+                    <TableRow key={request._id} className={`hover:${theme === "light" ? "bg-gray-50" : "bg-base-300/10"}`}>
                     <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>{request.patientId.name}</TableCell>
                     <TableCell>
@@ -81,7 +85,7 @@ interface IBloodRequest {
                         {!request.completed && (
                         <Button
                             onClick={() => handleComplete(request._id)}
-                            className="bg-primary text-primary-foreground hover:bg-primary/90"
+                            className={`${theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
                         >
                             Mark Completed
                         </Button>

@@ -18,6 +18,7 @@ import {
     } from "recharts"
     import axiosInstance from "@/util/axiosInstance"
     import { motion } from "framer-motion"
+    import { useThemeStore } from "@/store/themeStore"
 
     interface IAnalytics {
     donors: number
@@ -32,6 +33,7 @@ import {
     const Analytics = () => {
     const [analytics, setAnalytics] = useState<IAnalytics | null>(null)
     const [timeData, setTimeData] = useState<any[]>([])
+    const { theme } = useThemeStore()
 
     useEffect(() => {
         fetchAnalytics()
@@ -78,9 +80,11 @@ import {
         transition={{ delay: 0.3 }}
         className="space-y-6"
         >
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Analytics Overview</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Analytics Overview</CardTitle>
             </CardHeader>
             <CardContent>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
@@ -94,15 +98,17 @@ import {
         </Card>
 
         <Tabs defaultValue="distribution" className="w-full">
-            <TabsList className="bg-base-200/50 backdrop-blur-sm">
+            <TabsList className={`${theme === "light" ? "bg-gray-100" : "bg-base-200/50 backdrop-blur-sm"}`}>
             <TabsTrigger value="distribution">Distribution</TabsTrigger>
             <TabsTrigger value="comparison">Comparison</TabsTrigger>
             <TabsTrigger value="trend">Trend</TabsTrigger>
             </TabsList>
             <TabsContent value="distribution">
-            <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+            <Card
+                className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            >
                 <CardHeader>
-                <CardTitle>Distribution of Key Metrics</CardTitle>
+                <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Distribution of Key Metrics</CardTitle>
                 </CardHeader>
                 <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
@@ -117,7 +123,7 @@ import {
                         dataKey="value"
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
-                        {pieData.map((entry, index) => (
+                        {pieData.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                     </Pie>
@@ -129,9 +135,11 @@ import {
             </Card>
             </TabsContent>
             <TabsContent value="comparison">
-            <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+            <Card
+                className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            >
                 <CardHeader>
-                <CardTitle>Comparison of Key Metrics</CardTitle>
+                <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Comparison of Key Metrics</CardTitle>
                 </CardHeader>
                 <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
@@ -141,16 +149,20 @@ import {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="value" fill="#8884d8" />
+                    <Bar dataKey="value" fill={theme === "light" ? "#ef4444" : "#8884d8"} />
                     </BarChart>
                 </ResponsiveContainer>
                 </CardContent>
             </Card>
             </TabsContent>
             <TabsContent value="trend">
-            <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+            <Card
+                className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            >
                 <CardHeader>
-                <CardTitle>Donation and Request Trends (Last 7 Days)</CardTitle>
+                <CardTitle className={theme === "light" ? "text-gray-800" : ""}>
+                    Donation and Request Trends (Last 7 Days)
+                </CardTitle>
                 </CardHeader>
                 <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
@@ -160,8 +172,8 @@ import {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="donations" stroke="#8884d8" />
-                    <Line type="monotone" dataKey="requests" stroke="#82ca9d" />
+                    <Line type="monotone" dataKey="donations" stroke={theme === "light" ? "#ef4444" : "#8884d8"} />
+                    <Line type="monotone" dataKey="requests" stroke={theme === "light" ? "#22c55e" : "#82ca9d"} />
                     </LineChart>
                 </ResponsiveContainer>
                 </CardContent>
@@ -172,12 +184,15 @@ import {
     )
     }
 
-    const AnalyticItem = ({ title, value }: { title: string; value: number }) => (
-    <div className="p-4 rounded-lg bg-base-100">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-3xl font-bold text-primary">{value}</p>
-    </div>
-)
+    const AnalyticItem = ({ title, value }: { title: string; value: number }) => {
+    const { theme } = useThemeStore()
+    return (
+        <div className={`p-4 rounded-lg ${theme === "light" ? "bg-gray-50 border border-gray-200" : "bg-base-100"}`}>
+        <h3 className={`text-lg font-semibold ${theme === "light" ? "text-gray-800" : ""}`}>{title}</h3>
+        <p className={`text-3xl font-bold ${theme === "light" ? "text-red-600" : "text-primary"}`}>{value}</p>
+        </div>
+    )
+}
 
 export default Analytics
 

@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
+import { useThemeStore } from "@/store/themeStore"
 
 interface IDonationLocation {
     _id: string
@@ -18,6 +19,7 @@ interface IDonationLocation {
 
     const DonationLocationManagement = () => {
     const [locations, setLocations] = useState<IDonationLocation[]>([])
+    const { theme } = useThemeStore()
 
     useEffect(() => {
         fetchDonationLocations()
@@ -43,32 +45,38 @@ interface IDonationLocation {
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Donation Location Management</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Donation Location Management</CardTitle>
             </CardHeader>
             <CardContent>
             <Table>
                 <TableHeader>
-                <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Organization</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Timings</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Action</TableHead>
+                <TableRow className={theme === "light" ? "bg-gray-50 text-gray-500" : ""}>
+                    <TableHead className="font-semibold">Name</TableHead>
+                    <TableHead className="font-semibold">Organization</TableHead>
+                    <TableHead className="font-semibold">Location</TableHead>
+                    <TableHead className="font-semibold">Timings</TableHead>
+                    <TableHead className="font-semibold">Contact</TableHead>
+                    <TableHead className="font-semibold">Action</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {locations.map((location) => (
-                    <TableRow key={location._id}>
+                    <TableRow key={location._id} className={`hover:${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300/10"}`}>
                     <TableCell>{location.name}</TableCell>
                     <TableCell>{location.organisationId.name}</TableCell>
                     <TableCell>{location.location}</TableCell>
                     <TableCell>{location.timings}</TableCell>
                     <TableCell>{location.contactDetails}</TableCell>
                     <TableCell>
-                        <Button variant="destructive" onClick={() => handleDelete(location._id)}>
+                        <Button
+                        variant="destructive"
+                        onClick={() => handleDelete(location._id)}
+                        className={theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : ""}
+                        >
                         Delete
                         </Button>
                     </TableCell>
@@ -83,5 +91,4 @@ interface IDonationLocation {
 }
 
 export default DonationLocationManagement
-
 

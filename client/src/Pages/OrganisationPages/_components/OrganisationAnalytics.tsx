@@ -15,6 +15,7 @@ import {
     } from "recharts"
     import axiosInstance from "@/util/axiosInstance"
     import { motion } from "framer-motion"
+    import { useThemeStore } from "@/store/themeStore"
 
     interface IAdminAnalytics {
     donors: number
@@ -41,6 +42,7 @@ import {
 
     const OrganisationAnalytics = () => {
     const [analytics, setAnalytics] = useState<IOrganisationAnalytics | null>(null)
+    const { theme } = useThemeStore()
 
     useEffect(() => {
         fetchAnalytics()
@@ -96,9 +98,11 @@ import {
         transition={{ delay: 0.3 }}
         className="space-y-6"
         >
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Overview</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <AnalyticItem title="Total Donations" value={analytics.totalDonations} />
@@ -108,9 +112,11 @@ import {
             </CardContent>
         </Card>
 
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Inventory Status</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Inventory Status</CardTitle>
             </CardHeader>
             <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -120,15 +126,17 @@ import {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="value" fill="#8884d8" />
+                <Bar dataKey="value" fill={theme === "light" ? "#ef4444" : "#8884d8"} />
                 </BarChart>
             </ResponsiveContainer>
             </CardContent>
         </Card>
 
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Blood Type Distribution</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Blood Type Distribution</CardTitle>
             </CardHeader>
             <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -157,12 +165,15 @@ import {
     )
     }
 
-    const AnalyticItem = ({ title, value }: { title: string; value: number }) => (
-    <div className="p-4 rounded-lg bg-base-100">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-3xl font-bold text-primary">{value}</p>
-    </div>
-)
+    const AnalyticItem = ({ title, value }: { title: string; value: number }) => {
+    const { theme } = useThemeStore()
+    return (
+        <div className={`p-4 rounded-lg ${theme === "light" ? "bg-gray-50 border border-gray-200" : "bg-base-100"}`}>
+        <h3 className={`text-lg font-semibold ${theme === "light" ? "text-gray-800" : ""}`}>{title}</h3>
+        <p className={`text-3xl font-bold ${theme === "light" ? "text-red-600" : "text-primary"}`}>{value}</p>
+        </div>
+    )
+}
 
 export default OrganisationAnalytics
 

@@ -127,51 +127,7 @@
 
 <body>
   <div id="root"></div>
-  <button id="theme-toggle" aria-label="Toggle Theme">
-    <span>🌑</span>
-  </button>
   <script type="module" src="/src/main.tsx"></script>
-  <script>
-    // Theme toggle functionality with improved browser compatibility
-    const themeToggle = document.getElementById('theme-toggle');
-    const htmlElement = document.documentElement;
-    const themeIcon = themeToggle.querySelector('span');
-
-    // Detect system preference and set initial theme
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    const storedTheme = localStorage.getItem('theme');
-
-    function setTheme(theme) {
-      if (theme === 'light' || (theme !== 'dark' && prefersDarkScheme.matches)) {
-        htmlElement.classList.remove('dark');
-        themeIcon.textContent = '☀️';
-        localStorage.setItem('theme', 'light');
-      } else {
-        htmlElement.classList.add('dark');
-        themeIcon.textContent = '🌑';
-        localStorage.setItem('theme', 'dark');
-      }
-    }
-
-    // Initial theme setup
-    setTheme(storedTheme);
-
-    // Add event listener to toggle button
-    themeToggle.addEventListener('click', () => {
-      themeIcon.classList.add('icon-rotate');
-      setTimeout(() => themeIcon.classList.remove('icon-rotate'), 200);
-
-      // Toggle theme
-      if (htmlElement.classList.contains('dark')) {
-        setTheme('light');
-      } else {
-        setTheme('dark');
-      }
-    });
-
-    // Listen for system theme changes
-    prefersDarkScheme.addListener(setTheme);
-  </script>
 </body>
 
 </html>

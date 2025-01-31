@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import type { Types } from "mongoose"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
+import { useThemeStore } from "@/store/themeStore"
 
 interface IInventory {
     _id: string
@@ -25,6 +26,7 @@ interface IInventory {
 
     const BloodAvailability = () => {
     const [bloodAvailable, setBloodAvailable] = useState<IInventory[]>([])
+    const { theme } = useThemeStore()
 
     useEffect(() => {
         fetchBloodAvailable()
@@ -41,29 +43,34 @@ interface IInventory {
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Blood Availability</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Blood Availability</CardTitle>
             </CardHeader>
             <CardContent>
             <Table>
                 <TableHeader>
-                <TableRow>
-                    <TableHead>Organisation</TableHead>
-                    <TableHead>A+</TableHead>
-                    <TableHead>A-</TableHead>
-                    <TableHead>B+</TableHead>
-                    <TableHead>B-</TableHead>
-                    <TableHead>AB+</TableHead>
-                    <TableHead>AB-</TableHead>
-                    <TableHead>O+</TableHead>
-                    <TableHead>O-</TableHead>
+                <TableRow className={theme === "light" ? "bg-gray-50 text-gray-600" : ""}>
+                    <TableHead className="font-semibold">Organisation</TableHead>
+                    <TableHead className="font-semibold">A+</TableHead>
+                    <TableHead className="font-semibold">A-</TableHead>
+                    <TableHead className="font-semibold">B+</TableHead>
+                    <TableHead className="font-semibold">B-</TableHead>
+                    <TableHead className="font-semibold">AB+</TableHead>
+                    <TableHead className="font-semibold">AB-</TableHead>
+                    <TableHead className="font-semibold">O+</TableHead>
+                    <TableHead className="font-semibold">O-</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {bloodAvailable.map((inventory) => (
-                    <TableRow key={inventory._id}>
-                    <TableCell>{inventory.OrganisationId.name}</TableCell>
+                    <TableRow
+                    key={inventory._id}
+                    className={`hover:${theme === "light" ? "bg-gray-50 text-gray-500" : "bg-base-300/10"}`}
+                    >
+                    <TableCell className="font-medium">{inventory.OrganisationId.name}</TableCell>
                     <TableCell>{inventory.A_P}</TableCell>
                     <TableCell>{inventory.A_M}</TableCell>
                     <TableCell>{inventory.B_P}</TableCell>
@@ -80,7 +87,7 @@ interface IInventory {
         </Card>
         </motion.div>
     )
-    }
+}
 
 export default BloodAvailability
 
