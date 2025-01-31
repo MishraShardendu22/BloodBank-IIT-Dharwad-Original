@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
+import { useThemeStore } from "@/store/themeStore"
 
 const BloodDonation = () => {
     const [donationData, setDonationData] = useState({ donorEmail: "", quantity: "" })
+    const { theme } = useThemeStore()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDonationData({ ...donationData, [e.target.name]: e.target.value })
@@ -26,9 +28,11 @@ const BloodDonation = () => {
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Add Blood Donation</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Add Blood Donation</CardTitle>
             </CardHeader>
             <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -37,16 +41,19 @@ const BloodDonation = () => {
                 placeholder="Donor Email"
                 value={donationData.donorEmail}
                 onChange={handleChange}
-                className="bg-base-100"
+                className={theme === "light" ? "bg-gray-50 border-gray-300" : "bg-base-100"}
                 />
                 <Input
                 name="quantity"
                 placeholder="Quantity"
                 value={donationData.quantity}
                 onChange={handleChange}
-                className="bg-base-100"
+                className={theme === "light" ? "bg-gray-50 border-gray-300" : "bg-base-100"}
                 />
-                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button
+                type="submit"
+                className={`w-full ${theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
+                >
                 Add Donation
                 </Button>
             </form>
@@ -54,7 +61,7 @@ const BloodDonation = () => {
         </Card>
         </motion.div>
     )
-}
+    }
 
 export default BloodDonation
 

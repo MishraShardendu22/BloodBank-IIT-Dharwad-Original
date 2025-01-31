@@ -347,6 +347,7 @@ const getDonationLocations = async (req: Request, res: Response) => {
 
 const getAnalytics = async (req: Request, res: Response) => {
   try{
+    
     const organisations = await Organisation.countDocuments();
     const donationLocations = await DonationLocation.countDocuments();
     const bloodRequests = await BloodRequest.countDocuments();

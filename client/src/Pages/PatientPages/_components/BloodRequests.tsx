@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { Types } from "mongoose"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
+import { useThemeStore } from "@/store/themeStore"
 
 interface IBloodRequest {
     _id: string
@@ -21,6 +22,7 @@ interface IBloodRequest {
     const PatientBloodRequests = () => {
     const [bloodRequests, setBloodRequests] = useState<IBloodRequest[]>([])
     const [newRequest, setNewRequest] = useState({ bloodGroup: "", units: "" })
+    const { theme } = useThemeStore()
 
     useEffect(() => {
         fetchBloodRequests()
@@ -61,9 +63,11 @@ interface IBloodRequest {
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>My Blood Requests</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>My Blood Requests</CardTitle>
             </CardHeader>
             <CardContent>
             <form onSubmit={handleSubmitRequest} className="mb-6 space-y-4">
@@ -72,12 +76,16 @@ interface IBloodRequest {
                     value={newRequest.bloodGroup}
                     onValueChange={(value) => handleNewRequestChange("bloodGroup", value)}
                 >
-                    <SelectTrigger className="w-full bg-base-100">
+                    <SelectTrigger className={`w-full ${theme === "light" ? "bg-gray-50 border-gray-300" : "bg-base-100"}`}>
                     <SelectValue placeholder="Select blood group" />
                     </SelectTrigger>
-                    <SelectContent className="bg-base-100">
+                    <SelectContent className={theme === "light" ? "bg-white text-gray-600" : "bg-base-100"}>
                     {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((type) => (
-                        <SelectItem key={type} value={type} className="hover:bg-base-200">
+                        <SelectItem
+                        key={type}
+                        value={type}
+                        className={`hover:${theme === "light" ? "bg-gray-100" : "bg-base-200"}`}
+                        >
                         {type}
                         </SelectItem>
                     ))}
@@ -89,32 +97,39 @@ interface IBloodRequest {
                 placeholder="Units required"
                 value={newRequest.units}
                 onChange={(e) => handleNewRequestChange("units", e.target.value)}
-                className="w-full bg-base-100"
+                className={`w-full ${theme === "light" ? "bg-gray-50 border-gray-300" : "bg-base-100"}`}
                 />
-                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button
+                type="submit"
+                className={`w-full ${theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
+                >
                 Submit Request
                 </Button>
             </form>
             <Table>
                 <TableHeader>
-                <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Blood Type</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Action</TableHead>
+                <TableRow className={theme === "light" ? "bg-gray-50 text-gray-600" : ""}>
+                    <TableHead className="font-semibold">Date</TableHead>
+                    <TableHead className="font-semibold">Blood Type</TableHead>
+                    <TableHead className="font-semibold">Quantity</TableHead>
+                    <TableHead className="font-semibold">Status</TableHead>
+                    <TableHead className="font-semibold">Action</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {bloodRequests.map((request) => (
-                    <TableRow key={request._id}>
+                    <TableRow key={request._id} className={`hover:${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300/10"}`}>
                     <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>{request.type}</TableCell>
                     <TableCell>{request.quantity}</TableCell>
                     <TableCell>{request.completed ? "Completed" : "Pending"}</TableCell>
                     <TableCell>
                         {!request.completed && (
-                        <Button variant="destructive" onClick={() => handleDeleteRequest(request._id)}>
+                        <Button
+                            variant="destructive"
+                            onClick={() => handleDeleteRequest(request._id)}
+                            className={theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : ""}
+                        >
                             Delete
                         </Button>
                         )}

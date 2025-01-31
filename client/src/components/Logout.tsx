@@ -1,14 +1,22 @@
-import { useNavigate } from 'react-router-dom';
-import { Button } from './ui/button';
-import { LogOut as LogOutIcon } from 'lucide-react';
+import type React from "react"
+import { useNavigate } from "react-router-dom"
+import { Button } from "./ui/button"
+import { LogOutIcon } from "lucide-react"
+import { useUserStore } from "../store/store"
 
-const LogOut = () => {
-  const navigate = useNavigate();
+interface LogoutProps {
+  className?: string
+}
+
+const LogOut: React.FC<LogoutProps> = () => {
+  const navigate = useNavigate()
+  const logout = useUserStore((state: any) => state.logout)
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/');
-  };
+    logout()
+    localStorage.removeItem("token")
+    navigate("/")
+  }
 
   return (
     <Button
@@ -19,7 +27,8 @@ const LogOut = () => {
       <LogOutIcon className="w-5 h-5" />
       Log-Out
     </Button>
-  );
-};
+  )
+}
 
-export default LogOut;
+export default LogOut
+

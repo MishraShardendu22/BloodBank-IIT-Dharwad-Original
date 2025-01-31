@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import type { Types } from "mongoose"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
+import { useThemeStore } from "@/store/themeStore"
 
 interface IDonationLocation {
     _id: string
@@ -21,6 +22,7 @@ interface IDonationLocation {
     const [locations, setLocations] = useState<IDonationLocation[]>([])
     const [newLocation, setNewLocation] = useState({ name: "", contactDetails: "", location: "", timings: "" })
     const [editingLocation, setEditingLocation] = useState<IDonationLocation | null>(null)
+    const { theme } = useThemeStore()
 
     useEffect(() => {
         fetchDonationLocations()
@@ -80,9 +82,11 @@ interface IDonationLocation {
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Donation Locations</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Donation Locations</CardTitle>
             </CardHeader>
             <CardContent>
             <form onSubmit={handleSubmit} className="mb-4 space-y-4">
@@ -91,36 +95,39 @@ interface IDonationLocation {
                 placeholder="Name"
                 value={newLocation.name}
                 onChange={handleChange}
-                className="bg-base-100"
+                className={theme === "light" ? "bg-gray-50 border-gray-300" : "bg-base-100"}
                 />
                 <Input
                 name="contactDetails"
                 placeholder="Contact Details"
                 value={newLocation.contactDetails}
                 onChange={handleChange}
-                className="bg-base-100"
+                className={theme === "light" ? "bg-gray-50 border-gray-300" : "bg-base-100"}
                 />
                 <Input
                 name="location"
                 placeholder="Location"
                 value={newLocation.location}
                 onChange={handleChange}
-                className="bg-base-100"
+                className={theme === "light" ? "bg-gray-50 border-gray-300" : "bg-base-100"}
                 />
                 <Input
                 name="timings"
                 placeholder="Timings"
                 value={newLocation.timings}
                 onChange={handleChange}
-                className="bg-base-100"
+                className={theme === "light" ? "bg-gray-50 border-gray-300" : "bg-base-100"}
                 />
-                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button
+                type="submit"
+                className={`w-full ${theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
+                >
                 Add Location
                 </Button>
             </form>
             <div className="space-y-4">
                 {locations.map((loc) => (
-                <Card key={loc._id} className="bg-base-100">
+                <Card key={loc._id} className={theme === "light" ? "bg-gray-50 border-gray-200" : "bg-base-100"}>
                     <CardContent className="pt-6">
                     {editingLocation && editingLocation._id === loc._id ? (
                         <form onSubmit={handleUpdate} className="space-y-2">
@@ -128,47 +135,50 @@ interface IDonationLocation {
                             name="name"
                             value={editingLocation.name}
                             onChange={(e) => setEditingLocation({ ...editingLocation, name: e.target.value })}
-                            className="bg-base-200"
+                            className={theme === "light" ? "bg-white border-gray-300" : "bg-base-200"}
                         />
                         <Input
                             name="contactDetails"
                             value={editingLocation.contactDetails}
                             onChange={(e) => setEditingLocation({ ...editingLocation, contactDetails: e.target.value })}
-                            className="bg-base-200"
+                            className={theme === "light" ? "bg-white border-gray-300" : "bg-base-200"}
                         />
                         <Input
                             name="location"
                             value={editingLocation.location}
                             onChange={(e) => setEditingLocation({ ...editingLocation, location: e.target.value })}
-                            className="bg-base-200"
+                            className={theme === "light" ? "bg-white border-gray-300" : "bg-base-200"}
                         />
                         <Input
                             name="timings"
                             value={editingLocation.timings}
                             onChange={(e) => setEditingLocation({ ...editingLocation, timings: e.target.value })}
-                            className="bg-base-200"
+                            className={theme === "light" ? "bg-white border-gray-300" : "bg-base-200"}
                         />
-                        <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                        <Button
+                            type="submit"
+                            className={`${theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
+                        >
                             Update
                         </Button>
                         <Button
                             type="button"
                             onClick={() => setEditingLocation(null)}
-                            className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                            className={`${theme === "light" ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-secondary text-secondary-foreground hover:bg-secondary/90"}`}
                         >
                             Cancel
                         </Button>
                         </form>
                     ) : (
                         <>
-                        <h3 className="font-bold">{loc.name}</h3>
-                        <p>{loc.contactDetails}</p>
-                        <p>{loc.location}</p>
-                        <p>{loc.timings}</p>
+                        <h3 className={`font-bold ${theme === "light" ? "text-gray-800" : ""}`}>{loc.name}</h3>
+                        <p className={theme === "light" ? "text-gray-600" : ""}>{loc.contactDetails}</p>
+                        <p className={theme === "light" ? "text-gray-600" : ""}>{loc.location}</p>
+                        <p className={theme === "light" ? "text-gray-600" : ""}>{loc.timings}</p>
                         <div className="mt-4 space-x-2">
                             <Button
                             onClick={() => handleEdit(loc)}
-                            className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                            className={`${theme === "light" ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-secondary text-secondary-foreground hover:bg-secondary/90"}`}
                             >
                             Edit
                             </Button>
@@ -186,7 +196,7 @@ interface IDonationLocation {
         </Card>
         </motion.div>
     )
-}
+    }
 
 export default DonationLocations
 

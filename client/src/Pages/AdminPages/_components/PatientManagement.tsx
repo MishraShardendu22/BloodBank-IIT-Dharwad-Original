@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
+import { useThemeStore } from "@/store/themeStore"
 
 interface IPatient {
     _id: string
@@ -14,6 +15,7 @@ interface IPatient {
 
     const PatientManagement = () => {
     const [patients, setPatients] = useState<IPatient[]>([])
+    const { theme } = useThemeStore()
 
     useEffect(() => {
         fetchPatients()
@@ -39,28 +41,34 @@ interface IPatient {
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <Card className="bg-base-200/50 backdrop-blur-sm border-primary/10">
+        <Card
+            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+        >
             <CardHeader>
-            <CardTitle>Patient Management</CardTitle>
+            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Patient Management</CardTitle>
             </CardHeader>
             <CardContent>
             <Table>
                 <TableHeader>
-                <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Action</TableHead>
+                <TableRow className={theme === "light" ? "bg-gray-50 text-gray-500" : ""}>
+                    <TableHead className="font-semibold">Name</TableHead>
+                    <TableHead className="font-semibold">Email</TableHead>
+                    <TableHead className="font-semibold">Phone</TableHead>
+                    <TableHead className="font-semibold">Action</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {patients.map((patient) => (
-                    <TableRow key={patient._id}>
+                    <TableRow key={patient._id} className={`hover:${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300/10"}`}>
                     <TableCell>{patient.name}</TableCell>
                     <TableCell>{patient.email}</TableCell>
                     <TableCell>{patient.phoneNo || "N/A"}</TableCell>
                     <TableCell>
-                        <Button variant="destructive" onClick={() => handleDelete(patient._id)}>
+                        <Button
+                        variant="destructive"
+                        onClick={() => handleDelete(patient._id)}
+                        className={theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : ""}
+                        >
                         Delete
                         </Button>
                     </TableCell>
@@ -72,8 +80,7 @@ interface IPatient {
         </Card>
         </motion.div>
     )
-    }
+}
 
 export default PatientManagement
-
 

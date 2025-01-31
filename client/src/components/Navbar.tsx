@@ -1,39 +1,52 @@
-import { Menu, Droplets } from "lucide-react"
-import { motion } from "framer-motion"
+import { Droplets, Moon, Sun } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import LogOut from "./Logout"
+import { useThemeStore } from "../store/themeStore"
+import { useUserStore } from "../store/store"
+import { Button } from "@/components/ui/button"
 
 const Navbar = () => {
     const navigate = useNavigate()
+    const { theme, toggleTheme } = useThemeStore()
+    const user = useUserStore((state: any) => state.user)
+
     return (
-        <div className="fixed top-0 z-50 w-full navbar bg-base-100/50 backdrop-blur-lg">
-        <div className="navbar-start">
-            <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-                <Menu className="w-5 h-5" />
+        <nav className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-4 border-b backdrop-blur-sm border-primary/10 
+            ${theme === 'light' 
+                ? 'bg-white/50 text-gray-900' 
+                : 'bg-base-200/50 text-white'
+            }`}
+        >
+            <div className="flex items-center gap-2">
+                <Droplets className="w-6 h-6 text-primary" />
+                <button
+                    onClick={() => navigate("/")}
+                    className={`text-xl font-bold text-transparent bg-clip-text
+                        ${theme === 'light'
+                            ? 'bg-gradient-to-r from-gray-900 to-primary/80'
+                            : 'bg-gradient-to-r from-white to-primary/50'
+                        }`}
+                >
+                    BloodSphere
+                </button>
             </div>
+            <div className="flex items-center gap-2">
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={toggleTheme}
+                    className={theme === 'light' ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'}
+                >
+                    {theme === "light" ? (
+                        <Moon className="h-[1.2rem] w-[1.2rem]" />
+                    ) : (
+                        <Sun className="h-[1.2rem] w-[1.2rem]" />
+                    )}
+                </Button>
+                {user && <LogOut />}
             </div>
-            <motion.a
-            className="gap-2 text-xl btn btn-ghost"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            >
-            <Droplets className="w-6 h-6 text-primary" />
-            <span
-                onClick={() => navigate("/")}
-                className="font-bold text-transparent bg-gradient-to-r from-white to-primary/50 bg-clip-text"
-            >
-                BloodSphere
-            </span>
-            </motion.a>
-        </div>
-        <div className="hidden navbar-center lg:flex"></div>
-        <div className="navbar-end">
-            <LogOut />
-        </div>
-        </div>
+        </nav>
     )
-    }
+}
 
-    export default Navbar
-
+export default Navbar
