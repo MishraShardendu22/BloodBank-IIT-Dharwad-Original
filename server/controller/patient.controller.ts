@@ -290,9 +290,33 @@ const resetPassword = async (req: Request, res: Response) => {
   }
 }
 
+const updateUser = async (req: Request, res: Response) => {
+  try{
+    const { _id,name,email,phoneNo } = req.body;
+
+    if(!_id || !name || !email || !phoneNo){
+      return ResponseApi(res, 400, 'User ID is required');
+    }
+
+    await Patient.findByIdAndUpdate(
+      {_id : _id},
+      {
+        name,
+        email,
+        phoneNo
+      }
+    )
+
+    return ResponseApi(res, 200, 'User updated successfully');
+  }catch(error){
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while updating the user');
+  }
+}
+
 export {
   login,
   register,
+  updateUser,
   deletePatient,
   verifyPatient,
   resetPassword,

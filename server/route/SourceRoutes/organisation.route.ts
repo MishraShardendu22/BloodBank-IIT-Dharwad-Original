@@ -24,16 +24,17 @@ const router = Router();
 // Routes Go Here
 
 
+router.get('/getAnalytics', organisationMiddleware, getAnalytics)
 router.get('/getInventory', organisationMiddleware, getInventory)
 router.get('/getBloodRequests', organisationMiddleware, getBloodRequests);
 router.get('/verifyOrganisation', organisationMiddleware, verifyOrganisation);
 router.get('/getDonationLocations', organisationMiddleware, getDonationLocations)
-router.get('/getAnalytics', organisationMiddleware, getAnalytics)
 
 router.post('/login', login);
 router.post('/register', register);
 router.post('/resetPassOrganisation', resetPassword);
 router.post('/sendOtpOrganisation', sendOtpOrganisation);
+router.post('/verifyOtpOrganisation', verifyOtpOrganisation);
 router.post('/addBloodDonated', organisationMiddleware, addBloodDonated);
 router.post('/addDonationLocation', organisationMiddleware, addDonationLocation);
 
@@ -43,6 +44,8 @@ router.patch('/updateDonationLocation', organisationMiddleware, updateDonationLo
 
 router.delete('/deleteDonationLocation', organisationMiddleware, deleteDonationLocation);
 router.delete('/deleteOrganisation', organisationMiddleware, deleteOrganisation);
+
+router.put('/updateorganisation', organisationMiddleware, updateInventory);
 
 // Routes Go Here
 

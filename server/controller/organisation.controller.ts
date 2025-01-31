@@ -427,7 +427,7 @@ const verifyOtpOrganisation = async (req: Request, res: Response) => {
   try {
     const { email, otp } = req.body;
     if (!otpMap.has(email)) {
-      return res.status(400).json({ message: 'OTP not found or expired' });
+      return ResponseApi(res, 400, 'OTP not sent');
     }
 
     const storedOtp = otpMap.get(email);
@@ -435,18 +435,16 @@ const verifyOtpOrganisation = async (req: Request, res: Response) => {
 
     if (isExpired) {
       otpMap.delete(email);
-      return res.status(400).json({ message: 'OTP has expired' });
+      return ResponseApi(res, 400, 'OTP expired');
     }
 
     if (storedOtp!.otp !== otp) {
-      return res.status(400).json({ message: 'Invalid OTP' });
+      return ResponseApi(res, 400, 'OTP not verified');
     }
 
-    return res.status(200).json({ message: 'OTP verified successfully' });
+    return ResponseApi(res, 200, 'OTP verified successfully');
   } catch (error) {
-    return res.status(500).json({
-      message: error instanceof Error ? error.message : 'An unknown error occurred while verifying the OTP',
-    });
+    return ResponseApi(res, 400, 'OTP Not verified');
   }
 };
 
@@ -479,9 +477,33 @@ const resetPassword = async (req: Request, res: Response) => {
   }
 }
 
+const updateUser = async (req: Request, res: Response) => {
+  try{
+    const { _id,name,email,phoneNo } = req.body;
+
+    if(!_id || !name || !email || !phoneNo){
+      return ResponseApi(res, 400, 'User ID is required');
+    }
+
+    await Organisation.findByIdAndUpdate(
+      {_id : _id},
+      {
+        name,
+        email,
+        phoneNo
+      }
+    )
+
+    return ResponseApi(res, 200, 'User updated successfully');
+  }catch(error){
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while updating the user');
+  }
+}
+
 export {
   login,
   register,
+  updateUser,
   getAnalytics,
   getInventory,
   resetPassword,

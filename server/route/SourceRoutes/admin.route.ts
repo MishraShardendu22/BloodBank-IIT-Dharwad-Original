@@ -14,6 +14,7 @@ import {
   deleteDonor,
   getPatients,
   deleteAdmin,
+  updateUser,
   getDonors,
   register,
   login,
@@ -45,6 +46,8 @@ router.delete('/deletePatient',adminMiddleware ,deletePatient);
 router.delete('/deleteOrganisation',adminMiddleware ,deleteOrganisation);
 router.delete('/deleteBloodRequest',adminMiddleware ,deleteBloodRequest);
 router.delete('/deleteDonationLocation',adminMiddleware ,deleteDonationLocation);
+
+router.put('/updateAdmin',adminMiddleware ,updateUser);
 
 // Routes Go Here
 

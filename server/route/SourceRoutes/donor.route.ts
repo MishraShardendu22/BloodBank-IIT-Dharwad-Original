@@ -1,13 +1,14 @@
 import { 
   login, 
   register, 
+  updateUser, 
   deleteDonor, 
   verifyDonor, 
   sendOtpDonor, 
   resetPassword, 
   verifyOtpDonor,
   getDonationHistory, 
-  getDonationLocation, 
+  getDonationLocation,
 } from '../../controller/donor.controller';
 import { Router } from 'express';
 import { donorMiddleware } from '../../middleware/donor.middleware';
@@ -28,6 +29,7 @@ router.get('/verifyDonor',donorMiddleware ,verifyDonor);
 
 router.delete('/deleteDonor',donorMiddleware ,deleteDonor);
 
+router.put('/updateDonor',donorMiddleware ,updateUser);
 
 // Routes Go Here
 

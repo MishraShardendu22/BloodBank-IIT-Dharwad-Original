@@ -10,6 +10,7 @@ import {
   postBloodRequest,
   getBloodAvailable,
   deleteBloodRequest,
+  updateUser,
 } from '../../controller/patient.controller';
 
 import { Router } from 'express';
@@ -33,6 +34,7 @@ router.get('/bloodAvailable',patientMiddleware, getBloodAvailable);
 router.delete('/deletePatient',patientMiddleware, deletePatient);
 router.delete('/bloodRequest/:requestId',patientMiddleware, deleteBloodRequest);
 
+router.put('/updatePatient', patientMiddleware, updateUser);
 // Routes Go Here
 
 export default router;
