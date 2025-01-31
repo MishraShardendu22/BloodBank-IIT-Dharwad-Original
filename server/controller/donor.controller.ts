@@ -132,12 +132,11 @@ const verifyDonor = async (req: Request,res: Response) => {
 
 let otpMap = new Map<string, { otp: string; timestamp: number }>();
 
-const sendOTP = async (req: Request, res: Response) => {
+const sendOtpDonor = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
-
     authenticator.options = { step: 600 };
-    
+
     const secret = authenticator.generateSecret();
     const otp = authenticator.generate(secret);
 
@@ -155,32 +154,22 @@ const sendOTP = async (req: Request, res: Response) => {
       from: process.env.MAIL_ID,
       to: email,
       subject: '🩸 Your Blood Can Save Lives 🩸',
-      html: `
-        <h1>
-          Your OTP is: <strong>${otp}</strong>
-        </h1>
-      `,
+      html: `<h1>Your OTP is: <strong>${otp}</strong></h1>`,
     };
 
-    // Send the email with the OTP
     await transporter.sendMail(mailOptions);
 
-    return res.status(200).json({
-      message: 'OTP sent successfully',
-      otp,
-    });
+    return ResponseApi(res, 200, 'OTP sent successfully');
   } catch (error) {
-    return res.status(500).json({
-      message: error instanceof Error ? error.message : 'An unknown error occurred while sending the OTP',
-    });
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while sending the OTP');
   }
 };
 
-const verifyOTP = async (req: Request, res: Response) => {
+const verifyOtpDonor = async (req: Request, res: Response) => {
   try {
     const { email, otp } = req.body;
     if (!otpMap.has(email)) {
-      return res.status(400).json({ message: 'OTP not found or expired' });
+      return ResponseApi(res, 400, 'OTP not sent');
     }
 
     const storedOtp = otpMap.get(email);
@@ -188,18 +177,16 @@ const verifyOTP = async (req: Request, res: Response) => {
 
     if (isExpired) {
       otpMap.delete(email);
-      return res.status(400).json({ message: 'OTP has expired' });
+      return ResponseApi(res, 400, 'OTP expired');
     }
 
     if (storedOtp!.otp !== otp) {
-      return res.status(400).json({ message: 'Invalid OTP' });
+      return ResponseApi(res, 400, 'OTP not verified');
     }
 
-    return res.status(200).json({ message: 'OTP verified successfully' });
+    return ResponseApi(res, 200, 'OTP verified successfully');
   } catch (error) {
-    return res.status(500).json({
-      message: error instanceof Error ? error.message : 'An unknown error occurred while verifying the OTP',
-    });
+    return ResponseApi(res, 400, 'OTP Not verified');
   }
 };
 
@@ -252,4 +239,4 @@ const resetPassword = async (req: Request, res: Response) => {
   }
 }
 
-export { login, deleteDonor, register, getDonationHistory, getDonationLocation, verifyDonor, resetPassword,verifyOTP, sendOTP };
+export { login, deleteDonor, register, getDonationHistory, getDonationLocation, verifyDonor, resetPassword, sendOtpDonor, verifyOtpDonor };
