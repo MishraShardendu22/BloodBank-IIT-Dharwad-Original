@@ -4,7 +4,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { BloodRequest, Inventory, Patient } from '../model/model';
 import { IPatient } from '../model/schema/patient.schema';
-
+import { authenticator } from 'otplib';
+import nodemailer from 'nodemailer';
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -194,6 +195,72 @@ const deletePatient = async (req: Request,res: Response) => {
   }
 }
 
+let otpMap = new Map<string, { otp: string; timestamp: number }>();
+
+const sendOtpPatient = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    authenticator.options = { step: 600 };
+    
+    const secret = authenticator.generateSecret();
+    const otp = authenticator.generate(secret);
+
+    otpMap.set(email, { otp, timestamp: Date.now() });
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.MAIL_ID,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.MAIL_ID,
+      to: email,
+      subject: '🩸 Your Blood Can Save Lives 🩸',
+      html: `
+        <h1>
+          Your OTP is: <strong>${otp}</strong>
+        </h1>
+      `,
+    };
+
+    // Send the email with the OTP
+    await transporter.sendMail(mailOptions);
+
+    return ResponseApi(res, 200, 'OTP sent successfully');
+  } catch (error) {
+    return ResponseApi(res, 400, 'OTP not sent');
+  }
+};
+
+const verifyOtpPatient = async (req: Request, res: Response) => {
+  try {
+    const { email, otp } = req.body;
+    if (!otpMap.has(email)) {
+      return ResponseApi(res, 400, 'OTP not sent');
+    }
+
+    const storedOtp = otpMap.get(email);
+    const isExpired = Date.now() - storedOtp!.timestamp > 10 * 60 * 1000;
+
+    if (isExpired) {
+      otpMap.delete(email);
+      return ResponseApi(res, 400, 'OTP expired');
+    }
+
+    if (storedOtp!.otp !== otp) {
+      return ResponseApi(res, 400, 'OTP not verified');
+    }
+
+    return ResponseApi(res, 200, 'OTP verified successfully');
+  } catch (error) {
+    return ResponseApi(res, 400, 'OTP Not verified');
+  }
+};
+
 const resetPassword = async (req: Request, res: Response) => {
   try{
     const { email, password } = req.body;
@@ -218,16 +285,19 @@ const resetPassword = async (req: Request, res: Response) => {
 
     return ResponseApi(res, 200, 'Password reset successfully');
   }catch(error){
+    console.log(error);
     return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while resetting the password');
   }
 }
 
-export { 
+export {
   login,
   register,
   deletePatient,
   verifyPatient,
   resetPassword,
+  sendOtpPatient,
+  verifyOtpPatient,
   getBloodRequests,
   postBloodRequest,
   getBloodAvailable,

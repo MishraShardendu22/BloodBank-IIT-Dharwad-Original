@@ -1,12 +1,15 @@
 import {   
   login,
-  register, 
-  postBloodRequest,
-  getBloodRequests,
-  getBloodAvailable,
-  deleteBloodRequest, 
+  register,
+  deletePatient,
   verifyPatient,
-  deletePatient
+  resetPassword,
+  sendOtpPatient,
+  verifyOtpPatient,
+  getBloodRequests,
+  postBloodRequest,
+  getBloodAvailable,
+  deleteBloodRequest,
 } from '../../controller/patient.controller';
 
 import { Router } from 'express';
@@ -17,7 +20,11 @@ const router = Router();
 
 router.post('/login', login);
 router.post('/register', register);
+router.post('/sendOtpPatient', sendOtpPatient);
+router.post('/resetPassPatient', resetPassword);
+router.post('/verifyOtpPatient', verifyOtpPatient);
 router.post('/bloodRequest',patientMiddleware, postBloodRequest);
+
 
 router.get('/verifyPatient',patientMiddleware, verifyPatient);
 router.get('/bloodRequests',patientMiddleware, getBloodRequests);
