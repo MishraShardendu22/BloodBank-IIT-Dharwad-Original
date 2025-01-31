@@ -194,11 +194,40 @@ const deletePatient = async (req: Request,res: Response) => {
   }
 }
 
+const resetPassword = async (req: Request, res: Response) => {
+  try{
+    const { email, password } = req.body;
+
+    if(!email || !password){
+      return ResponseApi(res, 400, 'Please provide all required fields');
+    }
+
+    if(password.length < 6 || password.length > 20){
+      return ResponseApi(res, 400, 'Password must be at least 6 and at most 20 characters');
+    }
+
+    const existingPatient = await Patient.findOne({ email });
+    if(!existingPatient){
+      return ResponseApi(res, 404, 'Admin not found');
+    }
+
+    const genSalt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, genSalt);
+
+    await Patient.findByIdAndUpdate(existingPatient._id, { password: hashedPassword });
+
+    return ResponseApi(res, 200, 'Password reset successfully');
+  }catch(error){
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while resetting the password');
+  }
+}
+
 export { 
   login,
   register,
   deletePatient,
   verifyPatient,
+  resetPassword,
   getBloodRequests,
   postBloodRequest,
   getBloodAvailable,

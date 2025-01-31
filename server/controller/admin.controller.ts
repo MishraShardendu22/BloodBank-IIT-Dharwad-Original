@@ -291,8 +291,6 @@ const getAnalytics = async (req: Request, res: Response) => {
   }
 }
 
-
-
 const verifyAdmin = async (req: Request,res: Response) => {
   try{
     const { _id,role } = req.body;
@@ -302,6 +300,7 @@ const verifyAdmin = async (req: Request,res: Response) => {
     }
 
     const admin = await Admin.findById(_id);
+    admin?.password == "********"
     return ResponseApi(res,200,'Admin verified successfully',admin);
   }catch(error){
     return ResponseApi(
@@ -408,6 +407,34 @@ const verifyOTP = async (req: Request, res: Response) => {
   }
 };
 
+const resetPassword = async (req: Request, res: Response) => {
+  try{
+    const { email ,password } = req.body;
+
+    if(!email || !password){
+      return ResponseApi(res, 400, 'Please provide all required fields');
+    }
+
+    if(password.length < 6 || password.length > 20){
+      return ResponseApi(res, 400, 'Password must be at least 6 and at most 20 characters');
+    }
+
+    const existingAdmin = await Admin.findOne({ email });
+    if(!existingAdmin){
+      return ResponseApi(res, 404, 'Admin not found');
+    }
+
+    const genSalt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, genSalt);
+
+    await Admin.findByIdAndUpdate(existingAdmin._id, { password: hashedPassword });
+
+    return ResponseApi(res, 200, 'Password reset successfully');
+  }catch(error){
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while resetting the password');
+  }
+}
+
 export {
   deleteDonationLocation,
   getDonationLocations,
@@ -416,6 +443,7 @@ export {
   getBloodRequests,
   getOrganisation,
   deletePatient,
+  resetPassword,
   getAnalytics,
   verifyAdmin,
   deleteDonor,
@@ -424,6 +452,6 @@ export {
   getDonors,
   verifyOTP,
   register, 
-  sendOTP, 
+  sendOTP,
   login,
 };
