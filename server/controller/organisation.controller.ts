@@ -1,12 +1,12 @@
 import { BloodRequest, Donation, DonationLocation, Donor, Inventory, Organisation, Patient } from '../model/model';
-import bcrypt from 'bcryptjs';
 import { IOrganisation } from '../model/schema/organisation.schema';
-import ResponseApi from '../util/ApiResponse.util';
-import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
 import { IInventory } from '../model/schema/inventory.schema';
+import ResponseApi from '../util/ApiResponse.util';
+import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
-
+import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const register = async (req: Request, res: Response) => {
   try {
