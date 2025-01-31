@@ -1,17 +1,21 @@
 import { 
-    login,
-    register,
-    addBloodDonated,
-    updateInventory,
-    getBloodRequests,
-    addDonationLocation,
-    completeBloodRequest,
-    updateDonationLocation,
-    deleteDonationLocation,
-    getInventory,
-    verifyOrganisation,
-    getDonationLocations,
-    getAnalytics,
+  login,
+  register,
+  getAnalytics,
+  getInventory,
+  resetPassword,
+  updateInventory,
+  addBloodDonated,
+  getBloodRequests,
+  deleteOrganisation,
+  verifyOrganisation,
+  sendOtpOrganisation,
+  addDonationLocation,
+  completeBloodRequest,
+  getDonationLocations,
+  verifyOtpOrganisation,
+  updateDonationLocation,
+  deleteDonationLocation,
 } from '../../controller/organisation.controller';
 import { Router } from 'express';
 import { organisationMiddleware } from '../../middleware/organisation.middleware';
@@ -20,19 +24,28 @@ const router = Router();
 // Routes Go Here
 
 
+router.get('/getAnalytics', organisationMiddleware, getAnalytics)
+router.get('/getInventory', organisationMiddleware, getInventory)
+router.get('/getBloodRequests', organisationMiddleware, getBloodRequests);
+router.get('/verifyOrganisation', organisationMiddleware, verifyOrganisation);
+router.get('/getDonationLocations', organisationMiddleware, getDonationLocations)
+
 router.post('/login', login);
 router.post('/register', register);
-router.get('/getInventory', organisationMiddleware, getInventory)
+router.post('/resetPassOrganisation', resetPassword);
+router.post('/sendOtpOrganisation', sendOtpOrganisation);
+router.post('/verifyOtpOrganisation', verifyOtpOrganisation);
 router.post('/addBloodDonated', organisationMiddleware, addBloodDonated);
-router.get('/getBloodRequests', organisationMiddleware, getBloodRequests);
-router.patch('/updateInventory', organisationMiddleware, updateInventory);
-router.get('/verifyOrganisation', organisationMiddleware, verifyOrganisation);
 router.post('/addDonationLocation', organisationMiddleware, addDonationLocation);
+
+router.patch('/updateInventory', organisationMiddleware, updateInventory);
 router.patch('/completeBloodRequest', organisationMiddleware, completeBloodRequest);
 router.patch('/updateDonationLocation', organisationMiddleware, updateDonationLocation);
+
 router.delete('/deleteDonationLocation', organisationMiddleware, deleteDonationLocation);
-router.get('/getDonationLocations', organisationMiddleware, getDonationLocations)
-router.get('/getAnalytics', organisationMiddleware, getAnalytics)
+router.delete('/deleteOrganisation', organisationMiddleware, deleteOrganisation);
+
+router.put('/updateorganisation', organisationMiddleware, updateInventory);
 
 // Routes Go Here
 

@@ -1,11 +1,12 @@
 import { BloodRequest, Donation, DonationLocation, Donor, Inventory, Organisation, Patient } from '../model/model';
-import bcrypt from 'bcryptjs';
 import { IOrganisation } from '../model/schema/organisation.schema';
-import ResponseApi from '../util/ApiResponse.util';
-import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
 import { IInventory } from '../model/schema/inventory.schema';
-
+import ResponseApi from '../util/ApiResponse.util';
+import { Request, Response } from 'express';
+import { authenticator } from 'otplib';
+import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -361,18 +362,162 @@ const getAnalytics = async (req: Request, res: Response) => {
   }
 }
 
+const deleteOrganisation = async (req: Request,res: Response) => {
+  try{
+    const { _id } = req.body;
+
+    if(!_id){
+      return ResponseApi(res,400,'Admin ID is required');
+    }
+
+    await Donor.findByIdAndDelete(_id);
+    return ResponseApi(res,200,'Admin deleted successfully');
+  }catch(error){
+    return ResponseApi(
+      res,
+      500,
+      error instanceof Error
+        ? error.message
+        : 'An unknown error occurred while deleting the admin'
+    )
+  }
+}
+
+let otpMap = new Map<string, { otp: string; timestamp: number }>();
+
+const sendOtpOrganisation = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    authenticator.options = { step: 600 };
+    
+    const secret = authenticator.generateSecret();
+    const otp = authenticator.generate(secret);
+
+    otpMap.set(email, { otp, timestamp: Date.now() });
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.MAIL_ID,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.MAIL_ID,
+      to: email,
+      subject: '🩸 Your Blood Can Save Lives 🩸',
+      html: `
+        <h1>
+          Your OTP is: <strong>${otp}</strong>
+        </h1>
+      `,
+    };
+
+    // Send the email with the OTP
+    await transporter.sendMail(mailOptions);
+
+    return ResponseApi(res, 200, 'OTP sent successfully');
+  } catch (error) {
+    return ResponseApi(res, 400, 'OTP not sent');
+  }
+};
+
+const verifyOtpOrganisation = async (req: Request, res: Response) => {
+  try {
+    const { email, otp } = req.body;
+    if (!otpMap.has(email)) {
+      return ResponseApi(res, 400, 'OTP not sent');
+    }
+
+    const storedOtp = otpMap.get(email);
+    const isExpired = Date.now() - storedOtp!.timestamp > 10 * 60 * 1000;
+
+    if (isExpired) {
+      otpMap.delete(email);
+      return ResponseApi(res, 400, 'OTP expired');
+    }
+
+    if (storedOtp!.otp !== otp) {
+      return ResponseApi(res, 400, 'OTP not verified');
+    }
+
+    return ResponseApi(res, 200, 'OTP verified successfully');
+  } catch (error) {
+    return ResponseApi(res, 400, 'OTP Not verified');
+  }
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+  try{
+    const { email, password } = req.body;
+
+    if(!email || !password){
+      return ResponseApi(res, 400, 'Please provide all required fields');
+    }
+
+    if(password.length < 6 || password.length > 20){
+      return ResponseApi(res, 400, 'Password must be at least 6 and at most 20 characters');
+    }
+
+    const existingOrganisation = await Organisation.findOne({ email });
+    if(!existingOrganisation){
+      return ResponseApi(res, 404, 'Admin not found');
+    }
+
+    const genSalt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, genSalt);
+
+    await Organisation.findByIdAndUpdate(existingOrganisation._id, { password: hashedPassword });
+
+    return ResponseApi(res, 200, 'Password reset successfully');
+  }catch(error){
+    console.log(error);
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while resetting the password');
+  }
+}
+
+const updateUser = async (req: Request, res: Response) => {
+  try{
+    const { _id,name,email,phoneNo } = req.body;
+
+    if(!_id || !name || !email || !phoneNo){
+      return ResponseApi(res, 400, 'User ID is required');
+    }
+
+    await Organisation.findByIdAndUpdate(
+      {_id : _id},
+      {
+        name,
+        email,
+        phoneNo
+      }
+    )
+
+    return ResponseApi(res, 200, 'User updated successfully');
+  }catch(error){
+    return ResponseApi(res, 500, error instanceof Error ? error.message : 'An unknown error occurred while updating the user');
+  }
+}
+
 export {
   login,
   register,
+  updateUser,
+  getAnalytics,
   getInventory,
-  addBloodDonated,
+  resetPassword,
   updateInventory,
+  addBloodDonated,
   getBloodRequests,
+  deleteOrganisation,
   verifyOrganisation,
+  sendOtpOrganisation,
   addDonationLocation,
   completeBloodRequest,
+  getDonationLocations,
+  verifyOtpOrganisation,
   updateDonationLocation,
   deleteDonationLocation,
-  getDonationLocations,
-  getAnalytics
 };
