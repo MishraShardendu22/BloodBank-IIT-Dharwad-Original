@@ -128,4 +128,25 @@ const verifyDonor = async (req: Request,res: Response) => {
   }
 }
 
-export { login, register, getDonationHistory, getDonationLocation, verifyDonor };
+const deleteDonor = async (req: Request,res: Response) => {
+  try{
+    const { _id } = req.body;
+
+    if(!_id){
+      return ResponseApi(res,400,'Admin ID is required');
+    }
+
+    await Donor.findByIdAndDelete(_id);
+    return ResponseApi(res,200,'Admin deleted successfully');
+  }catch(error){
+    return ResponseApi(
+      res,
+      500,
+      error instanceof Error
+        ? error.message
+        : 'An unknown error occurred while deleting the admin'
+    )
+  }
+}
+
+export { login, deleteDonor, register, getDonationHistory, getDonationLocation, verifyDonor };

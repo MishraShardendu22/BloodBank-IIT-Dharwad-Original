@@ -174,9 +174,30 @@ const verifyPatient = async (req: Request,res: Response) => {
   }
 }
 
+const deletePatient = async (req: Request,res: Response) => {
+  try{
+    const { _id } = req.body;
+
+    if(!_id){
+      return ResponseApi(res,400,'Admin ID is required');
+    }
+    await Patient.findByIdAndDelete(_id);
+    return ResponseApi(res,200,'Admin deleted successfully');
+  }catch(error){
+    return ResponseApi(
+      res,
+      500,
+      error instanceof Error
+        ? error.message
+        : 'An unknown error occurred while deleting the patient'
+    )
+  }
+}
+
 export { 
   login,
   register,
+  deletePatient,
   verifyPatient,
   getBloodRequests,
   postBloodRequest,
