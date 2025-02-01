@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-case-declarations */
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,6 +14,8 @@ import Navbar from "@/components/Navbar"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, MapPin, Phone, Clock, Award, Download, ChevronRight } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
+import Survey from "./_components/DonorSurvey"
+import ChatBot from "../_AI-Integration/ChatBot"
 
 export interface IDonation {
     _id: string
@@ -35,7 +39,7 @@ export interface IDonation {
     }
 
     const Donor = () => {
-    const [activeTab, setActiveTab] = useState<"info" | "history" | "locations" | "certificate">("info")
+    const [activeTab, setActiveTab] = useState<"info" | "history" | "locations" | "certificate" | "survey" | "chatbot">("info")
     const [donorInfo, setDonorInfo] = useState<{ name: string; email: string } | null>(null)
     const [donationHistory, setDonationHistory] = useState<IDonation[]>([])
     const [donationLocations, setDonationLocations] = useState<IDonationLocation[]>([])
@@ -334,6 +338,16 @@ export interface IDonation {
             </motion.div>
             )
 
+        case "survey":
+            return (
+                <Survey />
+            )
+
+        case "chatbot":
+            return (
+                <ChatBot />
+            )
+
         case "certificate":
             const { tier, color } = getDonationTier(totalDonations)
             const nextTier = getNextTier(totalDonations)
@@ -497,6 +511,7 @@ export interface IDonation {
         if (remaining <= 0) return `You've reached the ${nextTier} tier!`
         return `${remaining} more donation${remaining > 1 ? "s" : ""} to reach ${nextTier}!`
     }
+
 
     return (
         <div

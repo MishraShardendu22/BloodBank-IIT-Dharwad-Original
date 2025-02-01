@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, User, History, MapPin, Medal } from "lucide-react"
+import { ChevronLeft, ChevronRight, User, History, MapPin, Medal, Info, Bot } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -8,15 +9,17 @@ import { useUserStore } from "@/store/store"
 import { useThemeStore } from "@/store/themeStore"
 
 interface SidebarProps {
-    setActiveTab: (tab: "info" | "history" | "locations" | "certificate") => void
+    setActiveTab: (tab: "info" | "history" | "locations" | "certificate" | "survey" | "chatbot") => void
     activeTab: string
-    }
+}
 
     const sidebarItems = [
     { icon: User, label: "Donor Information", id: "info" },
     { icon: History, label: "Donation History", id: "history" },
     { icon: MapPin, label: "Donate Now", id: "locations" },
     {icon:  Medal ,label: "Certificates", id: "certificate" },
+    {icon:  Info ,label: "Give Survey", id: "survey" },
+    {icon:  Bot ,label: "Chat with AI", id: "chatbot" },
     ]
 
     export function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
@@ -66,7 +69,7 @@ interface SidebarProps {
                             : "bg-primary/10 text-primary"),
                         !isActive && theme === "light" && "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
                     )}
-                    onClick={() => setActiveTab(item.id as "info" | "history" | "locations" | "certificate")}
+                    onClick={() => setActiveTab(item.id as "info" | "history" | "locations" | "certificate" | "survey" | "chatbot")}
                     >
                     <Icon className="w-5 h-5" />
                     {!isCollapsed && item.label}

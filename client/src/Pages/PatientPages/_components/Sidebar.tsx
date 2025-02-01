@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, Droplet, ClipboardList, LogOut } from "lucide-react"
+import { ChevronLeft, ChevronRight, Droplet, ClipboardList, BotIcon} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -9,13 +10,14 @@ import { useThemeStore } from "@/store/themeStore"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface SidebarProps {
-    setActiveTab: (tab: "availability" | "requests") => void
+    setActiveTab: (tab: "availability" | "requests" | "chatbot") => void
     activeTab: string
-    }
+}
 
     const sidebarItems = [
     { icon: Droplet, label: "Blood Availability", id: "availability" },
     { icon: ClipboardList, label: "Blood Requests", id: "requests" },
+    { icon: BotIcon, label: "Chat With AI", id: "chatbot" },
     ]
 
     export function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
@@ -68,7 +70,7 @@ interface SidebarProps {
                                 : "bg-primary/10 text-primary"),
                             !isActive && theme === "light" && "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
                             )}
-                            onClick={() => setActiveTab(item.id as "availability" | "requests")}
+                            onClick={() => setActiveTab(item.id as "availability" | "requests" | "chatbot")}
                         >
                             <Icon className="w-5 h-5" />
                             {!isCollapsed && item.label}

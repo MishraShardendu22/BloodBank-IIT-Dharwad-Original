@@ -21,6 +21,9 @@ import LoginAdmin from "./Pages/AdminPages/AdminAuth/login";
 import RegisterAdmin from "./Pages/AdminPages/AdminAuth/register";
 import Admin from "./Pages/AdminPages/page";
 import ProtectedAdmin from "./components/Routes/Protected/AdminPotected";
+import DonorSurvey from "./Pages/DonorPages/_components/DonorSurvey";
+import PatientSurvey from "./Pages/PatientPages/_components/PatientSurvey";
+import ChatBot from "./Pages/_AI-Integration/ChatBot";
 
 
 const App = () => {
@@ -35,11 +38,19 @@ const App = () => {
         }
       />
       <Route
+        path="patient/chat"
+        element={
+          <ProtectedPatient>
+            <ChatBot />
+          </ProtectedPatient>
+        }
+      />
+      <Route
         path="/donor/login"
         element={
-          <Unprotected>
+          <ProtectedDonor>
             <DonorLogin />
-          </Unprotected>
+          </ProtectedDonor>
         }
       />
       <Route
@@ -96,6 +107,22 @@ const App = () => {
         <ProtectedPatient>
           <Patient />
         </ProtectedPatient>
+      }
+      />
+      <Route 
+      path="/patient/survey"
+      element={
+        <ProtectedPatient>
+          <PatientSurvey />
+        </ProtectedPatient>
+      }
+      />
+      <Route 
+      path="/donor/survey"
+      element={
+        <ProtectedDonor>
+          <DonorSurvey />
+        </ProtectedDonor>
       }
       />
       <Route 
