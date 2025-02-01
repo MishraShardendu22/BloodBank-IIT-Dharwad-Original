@@ -17,6 +17,7 @@ const LoginAdmin = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    adminPassword: "",
   })
   const [error, setError] = useState("")
 
@@ -146,6 +147,23 @@ const LoginAdmin = () => {
                         name="password"
                         placeholder="Enter your password"
                         value={formData.password}
+                        onChange={handleChange}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Admin Password</Label>
+                    <div className="relative">
+                      <LockKeyhole className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        id="adminPassword"
+                        type="password"
+                        name="adminPassword"
+                        placeholder="Enter your password"
+                        value={formData.adminPassword}
                         onChange={handleChange}
                         className="pl-10"
                         required

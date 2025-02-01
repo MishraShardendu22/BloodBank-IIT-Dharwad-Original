@@ -21,6 +21,7 @@ const RegisterAdmin = () => {
     password: "",
     passwordConfirmation: "",
     phoneNo: "",
+    adminPassword: "",
     marketingAccept: false,
   })
   const [error, setError] = useState("")
@@ -48,6 +49,7 @@ const RegisterAdmin = () => {
         email: formData.email,
         password: formData.password,
         phoneNo: formData.phoneNo,
+        adminPassword: formData.adminPassword,
       })
 
       if (response.status === 201) {
@@ -229,6 +231,25 @@ const RegisterAdmin = () => {
                           type="password"
                           placeholder="••••••••"
                           value={formData.passwordConfirmation}
+                          onChange={handleChange}
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="Password">Admin Password</Label>
+                      <div className="relative">
+                        <LockKeyhole className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          id="adminPassword"
+                          name="adminPassword"
+                          type="password"
+                          placeholder="••••••••"
+                          value={formData.adminPassword}
                           onChange={handleChange}
                           className="pl-10"
                           required
