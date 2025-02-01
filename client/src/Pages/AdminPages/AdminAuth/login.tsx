@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Droplets, ArrowRight, LockKeyhole, Mail, Heart } from "lucide-react"
 import axiosInstance from "../../../util/axiosInstance"
