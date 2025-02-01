@@ -13,9 +13,13 @@ import bcrypt from 'bcryptjs';
 
 const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, phoneNo } = req.body;
+    const { name, email, password, phoneNo, adminPassword } = req.body;
 
-    if (!name || !email || !password || !phoneNo) {
+    if(process.env.ADMIN_PASSWORD !== adminPassword){
+      return ResponseApi(res, 400, 'Invalid Admin Password');
+    }
+
+    if (!name || !email || !password || !phoneNo || !adminPassword) {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
@@ -63,7 +67,15 @@ const register = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, adminPassword  } = req.body;
+
+    if(!adminPassword){
+      return ResponseApi(res, 400, 'Admin Password is required');
+    }
+
+    if(process.env.ADMIN_PASSWORD !== adminPassword){
+      return ResponseApi(res, 400, 'Invalid Admin Password');
+    }
 
     if (!email || !password) {
       return ResponseApi(res, 400, 'Please provide all required fields');
@@ -469,32 +481,7 @@ const updateUser = async (req: Request, res: Response) => {
   }
 }
 
-const verifyAdminUsingPassword = async (req: Request,res: Response) => {
-  try{
-    const { password } = req.body;
-    if(!password){
-      return ResponseApi(res,400,'Password is required');
-    }
-
-    const adminPassword = process.env.ADMIN_PASSWORD as string
-    if(password !== adminPassword){
-      return ResponseApi(res,400,'Invalid Password');
-    }
-
-    return ResponseApi(res,200,'Admin verified successfully');
-  }catch(error){
-    return ResponseApi(
-      res,
-      500,
-      error instanceof Error
-        ? error.message
-        : 'An unknown error occurred while verifying the admin'
-    )
-  }
-}
-
 export {
-  verifyAdminUsingPassword,
   deleteDonationLocation,
   getDonationLocations,
   deleteOrganisation,
