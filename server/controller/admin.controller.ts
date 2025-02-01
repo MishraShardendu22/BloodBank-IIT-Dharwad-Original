@@ -39,7 +39,7 @@ const register = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Admin already exists');
     }
 
-    const genSalt = await bcrypt.genSalt(10);
+    const genSalt = await bcrypt.genSalt(5);
     const hashedPassword = await bcrypt.hash(password, genSalt);
 
     const newAdmin: IAdmin = new Admin({
@@ -396,9 +396,9 @@ const verifyOtpAdmin = async (req: Request, res: Response) => {
 
 const resetPassword = async (req: Request, res: Response) => {
   try{
-    const { email ,password } = req.body;
+    const { email ,password, otp } = req.body;
 
-    if(!email || !password){
+    if(!email || !password || !otp){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
@@ -411,7 +411,23 @@ const resetPassword = async (req: Request, res: Response) => {
       return ResponseApi(res, 404, 'Admin not found');
     }
 
-    const genSalt = await bcrypt.genSalt(10);
+    if (!otpMap.has(email)) {
+      return ResponseApi(res, 400, 'Error');
+    }
+
+    const storedOtp = otpMap.get(email);
+    const isExpired = Date.now() - storedOtp!.timestamp > 10 * 60 * 1000;
+
+    if (isExpired) {
+      otpMap.delete(email);
+      return ResponseApi(res, 400, 'Timed out');
+    }
+
+    if (storedOtp!.otp !== otp) {
+      return ResponseApi(res, 400, 'Error');
+    }
+
+    const genSalt = await bcrypt.genSalt(5);
     const hashedPassword = await bcrypt.hash(password, genSalt);
 
     await Admin.findByIdAndUpdate(existingAdmin._id, { password: hashedPassword });
@@ -434,7 +450,7 @@ const updateUser = async (req: Request, res: Response) => {
       {_id : _id},
       {
         name,
-        email,
+        email: email.toLowerCase(),
         phoneNo
       }
     )
