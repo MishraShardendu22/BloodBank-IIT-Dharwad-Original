@@ -10,7 +10,8 @@ import { useUserStore } from "@/store/store"
 import { useThemeStore } from "@/store/themeStore"
 import Navbar from "@/components/Navbar"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, MapPin, Phone, Clock, Award } from "lucide-react"
+import { Calendar, MapPin, Phone, Clock, Award, Download, ChevronRight } from "lucide-react"
+import { Progress } from "@/components/ui/progress"
 
 export interface IDonation {
     _id: string
@@ -38,6 +39,7 @@ export interface IDonation {
     const [donorInfo, setDonorInfo] = useState<{ name: string; email: string } | null>(null)
     const [donationHistory, setDonationHistory] = useState<IDonation[]>([])
     const [donationLocations, setDonationLocations] = useState<IDonationLocation[]>([])
+    const [totalDonations, setTotalDonations] = useState(0)
     const setUser = useUserStore((state: any) => state.setUser)
     const { theme } = useThemeStore()
 
@@ -60,13 +62,17 @@ export interface IDonation {
     const fetchDonationHistory = async () => {
         try {
         const { data } = await axiosInstance.get("/donor/donation-history")
+        console.log("Fetched donations:", data.data)
         setDonationHistory(data.data)
+        setTotalDonations(data.data.length)
+        console.log("Total donations set:", data.data.length)
         } catch (error) {
         console.error("Error fetching donation history:", error)
         }
     }
 
     const getDonationTier = (donationCount: number) => {
+        console.log("Calculating tier for donation count:", donationCount)
         if (donationCount >= 50) return { tier: "Platinum", color: "bg-gradient-to-r from-purple-400 to-purple-600" }
         if (donationCount >= 20) return { tier: "Gold", color: "bg-gradient-to-r from-yellow-400 to-yellow-600" }
         if (donationCount >= 10) return { tier: "Silver", color: "bg-gradient-to-r from-gray-400 to-gray-600" }
@@ -83,7 +89,21 @@ export interface IDonation {
         }
     }
 
+    const downloadCertificate = () => {
+        const { tier } = getDonationTier(totalDonations)
+        const certificateFile = `${tier.toLowerCase()}.pdf`
+        const link = document.createElement("a")
+        link.href = `/${certificateFile}`
+        link.download = `${tier}_Donor_Certificate.pdf`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+
     const renderContent = () => {
+        console.log("Rendering content for tab:", activeTab)
+        console.log("Total donations:", totalDonations)
+
         switch (activeTab) {
         case "info":
             return (
@@ -136,16 +156,14 @@ export interface IDonation {
                             <div className="space-y-2">
                             <p className="flex items-center gap-2">
                                 <span className="font-medium text-gray-500">Total Donations:</span>
-                                <Badge variant={theme === "light" ? "default" : "secondary"}>
-                                {donationHistory.length}
-                                </Badge>
+                                <Badge variant={theme === "light" ? "default" : "secondary"}>{totalDonations}</Badge>
                             </p>
                             <p className="flex items-center gap-2">
                                 <span className="font-medium text-gray-500">Last Donation:</span>
                                 <span className={theme === "light" ? "text-gray-700" : "text-primary"}>
                                 {donationHistory[0]?.createdAt
                                     ? new Date(donationHistory[0].createdAt).toLocaleDateString()
-                                    :"Your generosity is still waiting to make its grand debut! 🎭"}
+                                    : "Your generosity is still waiting to make its grand debut! 🎭"}
                                 </span>
                             </p>
                             </div>
@@ -153,6 +171,31 @@ export interface IDonation {
                         </div>
                     </>
                     )}
+                </CardContent>
+                <CardContent className="mt-6">
+                    <h3 className={`text-xl font-semibold mb-4 ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
+                    Why Your Donations Matter
+                    </h3>
+                    <div className="grid gap-4 md:grid-cols-2">
+                    <div
+                        className={`p-4 rounded-lg ${theme === "light" ? "bg-gray-50 border text-gray-600 border-gray-200" : "bg-base-300/30"}`}
+                    >
+                        <h4 className={`mb-2 font-semibold  ${theme == 'light' ? 'text-gray-600': 'text-red-600'}`}>Blood Type Compatibility</h4>
+                        <p className="text-sm">
+                        Understanding blood type compatibility is crucial for effective donations. Your blood type
+                        determines who can receive your blood, potentially saving lives in critical situations.
+                        </p>
+                    </div>
+                    <div
+                        className={`p-4 rounded-lg ${theme === "light" ? "bg-gray-50 border text-gray-600 border-gray-200" : "bg-base-300/30"}`}
+                    >
+                        <h4 className={`mb-2 font-semibold ${theme == 'light' ? 'text-gray-600': 'text-red-600'}`}>Donation Frequency</h4>
+                        <p className="text-sm">
+                        Whole blood donations can be made every 56 days. Platelets can be donated more frequently, up to
+                        24 times a year. Regular donations help maintain a stable blood supply for patients in need.
+                        </p>
+                    </div>
+                    </div>
                 </CardContent>
                 </Card>
             </motion.div>
@@ -169,40 +212,52 @@ export interface IDonation {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
+                    {donationHistory.length === 0 ? (
+                    <div className="py-8 text-center">
+                        <p className={`text-lg ${theme === "light" ? "text-gray-600" : "text-gray-400"}`}>
+                        You haven't made any donations yet. Start your journey of giving today!
+                        </p>
+                    </div>
+                    ) : (
                     <div
-                    className={`overflow-hidden border rounded-lg ${theme === "light" ? "border-gray-200" : "border-base-300"}`}
+                        className={`overflow-hidden border rounded-lg ${theme === "light" ? "border-gray-200" : "border-base-300"}`}
                     >
-                    <Table>
+                        <Table>
                         <TableHeader>
-                        <TableRow className={theme === "light" ? "bg-gray-50" : "bg-base-300/30"}>
+                            <TableRow className={theme === "light" ? "bg-gray-50 text-gray-500" : "bg-base-300/30"}>
                             <TableHead className="font-semibold">Date</TableHead>
                             <TableHead className="font-semibold">Organisation</TableHead>
                             <TableHead className="font-semibold">Quantity</TableHead>
                             <TableHead className="font-semibold">Status</TableHead>
-                        </TableRow>
+                            </TableRow>
                         </TableHeader>
                         <TableBody>
-                        {donationHistory.map((donation, index) => (
+                            {donationHistory.map((donation, index) => (
                             <TableRow
-                            key={index}
-                            className={`hover:${theme === "light" ? "bg-gray-50" : "bg-base-300/10"}`}
+                                key={index}
+                                className={`hover:${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300/10"}`}
                             >
-                            <TableCell>
+                                <TableCell>
                                 <div className="flex items-center gap-2">
-                                <Calendar className={`w-4 h-4 ${theme === "light" ? "text-gray-700" : "text-primary"}`} />
-                                {new Date(donation.createdAt).toLocaleDateString()}
+                                    <Calendar
+                                    className={`w-4 h-4 ${theme === "light" ? "text-gray-700" : "text-primary"}`}
+                                    />
+                                    {new Date(donation.createdAt).toLocaleDateString()}
                                 </div>
-                            </TableCell>
-                            <TableCell>{donation.organisationId.name}</TableCell>
-                            <TableCell>{donation.quantity}</TableCell>
-                            <TableCell>
-                                <Badge variant={theme === "light" ? "outline" : "default"}>Completed</Badge>
-                            </TableCell>
+                                </TableCell>
+                                <TableCell>{donation.organisationId.name}</TableCell>
+                                <TableCell>{donation.quantity}</TableCell>
+                                <TableCell>
+                                <Badge variant={"default"} className="text-gray-300">
+                                    Completed
+                                </Badge>
+                                </TableCell>
                             </TableRow>
-                        ))}
+                            ))}
                         </TableBody>
-                    </Table>
+                        </Table>
                     </div>
+                    )}
                 </CardContent>
                 </Card>
             </motion.div>
@@ -279,56 +334,168 @@ export interface IDonation {
             </motion.div>
             )
 
-            case "certificate":
-                const donationCount = donationHistory.length
-                const { tier, color } = getDonationTier(donationCount)
-                
-                return (
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                        <Card className={`mb-6 ${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}>
-                            <CardHeader>
-                                <CardTitle className={`text-2xl font-bold ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
-                                    Donation Certificate
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex flex-col items-center justify-center p-8 space-y-6">
-                                <div className={`p-4 rounded-full ${color}`}>
-                                    <Award className="w-16 h-16 text-white" />
-                                </div>
-                                <div className="text-center">
-                                    <h3 className={`text-2xl font-bold ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
-                                        {tier} Donor
-                                    </h3>
-                                    <p className={`mt-2 ${theme === "light" ? "text-gray-600" : "text-gray-300"}`}>
-                                        Total Donations: {donationCount}
-                                    </p>
-                                </div>
-                                {tier !== "Not Eligible" ? (
-                                    <Button 
-                                        className={`mt-4 ${color} text-white hover:opacity-90`}
-                                        onClick={() => {}}
-                                    >
-                                        Download Certificate
-                                    </Button>
-                                ) : (
-                                    <p className="mt-4 text-gray-500">
-                                        Make at least 5 donations to earn your first certificate!
-                                    </p>
-                                )}
-                                <div className="w-full max-w-md p-4 mt-8 bg-gray-100 rounded-lg bg-opacity-20">
-                                    <h4 className="mb-4 text-lg font-semibold">Achievement Tiers</h4>
-                                    <div className="space-y-2">
-                                        <p>🥉 Bronze: 5+ donations</p>
-                                        <p>🥈 Silver: 10+ donations</p>
-                                        <p>🥇 Gold: 20+ donations</p>
-                                        <p>💎 Platinum: 50+ donations</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                )
+        case "certificate":
+            const { tier, color } = getDonationTier(totalDonations)
+            const nextTier = getNextTier(totalDonations)
+            const progress = getProgressToNextTier(totalDonations)
+
+            return (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                <Card
+                className={`mb-6 ${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+                >
+                <CardHeader>
+                    <CardTitle className={`text-2xl font-bold ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
+                    Donation Achievements
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center p-8 space-y-8">
+                    {totalDonations === 0 ? (
+                    <div className="space-y-4 text-center">
+                        <div className={`p-6 rounded-full ${theme === "light" ? "bg-gray-100" : "bg-base-300"}`}>
+                        <Award className={`w-20 h-20 ${theme === "light" ? "text-gray-400" : "text-primary"}`} />
+                        </div>
+                        <h3 className={`text-2xl font-bold ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
+                        Start Your Donation Journey
+                        </h3>
+                        <p className={`mt-4 ${theme === "light" ? "text-gray-600" : "text-gray-400"}`}>
+                        Make your first donation to begin earning certificates and rewards!
+                        </p>
+                        <Button className="mt-4" onClick={() => setActiveTab("locations")}>
+                        Find Donation Locations <ChevronRight className="w-4 h-4 ml-2" />
+                        </Button>
+                    </div>
+                    ) : (
+                    <>
+                        <div className={`p-6 rounded-full ${color}`}>
+                        <Award className="w-24 h-24 text-white" />
+                        </div>
+                        <div className="text-center">
+                        <h3 className={`text-3xl font-bold ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
+                            {tier} Donor
+                        </h3>
+                        <p className={`mt-2 text-xl ${theme === "light" ? "text-gray-600" : "text-gray-300"}`}>
+                            Total Donations: {totalDonations}
+                        </p>
+                        </div>
+                        <div
+                        className={`w-full max-w-md p-6 mb-8 rounded-lg ${theme === "light" ? "bg-white border border-gray-200" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+                        >
+                        <h4
+                            className={`text-lg font-semibold mb-4 ${theme === "light" ? "text-gray-800" : "text-primary"}`}
+                        >
+                            Your Impact
+                        </h4>
+                        <p className="mb-4 text-sm text-gray-500">Your donations have made a significant difference:</p>
+                        <ul className={`space-y-2 text-sm list-disc list-inside ${theme == 'light' ? 'text-gray-600': ''}`}>
+                            <li>Potentially saved up to {totalDonations * 3} lives</li>
+                            <li>Contributed to emergency supplies for local hospitals</li>
+                            <li>Supported patients with chronic illnesses</li>
+                            <li>Aided in critical surgeries and medical procedures</li>
+                        </ul>
+                        </div>
+                        {tier !== "Platinum" && (
+                        <div className="w-full max-w-md">
+                            <div className="flex justify-between mb-2">
+                            <span>{tier}</span>
+                            <span>{nextTier}</span>
+                            </div>
+                            <Progress value={progress} className="w-full" />
+                            <p className="mt-2 text-sm text-center text-gray-500">
+                            {getProgressMessage(totalDonations, nextTier)}
+                            </p>
+                        </div>
+                        )}
+                        <Button className={`mt-6 ${color} text-white hover:opacity-90`} onClick={downloadCertificate}>
+                        <Download className="w-4 h-4 mr-2" /> Download Certificate
+                        </Button>
+                        <div
+                        className={`w-full max-w-md p-6 mt-8 rounded-lg ${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300"} bg-opacity-50`}
+                        >
+                        <h4 className="mb-4 text-lg font-semibold">Achievement Tiers & Benefits</h4>
+                        <div className="space-y-4">
+                            <div>
+                            <div className="flex items-center mb-2">
+                                <Badge variant="secondary" className="mr-2">
+                                🥉
+                                </Badge>
+                                <span className="font-semibold">Bronze: 5+ donations</span>
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Recognition on our donor wall and a personalized thank you card.
+                            </p>
+                            </div>
+                            <div>
+                            <div className="flex items-center mb-2">
+                                <Badge variant="secondary" className="mr-2">
+                                🥈
+                                </Badge>
+                                <span className="font-semibold">Silver: 10+ donations</span>
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Exclusive silver donor pin and priority scheduling for donations.
+                            </p>
+                            </div>
+                            <div>
+                            <div className="flex items-center mb-2">
+                                <Badge variant="secondary" className="mr-2">
+                                🥇
+                                </Badge>
+                                <span className="font-semibold">Gold: 20+ donations</span>
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                VIP status with personalized health check-ups and gold donor certificate.
+                            </p>
+                            </div>
+                            <div>
+                            <div className="flex items-center mb-2">
+                                <Badge variant="secondary" className="mr-2">
+                                💎
+                                </Badge>
+                                <span className="font-semibold">Platinum: 50+ donations</span>
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Lifetime achievement award, invitation to annual donor gala, and named scholarship
+                                contribution.
+                            </p>
+                            </div>
+                        </div>
+                        </div>
+                    </>
+                    )}
+                </CardContent>
+                </Card>
+            </motion.div>
+            )
         }
+    }
+
+    const getNextTier = (donationCount: number) => {
+        if (donationCount < 5) return "Bronze"
+        if (donationCount < 10) return "Silver"
+        if (donationCount < 20) return "Gold"
+        if (donationCount < 50) return "Platinum"
+        return "Platinum"
+    }
+
+    const getProgressToNextTier = (donationCount: number) => {
+        if (donationCount < 5) return (donationCount / 5) * 100
+        if (donationCount < 10) return ((donationCount - 5) / 5) * 100
+        if (donationCount < 20) return ((donationCount - 10) / 10) * 100
+        if (donationCount < 50) return ((donationCount - 20) / 30) * 100
+        return 100
+    }
+
+    const getProgressMessage = (donationCount: number, nextTier: string) => {
+        const remaining = {
+        Bronze: 5 - donationCount,
+        Silver: 10 - donationCount,
+        Gold: 20 - donationCount,
+        Platinum: 50 - donationCount,
+        }[nextTier] ?? 0
+
+        if (remaining <= 0) return `You've reached the ${nextTier} tier!`
+        return `${remaining} more donation${remaining > 1 ? "s" : ""} to reach ${nextTier}!`
     }
 
     return (
@@ -352,7 +519,7 @@ export interface IDonation {
         </main>
         </div>
     )
-    }
+}
 
 export default Donor
 

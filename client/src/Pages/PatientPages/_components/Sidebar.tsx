@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, Droplet, ClipboardList } from "lucide-react"
+import { ChevronLeft, ChevronRight, Droplet, ClipboardList, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useUserStore } from "@/store/store"
 import { useThemeStore } from "@/store/themeStore"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface SidebarProps {
     setActiveTab: (tab: "availability" | "requests") => void
@@ -21,6 +22,7 @@ interface SidebarProps {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const user = useUserStore((state: any) => state.user)
     const { theme } = useThemeStore()
+
 
     return (
         <motion.div
@@ -38,7 +40,7 @@ interface SidebarProps {
             )}
             <Button
                 size="icon"
-                variant="ghost"
+                variant="default"
                 onClick={() => setIsCollapsed(!isCollapsed)}
                 className={`hover:${theme === "light" ? "bg-gray-100" : "bg-primary/10"}`}
             >
@@ -53,22 +55,30 @@ interface SidebarProps {
                 const isActive = activeTab === item.id
 
                 return (
-                    <Button
-                    key={item.id}
-                    variant={isActive ? "secondary" : "ghost"}
-                    className={cn(
-                        "w-full justify-start gap-4",
-                        isActive &&
-                        (theme === "light"
-                            ? "bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
-                            : "bg-primary/10 text-primary"),
-                        !isActive && theme === "light" && "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
-                    )}
-                    onClick={() => setActiveTab(item.id as "availability" | "requests")}
-                    >
-                    <Icon className="w-5 h-5" />
-                    {!isCollapsed && item.label}
-                    </Button>
+                    <TooltipProvider key={item.id}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                        <Button
+                            variant={isActive ? "secondary" : "ghost"}
+                            className={cn(
+                            "w-full justify-start gap-4",
+                            isActive &&
+                                (theme === "light"
+                                ? "bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+                                : "bg-primary/10 text-primary"),
+                            !isActive && theme === "light" && "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                            )}
+                            onClick={() => setActiveTab(item.id as "availability" | "requests")}
+                        >
+                            <Icon className="w-5 h-5" />
+                            {!isCollapsed && item.label}
+                        </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className={isCollapsed ? "block" : "hidden"}>
+                        {item.label}
+                        </TooltipContent>
+                    </Tooltip>
+                    </TooltipProvider>
                 )
                 })}
             </div>
@@ -78,6 +88,7 @@ interface SidebarProps {
             <div className={`p-4 border-t ${theme === "light" ? "border-gray-200 bg-gray-50" : "border-primary/10"}`}>
                 <div className="flex items-center gap-4">
                 <Avatar className={`${theme == "light" ? "border border-gray-300 bg-white" : "border-white"}`}>
+                    <AvatarImage src={user.avatar} alt={user.name} />
                     <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 {!isCollapsed && (
@@ -89,12 +100,21 @@ interface SidebarProps {
                     </div>
                 )}
                 </div>
+                <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className={isCollapsed ? "block" : "hidden"}>
+                    Logout
+                    </TooltipContent>
+                </Tooltip>
+                </TooltipProvider>
             </div>
             )}
         </div>
         </motion.div>
     )
-}
+    }
 
 export default Sidebar
 

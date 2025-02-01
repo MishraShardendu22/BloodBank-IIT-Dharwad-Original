@@ -16,6 +16,7 @@ import {
     import axiosInstance from "@/util/axiosInstance"
     import { motion } from "framer-motion"
     import { useThemeStore } from "@/store/themeStore"
+    import { Activity, Users, Droplet, CheckCircle, Package } from "lucide-react"
 
     interface IAdminAnalytics {
     donors: number
@@ -26,7 +27,7 @@ import {
     }
 
     interface IOrganisationAnalytics {
-    totalDonations: number
+    // totalDonations: number
     totalRequests: number
     completedRequests: number
     pendingRequests: number
@@ -54,7 +55,7 @@ import {
         const organisationAnalytics: IAdminAnalytics = data.data
 
         const orgAnalytics: IOrganisationAnalytics = {
-            totalDonations: Math.floor(Math.random() * 1000),
+            // totalDonations: Math.floor(Math.random() * 1000),
             totalRequests: organisationAnalytics.bloodRequests,
             completedRequests: Math.floor(organisationAnalytics.bloodRequests * 0.8),
             pendingRequests: Math.floor(organisationAnalytics.bloodRequests * 0.2),
@@ -99,24 +100,44 @@ import {
         className="space-y-6"
         >
         <Card
-            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            className={`${
+            theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+            }`}
         >
             <CardHeader>
-            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Overview</CardTitle>
+            <CardTitle className={`flex items-center ${theme === "light" ? "text-gray-800" : ""}`}>
+                <Activity className="w-6 h-6 mr-2 text-blue-500" />
+                Overview
+            </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <AnalyticItem title="Total Donations" value={analytics.totalDonations} />
-            <AnalyticItem title="Total Requests" value={analytics.totalRequests} />
-            <AnalyticItem title="Completed Requests" value={analytics.completedRequests} />
-            <AnalyticItem title="Pending Requests" value={analytics.pendingRequests} />
+            {/* <AnalyticItem title="Total Donations" value={analytics.totalDonations} icon={Droplet} color="text-red-500" /> */}
+            <AnalyticItem title="Total Requests" value={analytics.totalRequests} icon={Users} color="text-blue-500" />
+            <AnalyticItem
+                title="Completed Requests"
+                value={analytics.completedRequests}
+                icon={CheckCircle}
+                color="text-green-500"
+            />
+            <AnalyticItem
+                title="Pending Requests"
+                value={analytics.pendingRequests}
+                icon={Activity}
+                color="text-yellow-500"
+            />
             </CardContent>
         </Card>
 
         <Card
-            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            className={`${
+            theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+            }`}
         >
             <CardHeader>
-            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Inventory Status</CardTitle>
+            <CardTitle className={`flex items-center ${theme === "light" ? "text-gray-800" : ""}`}>
+                <Package className="w-6 h-6 mr-2 text-green-500" />
+                Inventory Status
+            </CardTitle>
             </CardHeader>
             <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -133,10 +154,15 @@ import {
         </Card>
 
         <Card
-            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            className={`${
+            theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+            }`}
         >
             <CardHeader>
-            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Blood Type Distribution</CardTitle>
+            <CardTitle className={`flex items-center ${theme === "light" ? "text-gray-800" : ""}`}>
+                <Droplet className="w-6 h-6 mr-2 text-red-500" />
+                Blood Type Distribution
+            </CardTitle>
             </CardHeader>
             <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -165,12 +191,22 @@ import {
     )
     }
 
-    const AnalyticItem = ({ title, value }: { title: string; value: number }) => {
+    const AnalyticItem = ({
+    title,
+    value,
+    icon: Icon,
+    color,
+    }: { title: string; value: number; icon: any; color: string }) => {
     const { theme } = useThemeStore()
     return (
         <div className={`p-4 rounded-lg ${theme === "light" ? "bg-gray-50 border border-gray-200" : "bg-base-100"}`}>
-        <h3 className={`text-lg font-semibold ${theme === "light" ? "text-gray-800" : ""}`}>{title}</h3>
-        <p className={`text-3xl font-bold ${theme === "light" ? "text-red-600" : "text-primary"}`}>{value}</p>
+        <div className="flex items-center mb-2">
+            <Icon className={`h-6 w-6 ${color}`} />
+            <h3 className={`ml-2 text-sm font-semibold ${theme === "light" ? "text-gray-600" : "text-gray-300"}`}>
+            {title}
+            </h3>
+        </div>
+        <p className={`text-3xl font-bold ${theme === "light" ? "text-gray-800" : "text-primary"}`}>{value}</p>
         </div>
     )
 }

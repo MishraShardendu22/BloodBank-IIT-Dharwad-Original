@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
 import { useThemeStore } from "@/store/themeStore"
+import { Droplet, Calendar, CheckCircle, XCircle } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { toast } from "react-hot-toast"
 
 interface IBloodRequest {
     _id: string
@@ -33,6 +36,7 @@ interface IBloodRequest {
         setRequests(data.data)
         } catch (error) {
         console.error("Error fetching blood requests:", error)
+        toast.error("Failed to fetch blood requests. Please try again.")
         }
     }
 
@@ -40,18 +44,25 @@ interface IBloodRequest {
         try {
         await axiosInstance.delete("/admin/deleteBloodRequest", { data: { bloodRequestId: requestId } })
         await fetchBloodRequests()
+        toast.success("Blood request deleted successfully.")
         } catch (error) {
         console.error("Error deleting blood request:", error)
+        toast.error("Failed to delete blood requests. Please try again.")
         }
     }
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
         <Card
-            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            className={`${
+            theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+            }`}
         >
             <CardHeader>
-            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Blood Request Management</CardTitle>
+            <CardTitle className={`flex items-center ${theme === "light" ? "text-gray-800" : ""}`}>
+                <Droplet className="w-6 h-6 mr-2 text-red-500" />
+                Blood Request Management
+            </CardTitle>
             </CardHeader>
             <CardContent>
             <Table>
@@ -67,18 +78,57 @@ interface IBloodRequest {
                 </TableHeader>
                 <TableBody>
                 {requests.map((request) => (
-                    <TableRow key={request._id} className={`hover:${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300/10"}`}>
-                    <TableCell>{request.patientId.name}</TableCell>
-                    <TableCell>{request.type}</TableCell>
+                    <TableRow
+                    key={request._id}
+                    className={`hover:${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300/10"}`}
+                    >
+                    <TableCell>
+                        <div className="flex flex-col">
+                        <span className="font-medium">{request.patientId.name}</span>
+                        <span className="text-sm text-gray-500">{request.patientId.email}</span>
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        <Badge
+                        variant="outline"
+                        className={`${
+                            theme === "light" ? "bg-red-50 text-red-600 border-red-200" : "bg-primary/10 text-primary"
+                        }`}
+                        >
+                        {request.type}
+                        </Badge>
+                    </TableCell>
                     <TableCell>{request.quantity}</TableCell>
-                    <TableCell>{request.completed ? "Completed" : "Pending"}</TableCell>
-                    <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                        {request.completed ? (
+                        <Badge variant="secondary" className="text-green-800 bg-green-100">
+                            <CheckCircle className="w-4 h-4 mr-1" />
+                            Completed
+                        </Badge>
+                        ) : (
+                        <Badge variant="default" className="text-yellow-800 bg-yellow-100">
+                            <XCircle className="w-4 h-4 mr-1" />
+                            Pending
+                        </Badge>
+                        )}
+                    </TableCell>
+                    <TableCell>
+                        <div className="flex items-center">
+                        <Calendar className="w-4 h-4 mr-2 text-gray-500" />
+                        {new Date(request.createdAt).toLocaleDateString()}
+                        </div>
+                    </TableCell>
                     <TableCell>
                         <Button
                         variant="destructive"
                         onClick={() => handleDelete(request._id)}
-                        className={theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : ""}
+                        className={`${
+                            theme === "light"
+                            ? "bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
+                            : "bg-destructive/20 text-destructive hover:bg-destructive/30"
+                        }`}
                         >
+                        <XCircle className="w-4 h-4 mr-2" />
                         Delete
                         </Button>
                     </TableCell>

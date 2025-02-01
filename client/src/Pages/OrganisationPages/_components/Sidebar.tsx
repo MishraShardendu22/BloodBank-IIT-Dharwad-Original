@@ -13,11 +13,11 @@ interface SidebarProps {
     }
 
     const sidebarItems = [
+    { icon: Activity, label: "Add Blood Donation", id: "donation" },
+    { icon: Droplet, label: "See Blood Requests", id: "requests" },
     { icon: BarChart, label: "Analytics", id: "analytics" },
     { icon: Package, label: "Inventory", id: "inventory" },
     { icon: MapPin, label: "Donation Locations", id: "locations" },
-    { icon: Droplet, label: "Blood Requests", id: "requests" },
-    { icon: Activity, label: "Blood Donation", id: "donation" },
     ]
 
     export function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
@@ -41,7 +41,7 @@ interface SidebarProps {
             )}
             <Button
                 size="icon"
-                variant="ghost"
+                variant="default"
                 onClick={() => setIsCollapsed(!isCollapsed)}
                 className={`hover:${theme === "light" ? "bg-gray-100" : "bg-primary/10"}`}
             >
