@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { Droplets, ArrowRight, LockKeyhole, Mail, Heart } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import Layout from "../_Layout"
 import axiosInstance from "../../../util/axiosInstance"
 import axios from "axios"
@@ -11,26 +11,185 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
+const ForgotPasswordModal = ({
+  isOpen,
+  onClose,
+  setError,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  setError: (error: string) => void
+}) => {
+  const [resetStep, setResetStep] = useState(1)
+  const [emailReset, setEmailReset] = useState("")
+  const [otpReset, setOtpReset] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [info, setInfo] = useState("")
+
+  const sendOtpPassReset = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError("")
+    try {
+      const res = await axiosInstance.post("/donor/sendOtpDonor", { email: emailReset })
+      if (res.status === 200) {
+        setInfo("OTP sent to your email.")
+        setResetStep(2)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        setError(error.response.data.message || "Failed to send OTP")
+      } else {
+        setError("An error occurred. Please try again.")
+      }
+    }
+  }
+
+  const otpVerifyPassReset = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError("")
+    try {
+      const res = await axiosInstance.post("/donor/verifyOtpDonor", {
+        email: emailReset,
+        otp: otpReset,
+      })
+      if (res.status === 200) {
+        setInfo("OTP verified.")
+        setResetStep(3)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        setError(error.response.data.message || "OTP verification failed")
+      } else {
+        setError("An error occurred. Please try again.")
+      }
+    }
+  }
+
+  const resetPass = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError("")
+    try {
+      const res = await axiosInstance.post("/donor/resetPassDonor", {
+        email: emailReset,
+        password: newPassword,
+        otp: otpReset,
+      })
+      if (res.status === 200) {
+        setInfo("Password reset successfully.")
+        onClose()
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        setError(error.response.data.message || "Reset Password failed")
+      } else {
+        setError("An error occurred. Please try again.")
+      }
+    }
+  }
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="bg-white rounded-lg shadow-lg max-w-md w-full p-6"
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 50, opacity: 0 }}
+          >
+            <h2 className="text-xl font-bold mb-4">Forgot Password</h2>
+            {info && <p className="mb-4 text-green-600">{info}</p>}
+            {resetStep === 1 && (
+              <form onSubmit={sendOtpPassReset} className="space-y-4">
+                <div>
+                  <Label htmlFor="resetEmail">Email</Label>
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={emailReset}
+                    onChange={(e) => setEmailReset(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={onClose} type="button">
+                    Cancel
+                  </Button>
+                  <Button type="submit">Send OTP</Button>
+                </div>
+              </form>
+            )}
+
+            {resetStep === 2 && (
+              <form onSubmit={otpVerifyPassReset} className="space-y-4">
+                <div>
+                  <Label htmlFor="otp">OTP</Label>
+                  <Input
+                    id="otp"
+                    type="text"
+                    placeholder="Enter OTP"
+                    value={otpReset}
+                    onChange={(e) => setOtpReset(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={onClose} type="button">
+                    Cancel
+                  </Button>
+                  <Button type="submit">Verify OTP</Button>
+                </div>
+              </form>
+            )}
+
+            {resetStep === 3 && (
+              <form onSubmit={resetPass} className="space-y-4">
+                <div>
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    placeholder="Enter new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={onClose} type="button">
+                    Cancel
+                  </Button>
+                  <Button type="submit">Reset Password</Button>
+                </div>
+              </form>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
 const LoginDonor = () => {
   const navigate = useNavigate()
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  })
+  const [formData, setFormData] = useState({ email: "", password: "" })
   const [error, setError] = useState("")
+  const [showResetModal, setShowResetModal] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
+    setFormData((prevState) => ({ ...prevState, [name]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
-
     try {
       const response = await axiosInstance.post("/donor/login", formData)
       if (response.status === 200) {
@@ -84,8 +243,7 @@ const LoginDonor = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                Thank you for being a blood donor. Your contributions help save countless lives.
-                Sign in to manage your donations and schedule your next life-saving appointment.
+                Thank you for being a blood donor. Your contributions help save countless lives. Sign in to manage your donations and schedule your next life-saving appointment.
               </motion.p>
             </div>
           </section>
@@ -106,7 +264,7 @@ const LoginDonor = () => {
                   </div>
                 </div>
                 <CardDescription>
-                  Access your donor dashboard to manage appointments and track donations
+                  Access your donor dashboard to manage appointments and track donations.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -158,27 +316,35 @@ const LoginDonor = () => {
                   )}
 
                   <div className="space-y-4">
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      size="lg"
-                    >
+                    <Button type="submit" className="w-full" size="lg">
                       Sign in as Donor
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
-
-                    <p className="text-sm text-center text-gray-600">
-                      Not registered as a donor?{" "}
-                      <Link to="/donor/register" className="font-medium text-primary hover:underline">
-                        Register here
-                      </Link>
-                    </p>
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm text-gray-600">
+                        Not registered as a donor?{" "}
+                        <Link to="/donor/register" className="font-medium text-primary hover:underline">
+                          Register here
+                        </Link>
+                      </p>
+                      <Button variant="link" onClick={() => setShowResetModal(true)} className="text-sm">
+                        Forgot Password?
+                      </Button>
+                    </div>
                   </div>
                 </motion.form>
               </CardContent>
             </Card>
           </main>
         </div>
+        <ForgotPasswordModal
+          isOpen={showResetModal}
+          onClose={() => {
+            setShowResetModal(false)
+            setError("")
+          }}
+          setError={setError}
+        />
       </div>
     </Layout>
   )
