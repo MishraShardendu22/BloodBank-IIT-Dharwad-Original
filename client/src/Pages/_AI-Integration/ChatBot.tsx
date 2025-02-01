@@ -18,6 +18,8 @@ const ChatBot = () => {
         GO_BACK + "/chats",
         body,
       );
+      // it should be some thing like res.data.answer
+      // please console.log and re check 
       setResponseData(res.data);
     } catch (error) {
       console.log("There was an error !!", error);
