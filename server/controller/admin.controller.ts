@@ -469,7 +469,32 @@ const updateUser = async (req: Request, res: Response) => {
   }
 }
 
+const verifyAdminUsingPassword = async (req: Request,res: Response) => {
+  try{
+    const { password } = req.body;
+    if(!password){
+      return ResponseApi(res,400,'Password is required');
+    }
+
+    const adminPassword = process.env.ADMIN_PASSWORD as string
+    if(password !== adminPassword){
+      return ResponseApi(res,400,'Invalid Password');
+    }
+
+    return ResponseApi(res,200,'Admin verified successfully');
+  }catch(error){
+    return ResponseApi(
+      res,
+      500,
+      error instanceof Error
+        ? error.message
+        : 'An unknown error occurred while verifying the admin'
+    )
+  }
+}
+
 export {
+  verifyAdminUsingPassword,
   deleteDonationLocation,
   getDonationLocations,
   deleteOrganisation,

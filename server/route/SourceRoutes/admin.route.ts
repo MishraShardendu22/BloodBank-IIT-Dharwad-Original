@@ -1,4 +1,5 @@
-import { 
+import {
+  verifyAdminUsingPassword,
   deleteDonationLocation,
   getDonationLocations,
   deleteOrganisation,
@@ -31,6 +32,7 @@ router.post('/register', register);
 router.post('/sendOtpAdmin',sendOtpAdmin);
 router.post('/resetPassAdmin',resetPassword);
 router.post('/verifyOtpAdmin',verifyOtpAdmin);
+router.post('/verifyAdminUsingPass',verifyAdminUsingPassword);
 
 router.get('/getDonors',adminMiddleware ,getDonors);
 router.get('/getPatients',adminMiddleware ,getPatients);
