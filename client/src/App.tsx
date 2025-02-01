@@ -46,6 +46,14 @@ const App = () => {
         }
       />
       <Route
+        path="donor/chat"
+        element={
+          <ProtectedDonor>
+            <ChatBot />
+          </ProtectedDonor>
+        }
+      />
+      <Route
         path="/donor/login"
         element={
           <ProtectedDonor>
