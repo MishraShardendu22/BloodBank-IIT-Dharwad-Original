@@ -28,7 +28,7 @@ const register = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'Patient already exists');
     }
 
-    const genSalt = await bcrypt.genSalt(10);
+    const genSalt = await bcrypt.genSalt(5);
     const hashedPassword = await bcrypt.hash(password, genSalt);
 
     const newPatient: IPatient = new Patient({
@@ -163,7 +163,12 @@ const verifyPatient = async (req: Request,res: Response) => {
     }
 
     const patient = await Patient.findById(_id);
-    return ResponseApi(res,200,'Admin verified successfully',patient);
+    if(!patient){
+      return ResponseApi(res,400,"No Such patient")
+    }
+    
+    patient.password = "********"
+    return ResponseApi(res,200,'Patient verified successfully',patient);
   }catch(error){
     return ResponseApi(
       res,
@@ -180,10 +185,10 @@ const deletePatient = async (req: Request,res: Response) => {
     const { _id } = req.body;
 
     if(!_id){
-      return ResponseApi(res,400,'Admin ID is required');
+      return ResponseApi(res,400,'Patient ID is required');
     }
     await Patient.findByIdAndDelete(_id);
-    return ResponseApi(res,200,'Admin deleted successfully');
+    return ResponseApi(res,200,'Patient deleted successfully');
   }catch(error){
     return ResponseApi(
       res,
@@ -263,9 +268,9 @@ const verifyOtpPatient = async (req: Request, res: Response) => {
 
 const resetPassword = async (req: Request, res: Response) => {
   try{
-    const { email, password } = req.body;
+    const { email, password, otp } = req.body;
 
-    if(!email || !password){
+    if(!email || !password || !otp){
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
 
@@ -275,10 +280,26 @@ const resetPassword = async (req: Request, res: Response) => {
 
     const existingPatient = await Patient.findOne({ email });
     if(!existingPatient){
-      return ResponseApi(res, 404, 'Admin not found');
+      return ResponseApi(res, 404, 'Patient not found');
     }
 
-    const genSalt = await bcrypt.genSalt(10);
+    if (!otpMap.has(email)) {
+      return ResponseApi(res, 400, 'Error');
+    }
+
+    const storedOtp = otpMap.get(email);
+    const isExpired = Date.now() - storedOtp!.timestamp > 10 * 60 * 1000;
+
+    if (isExpired) {
+      otpMap.delete(email);
+      return ResponseApi(res, 400, 'Timed out');
+    }
+
+    if (storedOtp!.otp !== otp) {
+      return ResponseApi(res, 400, 'Error');
+    }
+
+    const genSalt = await bcrypt.genSalt(5);
     const hashedPassword = await bcrypt.hash(password, genSalt);
 
     await Patient.findByIdAndUpdate(existingPatient._id, { password: hashedPassword });
@@ -298,11 +319,15 @@ const updateUser = async (req: Request, res: Response) => {
       return ResponseApi(res, 400, 'User ID is required');
     }
 
+    if (phoneNo.length !== 10) {
+      return ResponseApi(res, 400, 'Phone number must be 10 characters');
+    }
+
     await Patient.findByIdAndUpdate(
       {_id : _id},
       {
         name,
-        email,
+        email: email.toLowerCase(),
         phoneNo
       }
     )
