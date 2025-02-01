@@ -163,7 +163,12 @@ const verifyPatient = async (req: Request,res: Response) => {
     }
 
     const patient = await Patient.findById(_id);
-    return ResponseApi(res,200,'Admin verified successfully',patient);
+    if(!patient){
+      return ResponseApi(res,400,"No Such patient")
+    }
+    
+    patient.password = "********"
+    return ResponseApi(res,200,'Patient verified successfully',patient);
   }catch(error){
     return ResponseApi(
       res,
@@ -180,10 +185,10 @@ const deletePatient = async (req: Request,res: Response) => {
     const { _id } = req.body;
 
     if(!_id){
-      return ResponseApi(res,400,'Admin ID is required');
+      return ResponseApi(res,400,'Patient ID is required');
     }
     await Patient.findByIdAndDelete(_id);
-    return ResponseApi(res,200,'Admin deleted successfully');
+    return ResponseApi(res,200,'Patient deleted successfully');
   }catch(error){
     return ResponseApi(
       res,
@@ -275,7 +280,7 @@ const resetPassword = async (req: Request, res: Response) => {
 
     const existingPatient = await Patient.findOne({ email });
     if(!existingPatient){
-      return ResponseApi(res, 404, 'Admin not found');
+      return ResponseApi(res, 404, 'Patient not found');
     }
 
     if (!otpMap.has(email)) {
@@ -312,6 +317,10 @@ const updateUser = async (req: Request, res: Response) => {
 
     if(!_id || !name || !email || !phoneNo){
       return ResponseApi(res, 400, 'User ID is required');
+    }
+
+    if (phoneNo.length !== 10) {
+      return ResponseApi(res, 400, 'Phone number must be 10 characters');
     }
 
     await Patient.findByIdAndUpdate(

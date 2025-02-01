@@ -15,7 +15,6 @@ const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNo } = req.body;
 
-    // Ensure we use the types from IAdmin where needed
     if (!name || !email || !password || !phoneNo) {
       return ResponseApi(res, 400, 'Please provide all required fields');
     }
@@ -300,7 +299,12 @@ const verifyAdmin = async (req: Request,res: Response) => {
     }
 
     const admin = await Admin.findById(_id);
-    admin?.password == "********"
+    if(!admin){
+      return ResponseApi(res,400,"No Such Admin")
+    }
+    
+    admin.password = "********"
+
     return ResponseApi(res,200,'Admin verified successfully',admin);
   }catch(error){
     return ResponseApi(
@@ -444,6 +448,10 @@ const updateUser = async (req: Request, res: Response) => {
 
     if(!_id || !name || !email || !phoneNo){
       return ResponseApi(res, 400, 'User ID is required');
+    }
+
+    if (phoneNo.length !== 10) {
+      return ResponseApi(res, 400, 'Phone number must be 10 characters');
     }
 
     await Admin.findByIdAndUpdate(

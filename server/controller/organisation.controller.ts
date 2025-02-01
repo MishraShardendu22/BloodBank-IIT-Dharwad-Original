@@ -310,7 +310,12 @@ const verifyOrganisation = async (req: Request,res: Response) => {
     }
 
     const org = await Organisation.findById(_id);
-    return ResponseApi(res,200,'Admin verified successfully',org);
+    if(!org){
+      return ResponseApi(res,400,"No Such organisation")
+    }
+    
+    org.password = "********"
+    return ResponseApi(res,200,'Organisation verified successfully',org);
   }catch(error){
     return ResponseApi(
       res,
@@ -362,18 +367,18 @@ const deleteOrganisation = async (req: Request,res: Response) => {
     const { _id } = req.body;
 
     if(!_id){
-      return ResponseApi(res,400,'Admin ID is required');
+      return ResponseApi(res,400,'Organisation ID is required');
     }
 
     await Donor.findByIdAndDelete(_id);
-    return ResponseApi(res,200,'Admin deleted successfully');
+    return ResponseApi(res,200,'Organisation deleted successfully');
   }catch(error){
     return ResponseApi(
       res,
       500,
       error instanceof Error
         ? error.message
-        : 'An unknown error occurred while deleting the admin'
+        : 'An unknown error occurred while deleting the organisation'
     )
   }
 }
@@ -458,7 +463,7 @@ const resetPassword = async (req: Request, res: Response) => {
 
     const existingOrganisation = await Organisation.findOne({ email });
     if(!existingOrganisation){
-      return ResponseApi(res, 404, 'Admin not found');
+      return ResponseApi(res, 404, 'Organisation not found');
     }
 
     if (!otpMap.has(email)) {
@@ -495,6 +500,10 @@ const updateUser = async (req: Request, res: Response) => {
 
     if(!_id || !name || !email || !phoneNo){
       return ResponseApi(res, 400, 'User ID is required');
+    }
+
+    if (phoneNo.length !== 10) {
+      return ResponseApi(res, 400, 'Phone number must be 10 characters');
     }
 
     await Organisation.findByIdAndUpdate(
