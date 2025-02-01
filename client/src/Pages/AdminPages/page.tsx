@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Navbar from "@/components/Navbar"
@@ -11,6 +13,9 @@ import DonationLocationManagement from "./_components/DonationLocationManagement
 import BloodRequestManagement from "./_components/BloodRequestManagement"
 import { Sidebar } from "./_components/Sidebar"
 import { useThemeStore } from "@/store/themeStore"
+import { User, Mail, Phone, Shield } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { toast } from "react-hot-toast"
 
 interface IAdmin {
     _id: string
@@ -36,6 +41,7 @@ interface IAdmin {
         setAdminInfo(data.data)
         } catch (error) {
         console.error("Error fetching admin info:", error)
+        toast.error("Failed to fetch admin information. Please try again.")
         }
     }
 
@@ -77,21 +83,44 @@ interface IAdmin {
             {adminInfo && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card
-                    className={`mb-6 ${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+                    className={`mb-6 ${
+                    theme === "light"
+                        ? "bg-white border-gray-200 shadow-sm"
+                        : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+                    }`}
                 >
                     <CardHeader>
-                    <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Admin Information</CardTitle>
+                    <CardTitle className={`flex items-center ${theme === "light" ? "text-gray-800" : ""}`}>
+                        <Shield className="w-6 h-6 mr-2 text-blue-500" />
+                        Admin Information
+                    </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                    <p className={theme === "light" ? "text-gray-600" : ""}>
-                        <strong>Name:</strong> {adminInfo.name}
-                    </p>
-                    <p className={theme === "light" ? "text-gray-600" : ""}>
-                        <strong>Email:</strong> {adminInfo.email}
-                    </p>
-                    <p className={theme === "light" ? "text-gray-600" : ""}>
-                        <strong>Phone:</strong> {adminInfo.phoneNo}
-                    </p>
+                    <CardContent className="grid gap-4 md:grid-cols-2">
+                    <div className={`flex items-center ${theme === "light" ? "text-gray-600" : ""}`}>
+                        <User className="w-5 h-5 mr-2" />
+                        <span className="font-medium">Name:</span>
+                        <span className="ml-2">{adminInfo.name}</span>
+                    </div>
+                    <div className={`flex items-center ${theme === "light" ? "text-gray-600" : ""}`}>
+                        <Mail className="w-5 h-5 mr-2" />
+                        <span className="font-medium">Email:</span>
+                        <span className="ml-2">{adminInfo.email}</span>
+                    </div>
+                    <div className={`flex items-center ${theme === "light" ? "text-gray-600" : ""}`}>
+                        <Phone className="w-5 h-5 mr-2" />
+                        <span className="font-medium">Phone:</span>
+                        <span className="ml-2">{adminInfo.phoneNo}</span>
+                    </div>
+                    <div className={`flex items-center ${theme === "light" ? "text-gray-600" : ""}`}>
+                        <Badge
+                        variant="outline"
+                        className={`${
+                            theme === "light" ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-primary/10 text-primary"
+                        }`}
+                        >
+                        Administrator
+                        </Badge>
+                    </div>
                     </CardContent>
                 </Card>
                 </motion.div>

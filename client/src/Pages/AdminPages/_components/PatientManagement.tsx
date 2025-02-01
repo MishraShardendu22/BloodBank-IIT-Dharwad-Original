@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import axiosInstance from "@/util/axiosInstance"
 import { motion } from "framer-motion"
 import { useThemeStore } from "@/store/themeStore"
+import { UserPlus, Mail, Phone, XCircle } from "lucide-react"
+import { toast } from "react-hot-toast"
 
 interface IPatient {
     _id: string
@@ -27,6 +29,7 @@ interface IPatient {
         setPatients(data.data)
         } catch (error) {
         console.error("Error fetching patients:", error)
+        toast.error("Failed to fetch patients. Please try again.")
         }
     }
 
@@ -34,18 +37,25 @@ interface IPatient {
         try {
         await axiosInstance.delete("/admin/deletePatient", { data: { patientId } })
         await fetchPatients()
+        toast.success("Patient deleted successfully.")
         } catch (error) {
         console.error("Error deleting patient:", error)
+        toast.error("Failed to delete patients. Please try again.")
         }
     }
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
         <Card
-            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            className={`${
+            theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+            }`}
         >
             <CardHeader>
-            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Patient Management</CardTitle>
+            <CardTitle className={`flex items-center ${theme === "light" ? "text-gray-800" : ""}`}>
+                <UserPlus className="w-6 h-6 mr-2 text-blue-500" />
+                Patient Management
+            </CardTitle>
             </CardHeader>
             <CardContent>
             <Table>
@@ -59,16 +69,39 @@ interface IPatient {
                 </TableHeader>
                 <TableBody>
                 {patients.map((patient) => (
-                    <TableRow key={patient._id} className={`hover:${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300/10"}`}>
-                    <TableCell>{patient.name}</TableCell>
-                    <TableCell>{patient.email}</TableCell>
-                    <TableCell>{patient.phoneNo || "N/A"}</TableCell>
+                    <TableRow
+                    key={patient._id}
+                    className={`hover:${theme === "light" ? "bg-gray-50 text-gray-600" : "bg-base-300/10"}`}
+                    >
+                    <TableCell>
+                        <div className="flex items-center">
+                        <UserPlus className="w-4 h-4 mr-2 text-gray-500" />
+                        {patient.name}
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        <div className="flex items-center">
+                        <Mail className="w-4 h-4 mr-2 text-gray-500" />
+                        {patient.email}
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        <div className="flex items-center">
+                        <Phone className="w-4 h-4 mr-2 text-gray-500" />
+                        {patient.phoneNo || "N/A"}
+                        </div>
+                    </TableCell>
                     <TableCell>
                         <Button
                         variant="destructive"
                         onClick={() => handleDelete(patient._id)}
-                        className={theme === "light" ? "bg-red-600 hover:bg-red-700 text-white" : ""}
+                        className={`${
+                            theme === "light"
+                            ? "bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
+                            : "bg-destructive/20 text-destructive hover:bg-destructive/30"
+                        }`}
                         >
+                        <XCircle className="w-4 h-4 mr-2" />
                         Delete
                         </Button>
                     </TableCell>

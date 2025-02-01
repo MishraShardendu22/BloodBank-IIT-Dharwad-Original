@@ -10,12 +10,16 @@ import Navbar from "@/components/Navbar"
 import { motion } from "framer-motion"
 import { Sidebar } from "./_components/Sidebar"
 import { useThemeStore } from "@/store/themeStore"
+import { User, Mail, Phone, AlertCircle } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 interface IPatient {
     _id: Types.ObjectId
     name: string
     email: string
     phoneNo?: string
+    bloodType?: string
     }
 
     const Patient = () => {
@@ -66,25 +70,60 @@ interface IPatient {
             {patientInfo && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card
-                    className={`mb-6 ${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+                    className={`mb-6 ${
+                    theme === "light"
+                        ? "bg-white border-gray-200 shadow-sm"
+                        : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+                    }`}
                 >
                     <CardHeader>
-                    <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Patient Information</CardTitle>
+                    <CardTitle className={`flex items-center ${theme === "light" ? "text-gray-800" : ""}`}>
+                        <User className="w-6 h-6 mr-2" />
+                        Patient Information
+                    </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                    <p className={theme === "light" ? "text-gray-600" : ""}>
-                        <strong>Name:</strong> {patientInfo.name}
-                    </p>
-                    <p className={theme === "light" ? "text-gray-600" : ""}>
-                        <strong>Email:</strong> {patientInfo.email}
-                    </p>
+                    <CardContent className="grid gap-4 md:grid-cols-2">
+                    <div className={`flex items-center ${theme === "light" ? "text-gray-600" : ""}`}>
+                        <User className="w-5 h-5 mr-2" />
+                        <span className="font-medium">Name:</span>
+                        <span className="ml-2">{patientInfo.name}</span>
+                    </div>
+                    <div className={`flex items-center ${theme === "light" ? "text-gray-600" : ""}`}>
+                        <Mail className="w-5 h-5 mr-2" />
+                        <span className="font-medium">Email:</span>
+                        <span className="ml-2">{patientInfo.email}</span>
+                    </div>
                     {patientInfo.phoneNo && (
-                        <p className={theme === "light" ? "text-gray-600" : ""}>
-                        <strong>Phone:</strong> {patientInfo.phoneNo}
-                        </p>
+                        <div className={`flex items-center ${theme === "light" ? "text-gray-600" : ""}`}>
+                        <Phone className="w-5 h-5 mr-2" />
+                        <span className="font-medium">Phone:</span>
+                        <span className="ml-2">{patientInfo.phoneNo}</span>
+                        </div>
+                    )}
+                    {patientInfo.bloodType && (
+                        <div className={`flex items-center ${theme === "light" ? "text-gray-600" : ""}`}>
+                        <Badge
+                            variant="outline"
+                            className={`${
+                            theme === "light" ? "bg-red-50 text-red-600 border-red-200" : "bg-primary/10 text-primary"
+                            }`}
+                        >
+                            Blood Type: {patientInfo.bloodType}
+                        </Badge>
+                        </div>
                     )}
                     </CardContent>
                 </Card>
+                {!patientInfo.bloodType && (
+                    <Alert variant="default" className="mb-6">
+                    <AlertCircle className="w-4 h-4 text-red-500" />
+                    <AlertTitle className="text-red-500">Blood Type Not Set</AlertTitle>
+                    <AlertDescription className="text-red-500">
+                        Please update your profile to include your blood type. This information is crucial for accurate
+                        blood requests and potential emergencies.
+                    </AlertDescription>
+                    </Alert>
+                )}
                 </motion.div>
             )}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>

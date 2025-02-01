@@ -63,6 +63,7 @@ import {
   Shield,
   Github,
   Mail,
+  Contact
 } from "lucide-react"
 import { useThemeStore } from "@/store/themeStore"
 import { motion } from "framer-motion"
@@ -197,17 +198,16 @@ const Landing = () => {
       className={`relative min-h-screen ${theme}`}
       data-theme={theme === "dark" ? "bloodsphere-dark" : "bloodsphere-light"}
     >
-      {/* Floating Navigation */}
+
       <Navbar />
 
-      {/* Hero Section */}
+
       <motion.section
         className={`min-h-screen hero ${theme === "light" ? "bg-white text-gray-900" : "text-white"}`}
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
-        {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
             className="absolute inset-0"
@@ -340,6 +340,12 @@ const Landing = () => {
                   </DialogHeader>
                   <div className="grid gap-4 py-6">
                     {[
+                      {
+                        icon: Contact,
+                        label: "Admin",
+                        description: "Manage users, monitor donations, and oversee platform operations",
+                        path: "/admin/dashboard",
+                      },
                       {
                         icon: Heart,
                         label: "Donor",
@@ -602,7 +608,6 @@ const Landing = () => {
                 theme === "light" ? "bg-gray-200" : "bg-base-200"
               }`}
             >
-              {/* Placeholder for map - you can integrate with Google Maps or similar */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_500px_at_50%_50%,rgba(220,38,38,0.1),transparent)]" />
               <div className="absolute inset-0 grid grid-cols-[repeat(20,1fr)] grid-rows-[repeat(20,1fr)]">
                 {/* {[...Array(400)].map((_, i) => (
@@ -616,7 +621,7 @@ const Landing = () => {
         projection="geoMercator"
         projectionConfig={{
           scale: 1000,
-          center: [78.9629, 22.5937] // Centered on India
+          center: [78.9629, 22.5937] 
         }}
         className="w-full h-full"
       >

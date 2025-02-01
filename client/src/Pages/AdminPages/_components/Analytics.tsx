@@ -13,12 +13,13 @@ import {
     PieChart,
     Pie,
     Cell,
-    LineChart,
-    Line,
+    AreaChart,
+    Area,
     } from "recharts"
     import axiosInstance from "@/util/axiosInstance"
     import { motion } from "framer-motion"
     import { useThemeStore } from "@/store/themeStore"
+    import { Users, UserPlus, Building2, MapPin, Droplet } from "lucide-react"
 
     interface IAnalytics {
     donors: number
@@ -81,31 +82,50 @@ import {
         className="space-y-6"
         >
         <Card
-            className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+            className={`${
+            theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+            }`}
         >
             <CardHeader>
-            <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Analytics Overview</CardTitle>
+            <CardTitle className={`flex items-center ${theme === "light" ? "text-gray-800" : ""}`}>
+                <Users className="w-6 h-6 mr-2 text-blue-500" />
+                Analytics Overview
+            </CardTitle>
             </CardHeader>
             <CardContent>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-                <AnalyticItem title="Donors" value={analytics.donors} />
-                <AnalyticItem title="Patients" value={analytics.patients} />
-                <AnalyticItem title="Organizations" value={analytics.organisations} />
-                <AnalyticItem title="Donation Locations" value={analytics.donationLocations} />
-                <AnalyticItem title="Blood Requests" value={analytics.bloodRequests} />
+                <AnalyticItem title="Donors" value={analytics.donors} icon={Users} color="text-blue-500" />
+                <AnalyticItem title="Patients" value={analytics.patients} icon={UserPlus} color="text-green-500" />
+                <AnalyticItem
+                title="Organizations"
+                value={analytics.organisations}
+                icon={Building2}
+                color="text-yellow-500"
+                />
+                <AnalyticItem
+                title="Donation Locations"
+                value={analytics.donationLocations}
+                icon={MapPin}
+                color="text-purple-500"
+                />
+                <AnalyticItem title="Blood Requests" value={analytics.bloodRequests} icon={Droplet} color="text-red-500" />
             </div>
             </CardContent>
         </Card>
 
         <Tabs defaultValue="distribution" className="w-full">
-            <TabsList className={`${theme === "light" ? "bg-gray-100" : "bg-base-200/50 backdrop-blur-sm"}`}>
+            <TabsList className={`${theme === "light" ? "bg-gray-100 text-gray-600" : "bg-base-200/50 backdrop-blur-sm"}`}>
             <TabsTrigger value="distribution">Distribution</TabsTrigger>
             <TabsTrigger value="comparison">Comparison</TabsTrigger>
             <TabsTrigger value="trend">Trend</TabsTrigger>
             </TabsList>
             <TabsContent value="distribution">
             <Card
-                className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+                className={`${
+                theme === "light"
+                    ? "bg-white border-gray-200 shadow-sm"
+                    : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+                }`}
             >
                 <CardHeader>
                 <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Distribution of Key Metrics</CardTitle>
@@ -136,7 +156,11 @@ import {
             </TabsContent>
             <TabsContent value="comparison">
             <Card
-                className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+                className={`${
+                theme === "light"
+                    ? "bg-white border-gray-200 shadow-sm text-gray-600"
+                    : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+                }`}
             >
                 <CardHeader>
                 <CardTitle className={theme === "light" ? "text-gray-800" : ""}>Comparison of Key Metrics</CardTitle>
@@ -157,7 +181,11 @@ import {
             </TabsContent>
             <TabsContent value="trend">
             <Card
-                className={`${theme === "light" ? "bg-white border-gray-200 shadow-sm" : "bg-base-200/50 backdrop-blur-sm border-primary/10"}`}
+                className={`${
+                theme === "light"
+                    ? "bg-white border-gray-200 shadow-sm text-gray-600"
+                    : "bg-base-200/50 backdrop-blur-sm border-primary/10"
+                }`}
             >
                 <CardHeader>
                 <CardTitle className={theme === "light" ? "text-gray-800" : ""}>
@@ -166,15 +194,25 @@ import {
                 </CardHeader>
                 <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={timeData}>
+                    <AreaChart data={timeData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="donations" stroke={theme === "light" ? "#ef4444" : "#8884d8"} />
-                    <Line type="monotone" dataKey="requests" stroke={theme === "light" ? "#22c55e" : "#82ca9d"} />
-                    </LineChart>
+                    <Area
+                        type="monotone"
+                        dataKey="donations"
+                        stroke={theme === "light" ? "#ef4444" : "#8884d8"}
+                        fill={theme === "light" ? "#fee2e2" : "#8884d8"}
+                    />
+                    <Area
+                        type="monotone"
+                        dataKey="requests"
+                        stroke={theme === "light" ? "#22c55e" : "#82ca9d"}
+                        fill={theme === "light" ? "#dcfce7" : "#82ca9d"}
+                    />
+                    </AreaChart>
                 </ResponsiveContainer>
                 </CardContent>
             </Card>
@@ -184,15 +222,26 @@ import {
     )
     }
 
-    const AnalyticItem = ({ title, value }: { title: string; value: number }) => {
-    const { theme } = useThemeStore()
-    return (
-        <div className={`p-4 rounded-lg ${theme === "light" ? "bg-gray-50 border border-gray-200" : "bg-base-100"}`}>
-        <h3 className={`text-lg font-semibold ${theme === "light" ? "text-gray-800" : ""}`}>{title}</h3>
-        <p className={`text-3xl font-bold ${theme === "light" ? "text-red-600" : "text-primary"}`}>{value}</p>
-        </div>
-    )
-}
-
+    const AnalyticItem = ({
+        title,
+        value,
+        icon: Icon,
+        color,
+    }: { title: string; value: number; icon: any; color: string }) => {
+        const { theme } = useThemeStore()
+        return (
+            <div className={`p-6 rounded-lg ${theme === "light" ? "bg-gray-50 border border-gray-200" : "bg-base-100"}`}>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                        <Icon className={`w-8 h-8 ${color}`} />
+                        <div className="space-y-1">
+                            <h3 className={`text-sm font-semibold ${theme === "light" ? "text-gray-800" : ""}`}>{title}</h3>
+                            <p className={`text-4xl font-bold ${theme === "light" ? "text-gray-900" : "text-primary"}`}>{value}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 export default Analytics
 

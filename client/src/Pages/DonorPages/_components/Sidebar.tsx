@@ -16,7 +16,7 @@ interface SidebarProps {
     { icon: User, label: "Donor Information", id: "info" },
     { icon: History, label: "Donation History", id: "history" },
     { icon: MapPin, label: "Donate Now", id: "locations" },
-    {icon:  Medal ,label: "Certificates", id: "certificates" },
+    {icon:  Medal ,label: "Certificates", id: "certificate" },
     ]
 
     export function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
@@ -40,7 +40,7 @@ interface SidebarProps {
             )}
             <Button
                 size="icon"
-                variant="ghost"
+                variant="default"
                 onClick={() => setIsCollapsed(!isCollapsed)}
                 className={`hover:${theme === "light" ? "bg-gray-100" : "bg-primary/10"}`}
             >
