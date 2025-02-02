@@ -34,43 +34,33 @@ _A hackathon project developed during a 36-hour marathon at IIT Dharwad by Team 
 ---
 
 ## Tech Stack
-
 ### Frontend
 
 - **TypeScript**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" width="40" height="40">  
   A strongly typed programming language that builds on JavaScript.
 
 - **React**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" width="40" height="40">  
   A library for building interactive user interfaces.
 
 - **shadcn UI**  
-  ![shadcn UI](https://via.placeholder.com/40?text=shadcn)  
   A modern UI component library for rapid prototyping and clean design.
 
-- **saisy UI**  
-  ![saisy UI](https://via.placeholder.com/40?text=saisy)  
+- **daisy UI**  
   A sleek UI kit that helps create consistent and attractive interfaces.
 
 - **Tailwind CSS**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg" alt="Tailwind CSS" width="40" height="40">  
   A utility-first CSS framework for rapidly building custom designs.
 
 - **NextJS/Nextra**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="NextJS" width="40" height="40">  
   Frameworks offering server-side rendering and static site generation for optimized performance.
 
 - **Zustand**  
-  ![Zustand](https://via.placeholder.com/40?text=Zustand)  
   A small and fast state management solution for React applications.
 
 - **Axios**  
-  ![Axios](https://via.placeholder.com/40?text=Axios)  
   A promise-based HTTP client for making API requests from both the browser and Node.js.
 
 - **react-toastify**  
-  ![react-toastify](https://via.placeholder.com/40?text=Toastify)  
   A notification library that provides easy-to-use toast messages in React.
 
 ---
@@ -78,31 +68,24 @@ _A hackathon project developed during a 36-hour marathon at IIT Dharwad by Team 
 ### Backend
 
 - **TypeScript**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" width="40" height="40">  
   Ensures type safety and robust code structure in JavaScript-based applications.
 
 - **GoLang**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="GoLang" width="40" height="40">  
   A statically typed, compiled language known for its efficiency and concurrency support.
 
 - **Express**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express" width="40" height="40">  
   A minimal and flexible Node.js web application framework for building APIs.
 
 - **Node Cron**  
-  ![Node Cron](https://via.placeholder.com/40?text=NodeCron)  
   A scheduler for Node.js, used to run scheduled tasks and background jobs.
 
 - **Nodemailer**  
-  ![Nodemailer](https://via.placeholder.com/40?text=Nodemailer)  
   A module to easily send emails from Node.js applications.
 
 - **mongoose**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="mongoose" width="40" height="40">  
   An ODM (Object Data Modeling) library for MongoDB and Node.js, simplifying database interactions.
 
 - **JWT**  
-  ![JWT](https://via.placeholder.com/40?text=JWT)  
   A compact, URL-safe means of representing claims to be transferred between two parties.
 
 ---
@@ -110,7 +93,6 @@ _A hackathon project developed during a 36-hour marathon at IIT Dharwad by Team 
 ### Database
 
 - **MongoDB**  
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB" width="40" height="40">  
   A NoSQL document-oriented database that provides flexible and scalable storage.
 
 ---
