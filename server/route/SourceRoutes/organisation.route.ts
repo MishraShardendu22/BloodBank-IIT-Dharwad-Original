@@ -7,7 +7,6 @@ import {
   updateInventory,
   addBloodDonated,
   getBloodRequests,
-  deleteOrganisation,
   verifyOrganisation,
   sendOtpOrganisation,
   addDonationLocation,
@@ -43,7 +42,6 @@ router.patch('/completeBloodRequest', organisationMiddleware, completeBloodReque
 router.patch('/updateDonationLocation', organisationMiddleware, updateDonationLocation);
 
 router.delete('/deleteDonationLocation', organisationMiddleware, deleteDonationLocation);
-router.delete('/deleteOrganisation', organisationMiddleware, deleteOrganisation);
 
 router.put('/updateorganisation', organisationMiddleware, updateInventory);
 

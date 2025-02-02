@@ -329,27 +329,6 @@ const verifyAdmin = async (req: Request,res: Response) => {
   }
 }
 
-const deleteAdmin = async (req: Request,res: Response) => {
-  try{
-    const { _id } = req.body;
-
-    if(!_id){
-      return ResponseApi(res,400,'Admin ID is required');
-    }
-
-    await Admin.findByIdAndDelete(_id);
-    return ResponseApi(res,200,'Admin deleted successfully');
-  }catch(error){
-    return ResponseApi(
-      res,
-      500,
-      error instanceof Error
-        ? error.message
-        : 'An unknown error occurred while deleting the admin'
-    )
-  }
-}
-
 let otpMap = new Map<string, { otp: string; timestamp: number }>();
 
 const sendOtpAdmin = async (req: Request, res: Response) => {
@@ -495,7 +474,6 @@ export {
   getAnalytics,
   verifyAdmin,
   deleteDonor,
-  deleteAdmin,
   getPatients,
   updateUser,
   getDonors,

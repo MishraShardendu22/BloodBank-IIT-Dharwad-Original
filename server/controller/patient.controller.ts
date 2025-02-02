@@ -180,26 +180,6 @@ const verifyPatient = async (req: Request,res: Response) => {
   }
 }
 
-const deletePatient = async (req: Request,res: Response) => {
-  try{
-    const { _id } = req.body;
-
-    if(!_id){
-      return ResponseApi(res,400,'Patient ID is required');
-    }
-    await Patient.findByIdAndDelete(_id);
-    return ResponseApi(res,200,'Patient deleted successfully');
-  }catch(error){
-    return ResponseApi(
-      res,
-      500,
-      error instanceof Error
-        ? error.message
-        : 'An unknown error occurred while deleting the patient'
-    )
-  }
-}
-
 let otpMap = new Map<string, { otp: string; timestamp: number }>();
 
 const sendOtpPatient = async (req: Request, res: Response) => {
@@ -342,7 +322,6 @@ export {
   login,
   register,
   updateUser,
-  deletePatient,
   verifyPatient,
   resetPassword,
   sendOtpPatient,

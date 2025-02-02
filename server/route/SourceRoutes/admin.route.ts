@@ -13,7 +13,6 @@ import {
   verifyAdmin,
   deleteDonor,
   getPatients,
-  deleteAdmin,
   updateUser,
   getDonors,
   register,
@@ -41,7 +40,6 @@ router.get('/getBloodRequests',adminMiddleware ,getBloodRequests);
 router.get('/getDonationLocations',adminMiddleware ,getDonationLocations);
 
 router.delete('/deleteDonor',adminMiddleware ,deleteDonor);
-router.delete('/deleteAdmin',adminMiddleware ,deleteAdmin);
 router.delete('/deletePatient',adminMiddleware ,deletePatient);
 router.delete('/deleteOrganisation',adminMiddleware ,deleteOrganisation);
 router.delete('/deleteBloodRequest',adminMiddleware ,deleteBloodRequest);

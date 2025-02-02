@@ -1,7 +1,6 @@
 import {   
   login,
   register,
-  deletePatient,
   verifyPatient,
   resetPassword,
   sendOtpPatient,
@@ -31,7 +30,6 @@ router.get('/verifyPatient',patientMiddleware, verifyPatient);
 router.get('/bloodRequests',patientMiddleware, getBloodRequests);
 router.get('/bloodAvailable',patientMiddleware, getBloodAvailable);
 
-router.delete('/deletePatient',patientMiddleware, deletePatient);
 router.delete('/bloodRequest/:requestId',patientMiddleware, deleteBloodRequest);
 
 router.put('/updatePatient', patientMiddleware, updateUser);

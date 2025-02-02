@@ -194,27 +194,6 @@ const verifyOtpDonor = async (req: Request, res: Response) => {
   }
 };
 
-const deleteDonor = async (req: Request,res: Response) => {
-  try{
-    const { _id } = req.body;
-
-    if(!_id){
-      return ResponseApi(res,400,'Donor ID is required');
-    }
-
-    await Donor.findByIdAndDelete(_id);
-    return ResponseApi(res,200,'Donor deleted successfully');
-  }catch(error){
-    return ResponseApi(
-      res,
-      500,
-      error instanceof Error
-        ? error.message
-        : 'An unknown error occurred while deleting the donor'
-    )
-  }
-}
-
 const resetPassword = async (req: Request, res: Response) => {
   try{
     const { email, password, otp } = req.body;
@@ -290,7 +269,6 @@ export {
   login, 
   register, 
   updateUser,
-  deleteDonor, 
   verifyDonor, 
   sendOtpDonor,
   resetPassword, 

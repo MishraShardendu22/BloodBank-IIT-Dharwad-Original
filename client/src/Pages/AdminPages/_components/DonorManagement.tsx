@@ -7,8 +7,18 @@ import { motion } from "framer-motion"
 import { useThemeStore } from "@/store/themeStore"
 import { User, Mail, Phone, XCircle } from "lucide-react"
 import { toast } from "react-hot-toast"
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogFooter,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogCancel,
+    } from "@/components/ui/alert-dialog"
 
-interface IDonor {
+    interface IDonor {
     _id: string
     name: string
     email: string
@@ -40,7 +50,7 @@ interface IDonor {
         toast.success("Donor deleted successfully.")
         } catch (error) {
         console.error("Error deleting donor:", error)
-        toast.error("Failed to delete donors. Please try again.")
+        toast.error("Failed to delete donor. Please try again.")
         }
     }
 
@@ -92,18 +102,45 @@ interface IDonor {
                         </div>
                     </TableCell>
                     <TableCell>
-                        <Button
-                        variant="destructive"
-                        onClick={() => handleDelete(donor._id)}
-                        className={`${
-                            theme === "light"
-                            ? "bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
-                            : "bg-destructive/20 text-destructive hover:bg-destructive/30"
-                        }`}
+                        <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                            variant="destructive"
+                            className={`${
+                                theme === "light"
+                                ? "bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
+                                : "bg-destructive/20 text-destructive hover:bg-destructive/30"
+                            }`}
+                            >
+                            <XCircle className="w-4 h-4 mr-2" />
+                            Delete
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent
+                            className={
+                            theme === "light" ? "bg-white text-black shadow-lg" : "bg-gray-800 text-white shadow-lg"
+                            }
                         >
-                        <XCircle className="w-4 h-4 mr-2" />
-                        Delete
-                        </Button>
+                            <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete the donor's record.
+                            </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                            <AlertDialogCancel asChild>
+                                <Button variant="secondary">Cancel</Button>
+                            </AlertDialogCancel>
+                            <Button
+                                variant="destructive"
+                                className="hover:bg-red-500"
+                                onClick={() => handleDelete(donor._id)}
+                            >
+                                Delete
+                            </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                        </AlertDialog>
                     </TableCell>
                     </TableRow>
                 ))}

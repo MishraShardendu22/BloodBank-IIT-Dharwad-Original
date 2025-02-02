@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, User, History, MapPin, Medal, Info, Bot } from "lucide-react"
+import { ChevronLeft, ChevronRight, User, History, MapPin, Medal, Info, Bot, HelpCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -9,9 +9,10 @@ import { useUserStore } from "@/store/store"
 import { useThemeStore } from "@/store/themeStore"
 
 interface SidebarProps {
-    setActiveTab: (tab: "info" | "history" | "locations" | "certificate" | "survey" | "chatbot") => void
+    setActiveTab: (tab: "info" | "history" | "locations" | "certificate" | "survey" | "chatbot" | "faq") => void
     activeTab: string
 }
+
 
     const sidebarItems = [
     { icon: User, label: "Donor Information", id: "info" },
@@ -19,7 +20,8 @@ interface SidebarProps {
     { icon: MapPin, label: "Donate Now", id: "locations" },
     {icon:  Medal ,label: "Certificates", id: "certificate" },
     {icon:  Info ,label: "Give Survey", id: "survey" },
-    {icon:  Bot ,label: "Chat with AI", id: "chatbot" },
+    {icon:  Bot ,label: "MediCare", id: "chatbot" },
+    { icon: HelpCircle, label: "FAQ", id: "faq" },
     ]
 
     export function Sidebar({ setActiveTab, activeTab }: SidebarProps) {

@@ -14,6 +14,7 @@ import { User, Mail, Phone, AlertCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import ChatBot from "../_AI-Integration/ChatBot"
+import FAQ from "./_components/FAQ"
 
 interface IPatient {
     _id: Types.ObjectId
@@ -25,7 +26,7 @@ interface IPatient {
 
     const Patient = () => {
     const [patientInfo, setPatientInfo] = useState<IPatient | null>(null)
-    const [activeTab, setActiveTab] = useState<"availability" | "requests" | "chatbot">("availability")
+    const [activeTab, setActiveTab] = useState<"availability" | "requests" | "chatbot" | "faq">("availability")
     const { theme } = useThemeStore()
 
     useEffect(() => {
@@ -49,6 +50,8 @@ interface IPatient {
             return <PatientBloodRequests />
         case "chatbot":
             return <ChatBot />
+            case "faq":
+                return <FAQ />
         default:
             return null
         }

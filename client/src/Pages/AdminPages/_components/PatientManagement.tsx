@@ -7,8 +7,18 @@ import { motion } from "framer-motion"
 import { useThemeStore } from "@/store/themeStore"
 import { UserPlus, Mail, Phone, XCircle } from "lucide-react"
 import { toast } from "react-hot-toast"
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogFooter,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogCancel,
+    } from "@/components/ui/alert-dialog"
 
-interface IPatient {
+    interface IPatient {
     _id: string
     name: string
     email: string
@@ -18,6 +28,7 @@ interface IPatient {
     const PatientManagement = () => {
     const [patients, setPatients] = useState<IPatient[]>([])
     const { theme } = useThemeStore()
+    const [patientToDelete, setPatientToDelete] = useState<string | null>(null)
 
     useEffect(() => {
         fetchPatients()
@@ -40,7 +51,7 @@ interface IPatient {
         toast.success("Patient deleted successfully.")
         } catch (error) {
         console.error("Error deleting patient:", error)
-        toast.error("Failed to delete patients. Please try again.")
+        toast.error("Failed to delete patient. Please try again.")
         }
     }
 
@@ -92,18 +103,45 @@ interface IPatient {
                         </div>
                     </TableCell>
                     <TableCell>
-                        <Button
-                        variant="destructive"
-                        onClick={() => handleDelete(patient._id)}
-                        className={`${
-                            theme === "light"
-                            ? "bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
-                            : "bg-destructive/20 text-destructive hover:bg-destructive/30"
-                        }`}
+                        <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                            variant="destructive"
+                            className={`${
+                                theme === "light"
+                                ? "bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
+                                : "bg-red-600 text-gray-300 hover:bg-red-300 hover:text-red-700"
+                            }`}
+                            >
+                            <XCircle className="w-4 h-4 mr-2" />
+                            Delete
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent
+                            className={
+                            theme === "light" ? "bg-white text-black shadow-lg" : "bg-gray-800 text-white shadow-lg"
+                            }
                         >
-                        <XCircle className="w-4 h-4 mr-2" />
-                        Delete
-                        </Button>
+                            <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete the patient's record.
+                            </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                            <AlertDialogCancel asChild>
+                                <Button variant="secondary">Cancel</Button>
+                            </AlertDialogCancel>
+                            <Button
+                                variant="destructive"
+                                className="hover:bg-red-500"
+                                onClick={() => handleDelete(patient._id)}
+                            >
+                                Delete
+                            </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                        </AlertDialog>
                     </TableCell>
                     </TableRow>
                 ))}

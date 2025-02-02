@@ -362,27 +362,6 @@ const getAnalytics = async (req: Request, res: Response) => {
   }
 }
 
-const deleteOrganisation = async (req: Request,res: Response) => {
-  try{
-    const { _id } = req.body;
-
-    if(!_id){
-      return ResponseApi(res,400,'Organisation ID is required');
-    }
-
-    await Donor.findByIdAndDelete(_id);
-    return ResponseApi(res,200,'Organisation deleted successfully');
-  }catch(error){
-    return ResponseApi(
-      res,
-      500,
-      error instanceof Error
-        ? error.message
-        : 'An unknown error occurred while deleting the organisation'
-    )
-  }
-}
-
 let otpMap = new Map<string, { otp: string; timestamp: number }>();
 
 const sendOtpOrganisation = async (req: Request, res: Response) => {
@@ -531,7 +510,6 @@ export {
   updateInventory,
   addBloodDonated,
   getBloodRequests,
-  deleteOrganisation,
   verifyOrganisation,
   sendOtpOrganisation,
   addDonationLocation,

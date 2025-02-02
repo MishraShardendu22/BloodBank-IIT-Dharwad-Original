@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-case-declarations */
@@ -17,6 +18,7 @@ import { Calendar, MapPin, Phone, Clock, Award, Download, ChevronRight } from "l
 import { Progress } from "@/components/ui/progress"
 import Survey from "./_components/DonorSurvey"
 import ChatBot from "../_AI-Integration/ChatBot"
+import FAQ from "./_components/FAQ"
 
 export interface IDonation {
     _id: string
@@ -40,13 +42,51 @@ export interface IDonation {
     }
 
     const Donor = () => {
-    const [activeTab, setActiveTab] = useState<"info" | "history" | "locations" | "certificate" | "survey" | "chatbot">("info")
+    const [activeTab, setActiveTab] = useState<"info" | "history" | "locations" | "certificate" | "survey" | "chatbot" | "faq">("info")
     const [donorInfo, setDonorInfo] = useState<{ name: string; email: string } | null>(null)
     const [donationHistory, setDonationHistory] = useState<IDonation[]>([])
     const [donationLocations, setDonationLocations] = useState<IDonationLocation[]>([])
     const [totalDonations, setTotalDonations] = useState(0)
     const setUser = useUserStore((state: any) => state.setUser)
     const { theme } = useThemeStore()
+
+    const [donationImpactFacts, setDonationImpactFacts] = useState([
+        {
+            title: "Cancer Support",
+            fact: "Many cancer patients need daily blood transfusions during chemotherapy",
+            },
+            {
+            title: "Surgical Need",
+            fact: "One liver transplant can require up to 100 units of blood",
+            },
+            {
+            title: "Emergency Reserve",
+            fact: "Only 7% of people have O-negative blood, yet it's used in 50% of emergency transfusions",
+            },
+            {
+            title: "Time Sensitivity",
+            fact: "Someone needs blood every two seconds in India",
+            },
+        ])
+        
+        const [motivationalFacts, setMotivationalFacts] = useState([
+            {
+            title: "Life Multiplier",
+            fact: "If you donate blood 4 times a year for 50 years, you could help save up to 600 lives",
+            },
+            {
+            title: "Quick Recovery",
+            fact: "Your body replaces the donated plasma within 24 hours",
+            },
+            {
+            title: "Health Check Bonus",
+            fact: "Regular blood donors have an 88% lower risk of heart attacks",
+            },
+            {
+            title: "Calorie Burn",
+            fact: "You burn approximately 650 calories by donating one unit of blood",
+            },
+        ])
 
     useEffect(() => {
         fetchDonorInfo()
@@ -106,8 +146,6 @@ export interface IDonation {
     }
 
     const renderContent = () => {
-        console.log("Rendering content for tab:", activeTab)
-        console.log("Total donations:", totalDonations)
 
         switch (activeTab) {
         case "info":
@@ -179,7 +217,7 @@ export interface IDonation {
                 </CardContent>
                 <CardContent className="mt-6">
                     <h3 className={`text-xl font-semibold mb-4 ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
-                    Why Your Donations Matter
+                    Why Your Donations Matter ? 
                     </h3>
                     <div className="grid gap-4 md:grid-cols-2">
                     <div
@@ -201,6 +239,44 @@ export interface IDonation {
                         </p>
                     </div>
                     </div>
+                </CardContent>
+
+                <CardContent className="mt-6">
+                <h3 className={`text-xl font-semibold mb-4 ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
+                    Donation Impact Facts
+                </h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                    {donationImpactFacts.map((fact, index) => (
+                    <div
+                        key={index}
+                        className={`p-4 rounded-lg ${theme === "light" ? "bg-gray-50 border text-gray-600 border-gray-200" : "bg-base-300/30"}`}
+                    >
+                        <h4 className={`mb-2 font-semibold ${theme === "light" ? "text-gray-600" : "text-red-600"}`}>
+                        {fact.title}
+                        </h4>
+                        <p className="text-sm">{fact.fact}</p>
+                    </div>
+                    ))}
+                </div>
+                </CardContent>
+
+                <CardContent className="mt-6">
+                <h3 className={`text-xl font-semibold mb-4 ${theme === "light" ? "text-gray-800" : "text-primary"}`}>
+                    Motivational Facts
+                </h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                    {motivationalFacts.map((fact, index) => (
+                    <div
+                        key={index}
+                        className={`p-4 rounded-lg ${theme === "light" ? "bg-gray-50 border text-gray-600 border-gray-200" : "bg-base-300/30"}`}
+                    >
+                        <h4 className={`mb-2 font-semibold ${theme === "light" ? "text-gray-600" : "text-red-600"}`}>
+                        {fact.title}
+                        </h4>
+                        <p className="text-sm">{fact.fact}</p>
+                    </div>
+                    ))}
+                </div>
                 </CardContent>
                 </Card>
             </motion.div>
@@ -482,6 +558,10 @@ export interface IDonation {
                 </Card>
             </motion.div>
             )
+
+        case "faq":
+                return <FAQ />
+
         }
     }
 

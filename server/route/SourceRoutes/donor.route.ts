@@ -2,7 +2,6 @@ import {
   login, 
   register, 
   updateUser, 
-  deleteDonor, 
   verifyDonor, 
   sendOtpDonor, 
   resetPassword, 
@@ -26,8 +25,6 @@ router.post('/verifyOtpDonor',verifyOtpDonor);
 router.get('/donation-location',donorMiddleware ,getDonationLocation);
 router.get('/donation-history',donorMiddleware ,getDonationHistory);
 router.get('/verifyDonor',donorMiddleware ,verifyDonor);
-
-router.delete('/deleteDonor',donorMiddleware ,deleteDonor);
 
 router.put('/updateDonor',donorMiddleware ,updateUser);
 

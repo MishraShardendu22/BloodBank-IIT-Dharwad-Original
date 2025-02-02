@@ -56,9 +56,9 @@ const App = () => {
       <Route
         path="/donor/login"
         element={
-          <ProtectedDonor>
+          <Unprotected>
             <DonorLogin />
-          </ProtectedDonor>
+          </Unprotected>
         }
       />
       <Route
