@@ -6,7 +6,7 @@ _A hackathon project developed during a 36-hour marathon at IIT Dharwad by Team 
 
 ## Project Overview
 
-**Blood-Bank-IIT-Dharwad** is a comprehensive solution designed for efficient blood bank management. The project integrates multiple technologies to ensure a seamless flow between frontend and backend components, delivering a robust and secure platform for managing blood bank operations.
+**Blood-Bank** is a comprehensive solution designed for efficient blood bank management. The project integrates multiple technologies to ensure a seamless flow between frontend and backend components, delivering a robust and secure platform for managing blood bank operations.
 
 ---
 
