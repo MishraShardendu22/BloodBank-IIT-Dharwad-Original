@@ -12,7 +12,6 @@ const config: DocsThemeConfig = {
       />
       <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#f56565' }}>BloodSphere</span>
     </div>
-@@ -17,19 +61,19 @@
     link: 'https://github.com/MishraShardendu22',
   },
   chat: {
