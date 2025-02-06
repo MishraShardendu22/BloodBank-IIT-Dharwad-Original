@@ -105,3 +105,9 @@ _A hackathon project developed during a 36-hour marathon at IIT Dharwad by Team 
 - **TypeScript Backend:** [TS Backend](https://ts-backend-vuyg.onrender.com)
 
 ---
+### Deployment
+
+- **AWS**
+- [Frontend](bloodbank.mayankdev.com)
+- [backend Typescript](bloodbank-node.mayankdev.com)
+- [backend GoLang](bloodbank-go.mayankdev.com) 
