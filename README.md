@@ -99,7 +99,7 @@ _A hackathon project developed during a 36-hour marathon at IIT Dharwad by Team 
 
 ## Live Demos & Documentation
 
-- **Frontend:** [Blood-Bank Frontend](https://shardendu-mishra-blood-bank.vercel.app/)
+- **Frontend:** [Blood-Bank Frontend](https://parshu-velocity-blood-bank.vercel.app)
 - **Documentation:** [Project Documentation](https://shardendu-mishra-blood-bank-docs.vercel.app/)
 - **GoLang Backend Microservice:** [Go Backend](https://go-backend-gz41.onrender.com)
 - **TypeScript Backend:** [TS Backend](https://ts-backend-vuyg.onrender.com)
